@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="rfc7991bis.rnc"?>
+<?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
+<!DOCTYPE rfc [
+<!ENTITY nbsp "&#160;">
+<!ENTITY zwsp "&#8203;">
+<!ENTITY nbhy "&#8209;">
+<!ENTITY wj "&#8288;">
+]>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info" docName="draft-many-tiptop-usecase-00" ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" version="3">
+  <front>
+    <title abbrev="IP in Deep Space">IP in Deep Space: Key Characteristics, Use Cases and Requirements</title>
+    <seriesInfo name="Internet-Draft" value="draft-many-tiptop-usecase-00"/>
+    <author fullname="Marc Blanchet" initials="MB">
+      <organization>Viagenie</organization>
+      <address>
+        <postal>
+          <country>Canada</country>
+        </postal>
+        <email>marc.blanchet@viagenie.ca</email>
+      </address>
+    </author>
+    <author fullname="Wesley Eddy" initials="WE">
+      <organization>MTI Systems</organization>
+      <address>
+        <postal>
+          <country>USA</country>
+        </postal>
+        <email>wes@mti-systems.com</email>
+      </address>
+    </author>
+    <author fullname="Marshall Eubanks" initials="TME">
+      <organization>Space Initiatives Inc</organization>
+      <address>
+        <postal>
+          <country>USA</country>
+        </postal>
+        <email>tme@space-initiatives.com</email>
+      </address>
+    </author>
+    <area>Internet</area>
+    <workgroup>Internet Engineering Task Force</workgroup>
+    <keyword>dtn</keyword>
+    <keyword>quic</keyword>
+    <keyword>space</keyword>
+    <keyword>deep space</keyword>
+    <keyword>cislunar</keyword>
+    <keyword>Moon</keyword>
+    <keyword>Mars</keyword>
+    <keyword>ip</keyword>
+    <keyword>dns</keyword>
+    <keyword>routing</keyword>
+    <abstract>
+      <t>Deep space communications involve long delays (e.g., Earth to Mars has one-way delays 4-24 minutes) and intermittent communications, mainly because of orbital dynamics. The IP protocol stack used on Internet is based on the assumptions of shorter delays and mostly uninterrupted communications. This document describes the key characteristics, use cases, and requirements for deep space networking, intended to help when profiling IP protocols in such environment.</t>
+    </abstract>
+  </front>
+  <middle>
+    <section anchor="intro">
+      <name>Introduction</name>
+      <t>Deep space communications involve long delays (e.g., Earth to Mars is 4-24 minutes one way) and intermittent communications, mainly because of orbital dynamics. Up to now, communications have been done on a layer-2 point to point basis, with sometimes the use of relays. </t>
+      <t>This document describes the key characteristics and use cases for networking in deep space. It provides examples taken from the current communications facilities to reach Moon and Mars, as well as future plans. While these examples provide great insight on what is possible today, the resulting architecture should also consider future possibilities and farther celestial bodies. For example, while the number of relays and orbiters around Moon and Mars is currently limited, it is expected that their number will increase significantly, therefore providing improved coverage around those celestial bodies, resulting in an impact on communications and networking traffic patterns, intermittence and alternate paths.</t>
+      <t>This work is a followup of an assessment on the use of the IP protocol stack in deep space<xref target="I-D.many-deepspace-ip-assessment"/>.</t>
+      <section>
+        <name>Limitations of this document</name>
+        <t>Communication in deep space is vastly different than on Earth. This document does not describe space communication technologies below IP, but only the information relevant from the IP protocol stack viewpoint for the purpose of its engineering. More information is available for Moon<xref target="ioagmoon"/> and Mars<xref target="ioagmars"/>.</t>
+        <t>Position, Navigation and Timing (PNT) is not discussed in this memo.</t>
+        <t>Near Earth orbits, such as Low Earth Orbit (LEO), Medium Earth Orbit (MEO), and Geosynchronous Earth Orbit (GEO) communications and networking to and from Earth are out of scope for this memo. However, given the relatively small distance to the Moon, there are possibilities to use spacecrafts around Earth or at Lagrangian points to communicate with Moon assets. In this context, these possibilities are in scope.</t>
+      </section>
+      <section>
+        <name>Terminology</name>
+        <ul>
+          <li>Deep space: while the ITU definition<xref target="deepspacewikipedia"/> of deep space is beyond 2 million km, in this document, the Moon and its environs are included.</li>
+          <li>Direct-with-Earth(DWE): communications from/to a spacecraft directly to/from Earth, without the use of relays.</li>
+          <li>Moon, Lunar: refers to Earth's Moon.</li>
+        </ul>
+      </section>
+      <section>
+        <name>Document and Discussion Locations</name>
+        <t>The source of this document is located at https://github.com/marcblanchet/draft-tiptop-usecase. Comments or changes are welcomed by filing a PR or an issue against that repository.</t>
+        <t>This subject should be discussed on the IETF tiptop working group mailing list.</t>
+      </section>
+    </section>
+    <section anchor="keycharacteristics">
+      <name>Characteristics</name>
+      <t>Compared to Internet on Earth, space communications and networking have multiple challenges, such as:</t>
+      <ul>
+        <li>significant and variable delays.</li>
+        <li>frequent and long interruptions of communications, often with no alternate path. Because of orbital dynamics, spacecrafts may not be reachable because they are on the other side of a celestial body. However, their location and reachability can be generally precalculated so that the communication windows can be planned between the spacecrafts or between a spacecraft and a celestial body such as Earth, Moon or Mars.</li>
+        <li>lower bandwidth</li>
+        <li>one-way links</li>
+        <li>asymmetrical bandwidth</li>
+        <li>limited computing resources</li>
+        <li>limited energy supply</li>
+      </ul>
+      <t>and many others. Without any change, a typical Internet application will not work in this environment. However, the primary factors are delays and disruptions, discussed in this memo.</t>
+      <t>This section describes the following cases: Moon, Mars, Lagrangian points, cruising spacecraft and onboard spacecraft, starting with some commonality between all cases.</t>
+      <section>
+        <name>Common to all Cases</name>
+        <t>Various CCSDS link-layer protocols, such as Telecommand(TC)<xref target="CCSDS_TC"/>, Telemetry (TM)<xref target="CCSDS_TM"/>, Advanced Orbiting Systems(AOS)<xref target="CCSDS_AOS"/>, Proximity1(Prox1)<xref target="CCSDS_PROX1"/> are used on the links between Earth, orbiters and surface assets. A single unified link-layer, Unified Space Data Link Protocol (USLP)<xref target="CCSDS_USLP"/>, has been designed to functionaly replace the previous ones. CCSDS has defined a generic encapsulation mechanism for the payloads for all these link layer protocols which defines IP as an encapulated protocol<xref target="IPoverCCSDSSpaceLinks"/><xref target="SANAIPEHeaderRegistry"/>. Therefore, IP packets can be transported over any CCSDS link layers.</t>
+        <t>Surface assets on celestial bodies, such as habitats, rovers, stations and others may communicate between each other while on the surface network using Earth terrestrial technologies such as IEEE 802 and 3GPP 5G-6G/NTN<xref target="ioagmoon"/><xref target="ioagmars"/> using IP, similar to Internet, where links are always connected and there are no significant delays. They may also communicate using a relay orbiter.</t>
+        <t>Multiple providers, such as LunaNet Service Providers (LNSP) for Moon, will provide various services including communications and networking.</t>
+        <t>Orbiters acting as communications relays are already deployed or planned for both Moon and Mars. A sufficient number of orbiters will create a constellation which may provide full coverage of the celestial body surface. From one surface asset to another surface asset through these orbiters may use either CCSDS link-layers or link-layers similar to LEO constellations on Earth.</t>
+        <t>Space missions are typically planned many years in advance and are long-lived, spanning over many years or decades. Spacecrafts are controlled from Earth and therefore should always be manageable from Earth. Given the remoteness and the difficulty to physically access the spacecraft, software upgrades and configuration changes are avoided whenever possible.</t>
+        <t>Space exploration is more than ever carried by multiple stakeholders. A mixture of assets operated by government, commercial, and academic/research organizations from multiple nations will be deployed.  They will operate largely independently, but collaboration over time is expected to meet shared science goals, joint exploration missions, and mission cross-support needs.</t>
+        <t>While links are can be noisy due to weak signals, interference, etc., generally packet delivery is error-free due to the strong coding available within the link layer.  Delivery is generally in-order.  Queuing in modems, gateways, and other systems may be significant in comparison to typical terrestrial device queues.</t>
+      </section>
+      <section>
+        <name>Moon</name>
+        <t>There are currently very few orbiters around Moon but there are plans to establish a constellation of them to be used as communication relays. As few as 5 cooperating orbiters at the right orbits is sufficient to provide full coverage<xref target="ioagmoon"/>, and smaller sets of orbiters can be targeted to provide full coverage of specific limited regions such as the far side or the polar regions. Until full coverage is accomplished, interruptions of communications are expected. Earth ground stations are able to cover directly assets on the near side of Moon.</t>
+        <t>A variety of different types of networking nodes are expected on the lunar surface, with a wide range of capabilities, from those that have very limited functionality (similar to IoT devices on Earth), up to more highly-capable infrastructure hub nodes that provide access for other surface users (e.g. in a habitat or lander), and in-between cases such as crewed or uncrewed rovers that may have combinations of direct-to-Earth, with proximity orbiters, or via local wireless LAN or cellular capabilities.</t>
+        <t>For human / crewed operations, nearly continuous coverage and data flows might be expected, however, for other types of network users (such as science missions), only limited communication opportunities may be available.</t>
+        <t>Some nodes (such as those supporting human missions) may have multiple/redundant links available simultaneously, but this should not be expected in general, and even then it is likely to be more for failover use than for multipath network transport.</t>
+        <t>Data link operation is scheduled in advance through coordination between the end-user mission operations centers and LNSPs.  The time windows for operation and data rates are well-known in advance (typically days or more).  Successful link operation generally requires both directional pointing/tracking (with knowledge of vehicle locations and motion) of antenna systems, as well as pre-configuration of modem / signal processing and gateway systems that require prior coordination on many parameters.  Ad hoc or random access may be available at some later point, but is likely to be rare for at least proximity and direct-with-Earth links.</t>
+        <t>While interoperability and cross support are frequently expected, there is no assumption in-general that different parties can simply connect at the link layer or trade packets at the network layer (either directly or through intermediaries).  Network routing and interconnection is likely to be closely coordinated and limited by policies established jointly between cooperating organizations.  It is not likely to be directly like the Internet, with BGP, DNS, etc. generally available to support interdomain operations.</t>
+        <t>One-way delay from Earth to Moon is around 1.3 seconds.</t>
+        <t>It is expected to have hundred Mbps radio links and Gbps optical links between Earth and Moon<xref target="ioagmoon"/>.</t>
+      </section>
+      <section>
+        <name>Mars</name>
+        <t>There are currently some orbiters around Mars, of which 4 are actively in use as relays, and 2 active rovers. Multiple missions are planned<xref target="ioagmars"/> in the coming years. Communications are from ground stations on Earth, such as the Deep Space Network(DSN)<xref target="DSN"/>, to Mars orbiters acting as layer0-1 relays to surface assets such as rovers, and reverse. The relays do not have notion of frames, and only forward bits at different frequencies for each segment, a mechanism named "bag of bits"<xref target="ioagmars"/>. These orbiters can do as "bent-pipe" when the two segments are active, or by storing the bits as "store-and-forward" until the next segment becomes available.Since the current set of orbiters do not provide full coverage of Mars, the communication windows are calculated and planned between Earth and each orbiter, and between each orbiter and each surface asset. Currently, only one rover can use a relay link at any given time. The MaROS project<xref target="maros"/> sponsored by the Jet Propulsion Laboratory acts as a broker to enable missions to enter data about the communications capabilities such as frequencies, bandwidth, window of communication time, ... so that rover missions can schedule the available communications windows for transmitting and receiving. Most orbiters are used and scheduled in MaROS. One of the Mars orbiters is Mars Reconnaissance Orbiter(MRO)<xref target="mro"/>. It was launched in 2005 and has a single 40Mhz processor but over 100G of solid state memory. MqROS experience over years shows that the current bottleneck is not the temporary storage of the relays but the bandwidth from Mars surface assets to Mars orbiter relays. As demonstrated by a study<xref target="marscommstudy"/> on Mars communication windows, the communication windows seem to happen at a constant frequency, but the reality shows that the timing is pretty variable, which means a very large range of resulting round-trip time (RTT) for communications from Earth to Mars and back. For example, within 3 months in 2024, the calculated RTT varied from 30 minutes to 170 hours.</t>
+        <t>Surface assets are commanded directly from Earth but at a very low rate. The traffic from the assets to Earth goes through relays.</t>
+        <t>It is expected that future constellations of Mars orbiters acting as relays will also have optical inter-satellite links<xref target="ioagmars"/>. The current orbiters were put in various orbits for the purpose of science, and usually have a small number of short relay opportunities per day. However, dedicated relay orbiters could be put at much higher altitudes to provide much better coverage.</t>
+        <t>About every two years, a solar conjunction happens for a period of around 2 weeks, where the Sun is between Earth and Mars, therefore causing the interruption of communications between Earth and Mars.</t>
+        <t>One-way delay from Earth to Mars is from 4 to 24 minutes, depending on the actual relative distance between them.</t>
+        <t>It is envisioned that optical links between Earth and Mars may deliver hundreds of Mbps<xref target="ioagmars"/>.</t>
+      </section>
+      <section>
+        <name>Lagrangian Points</name>
+        <t>Sun-Earth and Earth-Moon Lagrangian points, such as Earth-Moon(EML)-1,2,4,5 and Earth-Sun(ESL)-1,2, are being considered for communication relays and therefore potential network forwarders.</t>
+      </section>
+      <section>
+        <name>Cruising Spacecraft</name>
+        <t>A spacecraft currently cruising towards its deep space destination is reached by a point-to-point link using CCSDS link-layers as discussed before.</t>
+      </section>
+      <section>
+        <name>Spacecraft Onboard</name>
+        <t>On-board spacecraft contain multiple computers typically linked with Ethernet, sometimes Time-Triggered Ethernet<xref target="tte"/>(TTE), with IP as the networking layer.</t>
+      </section>
+    </section>
+    <section anchor="usecases">
+      <name>Use Cases</name>
+      <t>Multiple countries are developing systems aimed for a sustained lunar presence combining manned and robotic missions, within several years.  IP has been included in the stack for the International Deep Space Interoperability Standards<xref target="idsis"/>, and the LunaNet Interoperability Specification<xref target="lnis"/>.  There is a general intention to extend and reuse systems developed for lunar use to later Mars use.</t>
+      <t>Separate space agencies and private companies are deploying lunar space stations, orbiters, landers, rovers, habitats, crewed mission elements, and other assets.  Due to pervasive use and support of IP in modern computing systems, it also is naturally used onboard many space systems, and between co-located systems.</t>
+      <t>As more-and-more IP-enabled assets become deployed in lunar vicinity, it will increasingly create opportunities to interconnect them.  In fact, internetworking of lunar (and future Mars) systems is becoming essential, as plans call explicitly for cooperation between mission elements and communications/navigation system assets operated by different space agencies and/or private companies acting as service providers.</t>
+      <t>There are expected to be several different lunar network service providers (LNSPs) offering different varieties of relay and/or direct services.</t>
+      <t>It may be expected that lunar IP networks should over time become united into larger aggregates, and even into a single interoperable network (as intended within the LunaNet conception).</t>
+      <t>It is expected that surface assets will communicate with other surface assets through Earth based technologies such as Wifi or 5-6G, but also via a relay orbiter</t>
+      <t>Regarding applications, the following is an incomplete list:</t>
+      <ul>
+        <li>Telecommand: Send a command to an asset</li>
+        <li>Telemetry: Receive data, often science and sensor data, from an asset in an asynchronous way, where it is expected that the data may be temporarily stored in the network</li>
+        <li>On-demand/real-time media(audio, video, ...): when a active path from the asset to Earth, the asset sends a media feed. The delay is only the propagation delay.</li>
+        <li>Delayed media: the asset sends the media, but it is expected that there is no active path from the asset to Earth, so data may be temporarily stored in the network.</li>
+        <li>Emergency and Search and Resue(SAR) messaging: sent from an asset to one or many emergency operations.</li>
+        <li>Network and Asset management: sending requests and getting answer from assets about their overall status, status of their components, energy levels, storage capacities, etc.</li>
+      </ul>
+    </section>
+    <section anchor="requirements">
+      <name>Requirements</name>
+      <section>
+        <name>Store-and-Forward</name>
+        <t>Until full coverage by orbiter constellations is achieved around a celestial body, the orbiters and other assets that are facing intermittent communications have to provide store-and-forward capability. These can be implemented at - layer-1, like the current Mars orbiters, where frames are not seen ("bag of bits"), at layer-2 doing frame storage or at layer-3 doing packet storage. Storage higher in the stack enables more versatile and agile routing. A key factor for designing the store and forward capability of an orbiter is its storage capacity.</t>
+        <t>Surface assets that are facing intermittent communications also need the store-and-forward capability.</t>
+        <t>Mechanisms should be defined to avoid as much as possible storage full events on a relay. This may include some in-advance signaling to the network about future full storage event, so that the network and/or the source can throttle down or reroute packets to avoid that event.</t>
+        <t>In the event of full storage, a policy should be determined on which packets should be dropped, such as the last one in the queue, the first one in the queue, ones based on policies related to packet or transport fields like source or destination addresses, traffic classes, flow ids, etc. , similar to queue management used in terrestrial networks.</t>
+        <t>Even if calculations can be done based on known orbital dynamics, events happen that result in missed communication windows. For example, some communication windows were not used on Mars because a rover may be still charging and therefore does not have enough energy to perform communications. Random events can also happen because of space weather. Therefore, while the window of comms can be calculated and used, the system should be able to cope with random long interruption events.</t>
+        <t>Proper guards should be designed to avoid denial-of-service attacks by filling storage in the network.</t>
+      </section>
+      <section>
+        <name>Time</name>
+        <t>Timers are used in transport protocols, application protocols and applications themselves for various purposes, such as detecting/presuming packet loss or data lifetime. Timers should be therefore adjusted and configured based on the expected travel time and RTT from the source to destination. Given variations and possible dynamic changes in the network that can cause much longer latency, appropriate safeguards should be put for timer values.</t>
+        <t>Lifetime is also attached to some data, such as content, security keys, certificates, tokens, session keys and naming records. Similarly, the lifetime should be adjusted and configured based on the characteristics of the applications and expected travel time and RTT.</t>
+        <t>Current Internet protocols and applications typically use UTC as their time reference. There are currently work to define Lunar Standard Time, also called Coordinated Lunar Time and Mars Standard Time <xref target="lunartime"/>. Depending on the application and use case, it may be necessary to adapt the protocol or the application to use another time reference.</t>
+        <t>Given the latency and intermittence, various security issues may arise, as not only lifetime of keys and certs, but also the delay to react to security issues that may happen. It may be also the case that some security features of protocols have been designed with very short delays assumptions, that in space, may not apply.</t>
+      </section>
+      <section>
+        <name>Signaling and Exchanges</name>
+        <t>Given the large latency of space communications, multiple steps of exchanges or handshakes may still work but are far from optimal and may never converge. Therefore, applications and protocols should be adapted to minimize the number of exchanges.</t>
+        <t>Similarly, applications, protocols or networking stack that depend on signaling back to the source or to somewhere in the path may arrive too late for any usefulness, because of the latency. Therefore, any signaling should be carefully designed based on the expected latency.</t>
+      </section>
+      <section>
+        <name>Bandwidth</name>
+        <t>Given that space communications will always have much lower bandwidth than what is possible in shorter distances such as on Earth, optimization of the bandwidth usage is important. This can be implemented at many levels in the networking stack, starting from layer-2 to IP header compression to transport and application data compression.</t>
+      </section>
+      <section>
+        <name>Addressing and Routing</name>
+        <t>To minimize routing and forwarding tables, optimal address aggregation is preferred, and it starts with proper allocation of addresses.</t>
+        <t>The network in deep space, not including the surface networks on celestial bodies, will grow at a small pace, which does not warrant complex routing schemes. However, over time, the network will become sufficiently complex not only because of the number of forwarders but also because of the intrinsic intermittent and delay communication patterns, which may warrant more complex routing solutions and orchestration.</t>
+      </section>
+    </section>
+    <section>
+      <name>Security Considerations</name>
+      <t>TBD</t>
+    </section>
+    <section>
+      <name>IANA Considerations</name>
+      <t>There are no actions for IANA in this document.</t>
+    </section>
+  </middle>
+  <back>
+    <references>
+      <name>References</name>
+      <references>
+        <name>Informative References</name>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.many-deepspace-ip-assessment.xml"/>
+        <reference anchor="IPoverCCSDSSpaceLinks" target="https://public.ccsds.org/Pubs/702x1b1c2.pdf">
+          <front>
+            <title>IP OVER CCSDS SPACE LINKS, Blue Book 702</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+            </author>
+            <date year="2012" month="September"/>
+          </front>
+        </reference>
+        <reference anchor="SANAIPEHeaderRegistry" target="https://sanaregistry.org/r/ipe_header/">
+          <front>
+            <title>Internet Protocol Extension Header</title>
+            <author/>
+          </front>
+        </reference>
+        <reference anchor="CCSDS_AOS" target="https://public.ccsds.org/Pubs/732x0b4.pdf">
+          <front>
+            <title>AOS Space Data Link Protocol, Blue Book 732.0-B-4</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+            </author>
+            <date year="2021" month="October"/>
+          </front>
+        </reference>
+        <reference anchor="CCSDS_TM" target="https://public.ccsds.org/Pubs/132x0b3.pdf">
+          <front>
+            <title>TM Space Data Link Protocol, Blue Book 132.0-B-3</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+            </author>
+            <date year="2021" month="October"/>
+          </front>
+        </reference>
+        <reference anchor="CCSDS_TC" target="https://public.ccsds.org/Pubs/232x0b4e1c1.pdf">
+          <front>
+            <title>TC Space Data Link Protocol, Blue Book 232.0-B-4</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+            </author>
+            <date year="2021" month="October"/>
+          </front>
+        </reference>
+        <reference anchor="CCSDS_PROX1" target="https://public.ccsds.org/Pubs/211x0b6e1.pdf">
+          <front>
+            <title>Proximity-1 Space Link Protocol—Data Link Layer, Blue Book 211.0-B-6</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+            </author>
+            <date year="2020" month="July"/>
+          </front>
+        </reference>
+        <reference anchor="CCSDS_USLP" target="https://public.ccsds.org/Pubs/732x1b2s.pdf">
+          <front>
+            <title>Unified Space Data Link Protocol, Blue Book 732.1-B-2</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+            </author>
+            <date year="2021" month="October"/>
+          </front>
+        </reference>
+        <reference anchor="ioagmoon" target="https://www.ioag.org/Public%20Documents/Lunar%20communications%20architecture%20study%20report%20FINAL%20v1.3.pdf">
+          <front>
+            <title>The Future Lunar Communications Architecture, Report of the Interagency Operations Advisory Group</title>
+            <author>
+              <organization>Lunar Communications Architecture Working Group, Interagency Operations Advisory Group</organization>
+            </author>
+            <date year="2022" month="January"/>
+          </front>
+        </reference>
+        <reference anchor="ioagmars" target="https://www.ioag.org/Public%20Documents/MBC%20architecture%20report%20final%20version%20PDF.pdf">
+          <front>
+            <title>The Future
+                Mars Communications Architecture, Report of the Interagency Operations Advisory Group
+                </title>
+            <author>
+              <organization>Mars and Beyond Communications Architecture Working Group, Interagency Operations Advisory Group</organization>
+            </author>
+            <date year="2022" month="February"/>
+          </front>
+        </reference>
+        <reference anchor="mro" target="https://science.nasa.gov/mission/mars-reconnaissance-orbiter/">
+          <front>
+            <title>Mars Reconnaissance Orbiter</title>
+            <author/>
+          </front>
+        </reference>
+        <reference anchor="DSN" target="https://www.nasa.gov/directorates/somd/space-communications-navigation-program/what-is-the-deep-space-network/">
+          <front>
+            <title>Deep Space Network</title>
+            <author/>
+          </front>
+        </reference>
+        <reference anchor="marscommstudy" target="https://deepspaceip.github.io/meetings/ietf121/ietf121-deepspaceip-mars-communications-study.pdf">
+          <front>
+            <title>Earth-Mars Communication Windows Usage Study</title>
+            <author fullname="Marc Blanchet" initials="M." surname="Blanchet">
+              <organization>Viagenie</organization>
+            </author>
+            <date month="October" year="2024"/>
+          </front>
+        </reference>
+        <reference anchor="idsis" target="https://internationaldeepspacestandards.com/wp-content/uploads/2024/02/communication_reva_final_9-2020.pdf">
+          <front>
+            <title>International Communication System
+            Interoperability Standards (ICSIS)</title>
+            <author/>
+            <date month="September" year="2020"/>
+          </front>
+        </reference>
+        <reference anchor="lnis" target="https://www.nasa.gov/directorates/somd/space-communications-navigation-program/lunanet-interoperability-specification/">
+          <front>
+            <title>LunaNet Interoperability Specification</title>
+            <author/>
+            <date month="September" year="2022"/>
+          </front>
+        </reference>
+        <reference anchor="deepspacewikipedia" target="https://en.wikipedia.org/wiki/Deep_space_exploration">
+          <front>
+            <title>Deep space exploration</title>
+            <author/>
+          </front>
+        </reference>
+        <reference anchor="maros">
+          <front>
+            <title>Mars Relay Operations Service (MaROS): A Present Service Preparing for the Future</title>
+            <author initials="R." surname="Gladden" fullname="Roy E. Gladden">
+              <organization>AIAA SpaceOps 2014 Conference</organization>
+            </author>
+            <date month="May" year="2014"/>
+          </front>
+        </reference>
+        <reference anchor="tte" target="https://en.wikipedia.org/wiki/TTEthernet">
+          <front>
+            <title>TTEthernet</title>
+            <author>
+              <organization>Wikipedia</organization>
+            </author>
+          </front>
+        </reference>
+        <reference anchor="lunartime" target="https://www.nasa.gov/general/nasa-to-develop-lunar-time-standard-for-exploration-initiatives/#:~:text=The%20lunar%20time%20will%20be,Coordinated%20Universal%20Time%20(UTC)">
+          <front>
+            <title>NASA to Develop Lunar Time Standard for Exploration Initiatives</title>
+            <author>
+              <organization>NASA</organization>
+            </author>
+            <date month="Sep" year="2024"/>
+          </front>
+        </reference>
+      </references>
+    </references>
+    <section anchor="Acknowledgements" numbered="false">
+      <name>Acknowledgements</name>
+      <t>This following people have provided valuable feedback and comments, in no specific order: Roy Gladden.</t>
+    </section>
+  </back>
+</rfc>

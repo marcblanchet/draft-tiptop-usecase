@@ -190,7 +190,7 @@
       <section>
           <name>Transport</name>
           <t>Since IP (and UDP) does not provide reliable transport services, such as loss, duplicates and reordered recovery, a reliable transport should be used and configured properly for space delays and intermittence for applications and protocols requiring it.</t>
-          <t>Congestion control algorithms may declare congestion based on heuristics such as when delays are increasing. In that case, sources pace down to decrease their usage of the bandwidth. However, given that forwarders in space apply the store-and-forward technique when link intermittence happen, the congestion seen by the source is not actually congestion in the typical Internet sense, but deep buffer usage in forwarders, as a normal and expected operation. Therefore, congestion control should be adapted or not used because of intermittence.</t>
+          <t>Congestion control algorithms may declare congestion based on heuristics such as when delays are increasing. In that case, sources pace down to decrease their usage of the bandwidth. However, given that forwarders in space apply the store-and-forward technique when link intermittence happen, the congestion seen by the source is not actually congestion in the typical Internet sense, but deep buffer usage in forwarders, as a normal and expected operation. Therefore, congestion control should be adapted or not used because of intermittence. At least early on, while the networks are small scale, coordinated resource planning and management may be performed to avoid creating congestion.</t>
       </section>
       <section>
         <name>Addressing and Routing</name>

@@ -189,6 +189,11 @@
         <t>Given that space communications will always have much lower bandwidth than what is possible in shorter distances such as on Earth, optimization of the bandwidth usage is important. This can be implemented at many levels in the networking stack, starting from layer-2 to IP header compression to transport and application data compression.</t>
       </section>
       <section>
+          <name>Transport</name>
+          <t>Since IP (and UDP) does not provide reliable transport services, such as loss, duplicates and reordered recovery, a reliable transport should be used and configured properly for space delays and intermittence for applications and protocols requiring it.</t>
+          <t>Congestion control algorithms may declare congestion based on heuristics such as when delays are increasing. In that case, sources pace down to decrease their usage of the bandwidth. However, given that forwarders in space apply the store-and-forward technique when link intermittence happen, the congestion seen by the source is not actually congestion in the typical Internet sense, but deep buffer usage in forwarders, as a normal and expected operation. Therefore, congestion control should be adapted or not used because of intermittence. At least early on, while the networks are small scale, coordinated resource planning and management may be performed to avoid creating congestion.</t>
+      </section>
+      <section>
         <name>Addressing and Routing</name>
         <t>To minimize routing and forwarding tables, optimal address aggregation is preferred, and it starts with proper allocation of addresses.</t>
         <t>The network in deep space, not including the surface networks on celestial bodies, will grow at a small pace, which does not warrant complex routing schemes. However, over time, the network will become sufficiently complex not only because of the number of forwarders but also because of the intrinsic intermittent and delay communication patterns, which may warrant more complex routing solutions and orchestration.</t>

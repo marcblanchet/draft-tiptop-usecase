@@ -58,12 +58,13 @@
     <section anchor="intro">
       <name>Introduction</name>
       <t>Deep space communications involve long delays (e.g., Earth to Mars is 4-24 minutes one way) and intermittent communications, mainly because of orbital dynamics. Up to now, communications have been done on a layer-2 point to point basis, with sometimes the use of relays. </t>
+      <t>Use of networking technologies, including IP, has become established within space vehicles that have their own onboard networks.  Complex human exploration and collaborative science missions are driving increased networking between vehicles.  Additionally, there is a rising need for interopability between mission end-users and multiple service providers.  As the scale of missions, link interconnections, and application interactions grows, it will be increasingly important to support standard IP-based network data flows.</t>
       <t>This document describes the key characteristics and use cases for networking in deep space. It provides examples taken from the current communications facilities to reach Moon and Mars, as well as future plans. While these examples provide great insight on what is possible today, the resulting architecture should also consider future possibilities and farther celestial bodies. For example, while the number of relays and orbiters around Moon and Mars is currently limited, it is expected that their number will increase significantly, therefore providing improved coverage around those celestial bodies, resulting in an impact on communications and networking traffic patterns, intermittence and alternate paths.</t>
       <t>This work is a followup of an assessment on the use of the IP protocol stack in deep space<xref target="I-D.many-deepspace-ip-assessment"/>.</t>
       <section>
         <name>Limitations of this document</name>
         <t>Communication in deep space is vastly different than on Earth. This document does not describe space communication technologies below IP, but only the information relevant from the IP protocol stack viewpoint for the purpose of its engineering. More information is available for Moon<xref target="ioagmoon"/> and Mars<xref target="ioagmars"/>.</t>
-        <t>Position, Navigation and Timing (PNT) is not discussed in this memo.</t>
+        <t>Position, Navigation and Timing (PNT) is not directly discussed in this memo.</t>
         <t>Near Earth orbits, such as Low Earth Orbit (LEO), Medium Earth Orbit (MEO), and Geosynchronous Earth Orbit (GEO) communications and networking to and from Earth are out of scope for this memo. However, given the relatively small distance to the Moon, there are possibilities to use spacecrafts around Earth or at Lagrangian points to communicate with Moon assets. In this context, these possibilities are in scope.</t>
       </section>
       <section>
@@ -89,8 +90,8 @@
         <li>significant and variable delays.</li>
         <li>frequent and long interruptions of communications, often with no alternate path. Because of orbital dynamics, spacecrafts may not be reachable because they are on the other side of a celestial body. However, their location and reachability can be generally precalculated so that the communication windows can be planned between the spacecrafts or between a spacecraft and a celestial body such as Earth, Moon or Mars.</li>
         <li>lower bandwidth</li>
-        <li>one-way links</li>
-        <li>asymmetrical bandwidth</li>
+        <li>one-way / unidirectional links</li>
+        <li>highly asymmetrical bandwidth</li>
         <li>limited computing resources</li>
         <li>limited energy supply</li>
       </ul>

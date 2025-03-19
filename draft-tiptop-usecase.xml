@@ -147,7 +147,7 @@
       <t>As more-and-more IP-enabled assets become deployed in lunar vicinity, it will increasingly create opportunities to interconnect them.  In fact, internetworking of lunar (and future Mars) systems is becoming essential, as plans call explicitly for cooperation between mission elements and communications/navigation system assets operated by different space agencies and/or private companies acting as service providers.</t>
       <t>There are expected to be several different lunar network service providers (LNSPs) offering different varieties of relay and/or direct services.</t>
       <t>It may be expected that lunar IP networks should over time become united into larger aggregates, and even into a single interoperable network (as intended within the LunaNet conception).</t>
-      <t>It is expected that surface assets will communicate with other surface assets through Earth based technologies such as Wifi or 5-6G, but also via a relay orbiter</t>
+      <t>It is expected that surface assets will communicate with other surface assets through Earth based technologies such as Wifi or 5-6G, but also via a relay orbiter.</t>
       <t>Regarding applications, the following is an incomplete list:</t>
       <ul>
         <li>Telecommand: Commanding can take different forms, either individual commands or batching commands together.  Individual commands sent to a mission/spacecraft from Earth are typically small (may fit within a single packet in many cases), and should typically be received reliably and in-order to be processed. Commands with dependencies or other relations may be grouped together for transmission and to help assure coherent execution rather than sent individually.  This can resemble small file transfer, for instance.  Commands may be time-sensitive, or have an "expiration date" after which they are not useful to store/carry in the network.  Required data rates may typically be in kbps and bursty.</li>
@@ -156,7 +156,7 @@
         <li>Delayed media: the asset sends the media, but it is expected that there is no active path from the asset to Earth, so data may be temporarily stored in the network.</li>
         <li>Emergency and Search and Rescue (SAR) messaging: sent from an asset
             to one or many other assets (e.g. via broadcast or multicast) that support emergency operations.  Since crew or mission safety may be at risk, this traffic should be prioritized over most other types of packets when encountering queuing or storage within the network.  Timely delivery is necessary, but it should also be delivered reliably.</li>
-        <li>Science data: Typically science data may take the form of large bulk file transfers unicasted from a spacecraft to Earth.  In many cases, storage and large delays in delivery can be tolerated. File transfer applications such as CFDP are typically used, that might be configured to either operate unidirectionally or may provide reliability through retransmissions, and require some at least small amount of feedback.  Some science applications may also use messaging patterns to collaborate between different types of instruments in order to draw attention to events (e.g. gamma ray bursts, etc.) and bring different types of instruments to bear.  These messages may need to be quickly delivered and/or multicasted.</li>
+        <li>Science data: Typically science data may take the form of large bulk file transfers unicasted from a spacecraft to Earth.  In many cases, storage and large delays in delivery can be tolerated. File transfer applications such as CCSDS File Delivery Protocol (CFDP)<xref target="CCSDS_CFDP" /> are typically used, that might be configured to either operate unidirectionally or may provide reliability through retransmissions, and require at least small amount of feedback.  Some science applications may also use messaging patterns to collaborate between different types of instruments in order to draw attention to events (e.g. gamma ray bursts, etc.) and bring different types of instruments to bear.  These messages may need to be quickly delivered and/or multicasted.</li>
         <li>Messaging: Many different types of machine-to-machine messaging need to be supported, including for uses such as (1) providing PNT data/measurements to feed positioning, orbit determination, and time transfer or clock calibration, (2) providing space weather alerts, (3) providing advisory or other network information (e.g. almanac data such as ephemeris data for relay and other network elements, scheduled future contacts, or other service management related messaging).  Messages are generally small (though may vary depending on type) and might be unicast, broadcast, or multicast. In cases where they are advisory, for instance, they may not need reliable transport, though often it will be important to provide timely transmission.</li>
         <li>Network and Asset management: sending requests and getting answers from assets about their overall status, status of their components, energy levels, storage capacities, etc.</li>
       </ul>
@@ -271,6 +271,15 @@
               <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
             </author>
             <date year="2021" month="October"/>
+          </front>
+        </reference>
+        <reference anchor="CCSDS_CFDP" target="https://public.ccsds.org/Pubs/727x0b5e1.pdf">
+          <front>
+            <title>File Delivery Protocol, Blue Book 727.0-B-5</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+            </author>
+            <date year="2020" month="July"/>
           </front>
         </reference>
         <reference anchor="ioagmoon" target="https://www.ioag.org/Public%20Documents/Lunar%20communications%20architecture%20study%20report%20FINAL%20v1.3.pdf">

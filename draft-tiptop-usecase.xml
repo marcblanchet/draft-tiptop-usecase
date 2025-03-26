@@ -71,10 +71,10 @@
         <name>Terminology</name>
         <ul>
           <li>Deep space: while the ITU definition<xref target="deepspacewikipedia"/> of deep space is beyond 2 million km, in this document, the Moon and its environs are included.</li>
-          <li>Direct-with-Earth(DWE): communications from/to a spacecraft directly to/from Earth, without the use of relays.</li>
+          <li>Direct-with-Earth (DWE): communications from/to a spacecraft directly to/from Earth, without the use of relays.</li>
           <li>Moon, Lunar: refers to Earth's Moon.</li>
-          <li>Deep Space Network(DSN): NASA’s international array of giant radio antennas that supports interplanetary spacecraft missions<xref target="DSN"/>.</li>
-          <li>LunaNet Service Providers (LNSP): Private sector services providers on the Moon</li>
+          <li>Deep Space Network (DSN): NASA’s international array of giant radio antennas that supports interplanetary spacecraft missions<xref target="DSN"/>.</li>
+          <li>LunaNet Service Providers (LNSP): service providers to the Earth's Moon surface and orbital regions, including private commercial operators.</li>
         </ul>
       </section>
       <section>
@@ -85,18 +85,18 @@
     </section>
     <section anchor="keycharacteristics">
       <name>Characteristics</name>
-      <t>Compared to Internet on Earth, space communications and networking have multiple challenges, such as:</t>
+      <t>Compared to Internet on Earth, deep space communications and networking have multiple challenges, such as:</t>
       <ul>
-        <li>significant and variable delays.</li>
-        <li>frequent and long interruptions of communications, often with no alternate path. Because of orbital dynamics, spacecrafts may not be reachable because they are on the other side of a celestial body. However, their location and reachability can be generally precalculated so that the communication windows can be planned between the spacecrafts or between a spacecraft and a celestial body such as Earth, Moon or Mars.</li>
-        <li>lower bandwidth</li>
-        <li>one-way / unidirectional links</li>
-        <li>highly asymmetrical bandwidth</li>
-        <li>limited computing resources</li>
-        <li>limited energy supply</li>
+        <li>Significant and variable delays (e.g. round trips of multiple seconds, minutes, or hours).</li>
+        <li>Frequent and long interruptions of communications, often with no alternate path. Because of orbital dynamics, a spacecraft may not be reachable from Earth because it is occluded by a celestial body. However, spacecraft location and reachability can be generally precalculated so that the communication windows can be planned between pairs of spacecraft or between a spacecraft and a celestial body such as Earth, Moon or Mars.</li>
+        <li>Lower bandwidth, sometimes even measured in "seconds per bit" rather than typical terrestrial Mbps and Gbps rates.</li>
+        <li>One-way / unidirectional links are sometimes used.</li>
+        <li>Highly asymmetrical bandwidth and data rates are often present between uplink (DWE to a spacecraft) and downlink (DWE from a spacecraft), due to varying transmission power levels, antenna sizes, and other physical link properties.</li>
+        <li>Limited onboard computing resources can lead to simplified or streamlined protocol implementations.</li>
+        <li>Limited energy supply can further reduce contact opportunities and performance.</li>
       </ul>
-      <t>and many others. Without any change, a typical Internet application will not work in this environment. However, the primary factors are delays and disruptions, discussed in this memo.</t>
-      <t>This section describes the following cases: Moon, Mars, Lagrangian points, cruising spacecraft and onboard spacecraft, starting with some commonality between all cases.</t>
+      <t>Without any changes, a typical Internet application will not work in this environment, though some Internet stack protocols are more suitable than others.  Among the challenges in this list, the primary factors impacting Internet stack protocols are delays and disruptions, discussed in this memo.</t>
+      <t>This section describes the following cases of mission operating environments: Moon (surface and orbiting), Mars (surface and orbiting), Lagrangian points, cruising spacecraft, and onboard spacecraft, starting with some commonality between all cases.</t>
       <section>
         <name>Common to all Cases</name>
         <t>Various CCSDS link-layer protocols, such as Telecommand(TC)<xref target="CCSDS_TC"/>, Telemetry (TM)<xref target="CCSDS_TM"/>, Advanced Orbiting Systems(AOS)<xref target="CCSDS_AOS"/>, Proximity1(Prox1)<xref target="CCSDS_PROX1"/> are used on the links between Earth, orbiters and surface assets. A single unified link-layer, Unified Space Data Link Protocol (USLP)<xref target="CCSDS_USLP"/>, has been designed to functionally replace the previous ones. A generic encapsulation mechanism is defined by CCSDS for the payloads of all these link layer protocols, including IP as an encapulated protocol<xref target="IPoverCCSDSSpaceLinks"/><xref target="SANAIPEHeaderRegistry"/>. IP packets can be transported over any CCSDS link layers.</t>
@@ -129,7 +129,8 @@
       </section>
       <section>
         <name>Lagrangian Points</name>
-        <t>Sun-Earth and Earth-Moon Lagrangian points, such as Earth-Moon(EML)-1,2,4,5 and Earth-Sun(ESL)-1,2, are being considered for communication relays and therefore potential network forwarders.</t>
+        <t>Sun-Earth and Earth-Moon Lagrangian points, such as Earth-Moon(EML)-1,2,4,5 and Earth-Sun(ESL)-1,2, are popular for science mission objectives and also being considered for communication relays and therefore potential network forwarders.</t>
+        <t>Sets of cooperating spacecraft may also be used to increase data return and streamline operations for science missions co-located at Lagrange points, by networking locally and sharing a common DWE "trunk link".</t>
       </section>
       <section>
         <name>Cruising Spacecraft</name>
@@ -137,17 +138,18 @@
       </section>
       <section>
         <name>Spacecraft Onboard</name>
-        <t>On-board spacecraft contain multiple computers typically linked with Ethernet, sometimes Time-Triggered Ethernet<xref target="tte"/>(TTE), with IP as the networking layer.</t>
+        <t>Modern spacecraft generally contain multiple computers typically linked with wired realtime buses or links such as CAN, SpaceWire, RS-422, and others, but also increasingly using Ethernet or Time-Triggered Ethernet<xref target="tte"/>(TTE), with IP as the networking layer.  Especially in complex human-crewed vehicles, WiFi is becoming important, and has been used extensively in the International Space Station and planned for the Lunar Gateway.</t>
+        <t>IP networking onboard a spacecraft (or within a habitat) can support applications within the local network, without experiencing most of the typical space communications challenges described prior.  Considerations need to be made, however, in order to make sure these applications do not rely on typical wider infrastructure (e.g. DNS, NTP, etc.) that may not be externally available in space.  Additionally, some nodes on the network may be mobile/dynamic, such as astronaut suits and personal electronics, rovers, etc.</t>
       </section>
     </section>
     <section anchor="usecases">
       <name>Use Cases</name>
-      <t>Multiple countries are developing systems aimed for a sustained lunar presence combining manned and robotic missions.  IP has been included in the stack for the International Deep Space Interoperability Standards<xref target="idsis"/>, and the LunaNet Interoperability Specification<xref target="lnis"/>.  There is a general intention to extend and reuse systems developed for lunar use to later Mars use.</t>
-      <t>Separate space agencies and private companies are deploying lunar space stations, orbiters, landers, rovers, habitats, crewed mission elements, and other assets.  Due to pervasive use and support of IP in modern computing systems, it also is naturally used onboard many space systems, and between co-located systems.</t>
+      <t>Multiple countries are developing systems aimed for a sustained lunar presence combining manned and robotic missions.  The technologies developed for lunar use are intended to be applied later for Mars as well, and might equally apply for missions to asteroids and other deep space bodies.  IP has been included in the stack for the International Deep Space Interoperability Standards<xref target="idsis"/>, and the LunaNet Interoperability Specification<xref target="lnis"/>.  There is a general intention to extend and reuse systems developed for lunar use to later Mars use.</t>
+      <t>Separate space agencies and private companies are deploying lunar space stations, orbiters, landers, rovers, habitats, crewed mission elements, and other assets.  Due to pervasive use and support of IP in modern computing systems, it is used onboard many space systems already, and between co-located systems (e.g. onboard ISS), and planned to be needed for networking on the Lunar Gateway, in Lunar 3GPP surface networks, and in Lunar habitat LAN and WLAN networks.</t>
       <t>As more-and-more IP-enabled assets become deployed in lunar vicinity, it will increasingly create opportunities to interconnect them.  In fact, internetworking of lunar (and future Mars) systems is becoming essential, as plans call explicitly for cooperation between mission elements and communications/navigation system assets operated by different space agencies and/or private companies acting as service providers.</t>
-      <t>There are expected to be several different lunar network service providers (LNSPs) offering different varieties of relay and/or direct services.</t>
-      <t>It may be expected that lunar IP networks should over time become united into larger aggregates, and even into a single interoperable network (as intended within the LunaNet conception).</t>
-      <t>It is expected that surface assets will communicate with other surface assets through Earth based technologies such as Wifi or 5-6G, but also via a relay orbiter.</t>
+      <t>There are expected to be several different interoperable lunar network service providers (LNSPs) offering a variety of relay and/or DWE services, to provide wide coverage and cross-support opportunities.  As more significant numbers of missions target Mars and other bodies, the same concepts should apply.</t>
+      <t>It may be expected that planetary IP networks should over time become united into larger aggregates, and even into a single interoperable network (as intended within the LunaNet conception).</t>
+      <t>It is expected that surface assets (for Moon, Mars, asteroids, etc.) will communicate with other surface assets on the same body through typical Earth-based wireless technologies such as WiFi or 4G/5G/6G, or via a orbiting relays.</t>
       <t>Regarding applications, the following is an incomplete list:</t>
       <ul>
         <li>Telecommand: Commanding can take different forms, either individual commands or batching commands together.  Individual commands sent to a mission/spacecraft from Earth are typically small (may fit within a single packet in many cases), and should typically be received reliably and in-order to be processed. Commands with dependencies or other relations may be grouped together for transmission and to help assure coherent execution rather than sent individually.  This can resemble small file transfer, for instance.  Commands may be time-sensitive, or have an "expiration date" after which they are not useful to store/carry in the network.  Required data rates may typically be in kbps and bursty.</li>

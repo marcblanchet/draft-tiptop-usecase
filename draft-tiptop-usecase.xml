@@ -110,7 +110,7 @@
       </section>
       <section>
         <name>Moon</name>
-        <t>There are currently very few orbiters around Moon but there are plans to establish a constellation of them to be used as communication relays. As few as 5 cooperating orbiters at the right orbits is sufficient to provide full coverage<xref target="ioagmoon"/>, and smaller sets of orbiters can be targeted to provide full coverage of specific limited regions such as the far side or the polar regions. Until full coverage is accomplished, interruptions of communications are expected. Earth ground stations are able to cover directly assets on the near side of Moon.</t>
+        <t>There are currently very few orbiters around Moon but there are plans to establish a constellation of them to be used as communication relays. As few as 5 cooperating orbiters at the right orbits is sufficient to provide full coverage<xref target="ioagmoon"/>, and smaller sets of orbiters can be targeted to provide full coverage of specific limited regions such as the far side or the polar regions<xref target="imconstellation"/>. Until full coverage is accomplished, interruptions of communications are expected. Earth ground stations are able to cover directly assets on the near side of Moon.</t>
         <t>Different types of networking nodes are expected on the lunar surface, with a wide range of capabilities, from those that have very limited functionality (similar to IoT devices on Earth), up to more highly-capable infrastructure hub nodes that provide access for other surface users (e.g. in a habitat or lander), and in-between cases such as crewed or uncrewed rovers that may have combinations of direct-to-Earth, with proximity orbiters, or via local wireless LAN or cellular capabilities.</t>
         <t>For human / crewed operations, nearly continuous coverage and data flows might be expected. However, for other types of network users (such as science missions), only limited communication opportunities may be available.</t>
         <t>Some nodes (such as those supporting human missions) may have multiple/redundant links available simultaneously, but this should not be expected in general, and even then it is likely to be more for failover use than for multipath network transport.</t>
@@ -381,6 +381,15 @@
             </author>
             <date month="Sep" year="2024"/>
           </front>
+        </reference>
+        <reference anchor="imconstellation" target="https://www.intuitivemachines.com/post/intuitive-machines-expands-data-transmission-services-for-lunar-and-deep-space-missions">
+            <front>
+                <title>Intuitive Machines Expands Data Transmission Services for Lunar and Deep Space Mission</title>
+                <author>
+                    <organization>Intuitive Machines</organization>
+                </author>
+                <date month="Apr" year="2025"/>
+            </front>
         </reference>
       </references>
     </references>

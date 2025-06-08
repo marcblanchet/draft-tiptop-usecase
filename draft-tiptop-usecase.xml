@@ -200,6 +200,12 @@
         <t>To minimize routing and forwarding tables, optimal address aggregation is preferred, and it starts with proper allocation of addresses.</t>
         <t>The network in deep space, not including the surface networks on celestial bodies, will grow at a small pace, which does not warrant complex routing schemes. However, over time, the network will become sufficiently complex not only because of the number of forwarders but also because of the intrinsic intermittent and delay communication patterns, which may warrant more complex routing solutions and orchestration.</t>
       </section>
+      <section>
+          <name>Recovery on Reboot</name>
+          <t>On a well-connected and low delay network such as Internet, an unexpected reboot of an intermediate node or a endpoint is recovered relatively fast: adjacency can be restored with neighbors for intermediate nodes, and endpoints can resume or restart their connections with their peers within short time. On the contrary, given the intermittence and long delays in deep space, this fast recovery is unlikely.</t>
+          <t>For intermediate nodes, storing in permanent memory the contact schedule or the expected next opportunities for neighbors may help faster recovery.</t>
+          <t>For endpoints, applications may keep a state context in permanent memory, either at the application layer or at the transport layer or both.</t>
+      </section>
     </section>
     <section>
       <name>Security Considerations</name>

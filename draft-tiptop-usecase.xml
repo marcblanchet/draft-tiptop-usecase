@@ -75,7 +75,7 @@
           <li>Direct-with-Earth (DWE): communications from/to a spacecraft directly to/from Earth, without the use of relays.</li>
           <li>Moon, Lunar: refers to Earth's Moon.</li>
           <li>Deep Space Network (DSN): NASA’s international array of giant radio antennas that supports interplanetary spacecraft missions <xref target="DSN"/>.</li>
-          <li>LunaNet Service Providers (LNSP): service providers to the lunar surface and orbital regions, including private commercial operators, as defined in the LunaNet Interoperability Specification <xref target="lnis">.</li>
+          <li>LunaNet Service Providers (LNSP): service providers to the lunar surface and orbital regions, including private commercial operators, as defined in the LunaNet Interoperability Specification <xref target="lnis"/>.</li>
         </ul>
       </section>
       <section>
@@ -176,7 +176,6 @@
         <t>In the event of full storage, a policy should be determined on which packets should be dropped, such as the last one in the queue, the first one in the queue, ones based on policies related to packet or transport fields like source or destination addresses, traffic classes, flow ids, etc. , similar to queue management used in terrestrial networks. These policies are important for differentiated trafic such as Emergency and Search and Rescue.</t>
         <t>Even if calculations can be done based on known orbital dynamics, events happen that result in missed communication windows. For example, some communication windows were not used on Mars because a rover may be still charging and therefore does not have enough energy to perform communications. Random events can also happen because of space weather. Therefore, while the window of comms can be calculated and used, the system should be able to cope with random long interruption events.</t>
         <t>Proper guards should be designed to avoid denial-of-service attacks by filling storage in the network.</t>
-        <t>Note, the LNIS only envisions IP for "real-time" communications, defined as not requiring relays to store IP packets, however to address the wider set of deep space (and lunar) use cases, packet storage is important.
       </section>
       <section>
         <name>Time</name>

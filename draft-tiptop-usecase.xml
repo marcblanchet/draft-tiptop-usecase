@@ -215,6 +215,7 @@
       <t>Given the delays to act, for example from Earth to a celestial body, notifications of security issues and mitigation actions will be delayed, which may increase the impact of security issues such as denial of service attacks. </t>
       <t>Security validation, such as certificate validation, based on on-line immediate queries to validation databases, such as done with OCSP<xref target="RFC6960"/>, or with a certificate chain will likely take too long if the validation database is far from the validation querier. Techniques such as preemptive caching of validation chain and certs should be investigated.</t>
       <t>Certificate lifecycle should be well planned to take into account delays and intermittence, so that for example certificate renewals are done sufficiently in advance.</t>
+    <t> Given delays and potential intermittence of connections, resilience to link disruptions and reconnections require security protocols to tolerate interruptions and dynamic partnering, including re-keying when necessary. As such, protocols should support asynchronous re-keying. </t>
     </section>
     <section>
       <name>IANA Considerations</name>

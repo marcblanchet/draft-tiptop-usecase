@@ -215,6 +215,7 @@
       <t>Given the delays to act, for example from Earth to a celestial body, notifications of security issues and mitigation actions will be delayed, which may increase the impact of security issues such as denial of service attacks. </t>
       <t>Security validation, such as certificate validation, based on on-line immediate queries to validation databases, such as done with OCSP<xref target="RFC6960"/>, or with a certificate chain will likely take too long if the validation database is far from the validation querier. Techniques such as preemptive caching of validation chain and certs should be investigated.</t>
       <t>Certificate lifecycle should be well planned to take into account delays and intermittence, so that for example certificate renewals are done sufficiently in advance.</t>
+      <t> In deep space deployments, endpoints may be physically or logically compromised during long mission lifetimes and lack of physical access to endpoints limits remediation optons. Consequently, security protocols should provide mechanisms to limit the impact of such compromise, ensuring that both prior and future communications with respect to the time of the compromise remain confidential and authentic. These properties are known as forward secrecy and post compromise security respectively. Regular re-keying help to provide these properties, reducing the window of exposure and protecting ongoing mission data. </t>
     </section>
     <section>
       <name>IANA Considerations</name>

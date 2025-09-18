@@ -348,9 +348,9 @@
         </reference>
         <reference anchor="lnis" target="https://www.nasa.gov/directorates/somd/space-communications-navigation-program/lunanet-interoperability-specification/">
           <front>
-            <title>LunaNet Interoperability Specification</title>
+            <title>LunaNet Interoperability Specification - Version 5</title>
             <author/>
-            <date month="September" year="2022"/>
+            <date month="February" year="2025"/>
           </front>
         </reference>
         <reference anchor="deepspacewikipedia" target="https://en.wikipedia.org/wiki/Deep_space_exploration">

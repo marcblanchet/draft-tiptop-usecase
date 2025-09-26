@@ -215,6 +215,7 @@
       <t>Given the delays to act, for example from Earth to a celestial body, notifications of security issues and mitigation actions will be delayed, which may increase the impact of security issues such as denial of service attacks. </t>
       <t>Security validation, such as certificate validation, based on on-line immediate queries to validation databases, such as done with OCSP<xref target="RFC6960"/>, or with a certificate chain will likely take too long if the validation database is far from the validation querier. Techniques such as preemptive caching of validation chain and certs should be investigated.</t>
       <t>Certificate lifecycle should be well planned to take into account delays and intermittence, so that for example certificate renewals are done sufficiently in advance.</t>
+      <t>Devices operating in deep space often have limited computational and memory resources. Key agreement - especially key updates - should be efficient and scalable. Given the potential lifetime of space systems and risk of quantum computing to cryptography, this includes requirements for efficiency and scalability in use of post quantum cryptography.</t>
     </section>
     <section>
       <name>IANA Considerations</name>

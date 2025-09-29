@@ -184,6 +184,10 @@
         <t>Current Internet protocols and applications typically use UTC as their time reference. There are currently work to define Lunar Standard Time, also called Coordinated Lunar Time and Mars Standard Time <xref target="lunartime"/>. Depending on the application and use case, it may be necessary to adapt the protocol or the application to use another time reference.</t>
       </section>
       <section>
+          <name>Location</name>
+          <t>Some IETF protocols such as <xref target="RFC5870"/><xref target="RFC8805"/> use a Earth coordinate system such as <xref target="WGS84"/> or address-based reference<xref target="RFC8805"/> for encoding location. Deep space uses various coordinate systems such as celestial body references<xref target="SANACelestialBodyReference"/> or orbit-relative references<xref target="SANAOrbitRelativeReference"/>. Therefore, IETF protocols carrying location information may need to be updated to also support space coordinate reference systems.</t>
+      </section>
+      <section>
         <name>Signaling and Exchanges</name>
         <t>Given the large latency of space communications, multiple steps of exchanges or handshakes may still work but are far from optimal and may never converge. Therefore, applications and protocols should be adapted to minimize the number of exchanges.</t>
         <t>Similarly, applications, protocols or networking stack that depend on signaling back to the source or to somewhere in the path may arrive too late for any usefulness, because of the latency. Therefore, any signaling should be carefully designed based on the expected latency.</t>
@@ -241,7 +245,9 @@
         <reference anchor="SANAIPEHeaderRegistry" target="https://sanaregistry.org/r/ipe_header/">
           <front>
             <title>Internet Protocol Extension Header</title>
-            <author/>
+            <author>
+                <organization>Space Assigned Numbers Authority</organization>
+            </author>
           </front>
         </reference>
         <reference anchor="CCSDS_AOS" target="https://public.ccsds.org/Pubs/732x0b4.pdf">
@@ -297,6 +303,24 @@
             </author>
             <date year="2020" month="July"/>
           </front>
+        </reference>
+        <reference anchor="SANACelestialBodyReference" target="https://sanaregistry.org/r/celestial_body_reference_frames/">
+            <front>
+                <title>Celestial Body Reference Frames</title>
+                <author>
+                    <organization>Space Assigned Numbers Authority</organization>
+                </author>
+                <date year="2023" month="May"/>
+            </front>
+        </reference>
+        <reference anchor="SANAOrbitRelativeReference" target="https://sanaregistry.org/r/orbit_relative_reference_frames/">
+            <front>
+                <title>Orbit-Relative Reference Frames</title>
+                <author>
+                    <organization>Space Assigned Numbers Authority</organization>
+                </author>
+                <date year="2025" month="July"/>
+            </front>
         </reference>
         <reference anchor="ioagmoon" target="https://www.ioag.org/Public%20Documents/Lunar%20communications%20architecture%20study%20report%20FINAL%20v1.3.pdf">
           <front>
@@ -395,6 +419,13 @@
                 <date month="Apr" year="2025"/>
             </front>
         </reference>
+        <refernce anchor="WGS84">
+            <front>
+                <title>Department of Defense World Geodetic System 1984, Third Edition, NIMA TR8350.2</title>
+                <author><organization>National Imagery and Mapping Agency</organization></author>
+                <date month="Jan" year="2000"/>
+            </front>
+        </refernce>
       </references>
     </references>
     <section anchor="Acknowledgements" numbered="false">

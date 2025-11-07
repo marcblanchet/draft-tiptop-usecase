@@ -185,7 +185,7 @@
       </section>
       <section>
           <name>Location</name>
-          <t>Some IETF protocols such as <xref target="RFC5870"/><xref target="RFC8805"/> use a Earth coordinate system such as <xref target="WGS84"/> or address-based reference<xref target="RFC8805"/> for encoding location. Deep space uses various coordinate systems such as celestial body references<xref target="SANACelestialBodyReference"/> or orbit-relative references<xref target="SANAOrbitRelativeReference"/>. Therefore, IETF protocols carrying location information may need to be updated to also support space coordinate reference systems.</t>
+          <t>Some IETF protocols such as <xref target="RFC5870"/><xref target="RFC8805"/> use a Earth coordinate system such as <xref target="WGS84"/> or address-based reference<xref target="RFC8805"/> for encoding location. Deep space uses various coordinate systems such as celestial body references<xref target="SANACelestialBodyReference"/> or orbit-relative references<xref target="SANAOrbitRelativeReference"/>. Therefore, IETF protocols carrying location information may need to be updated to also support space coordinate reference systems. An example of such space coordinate reference system addition for IETF protocols is in <xref target="RFC9179"/>.</t>
       </section>
       <section>
         <name>Signaling and Exchanges</name>
@@ -231,7 +231,10 @@
       <name>References</name>
       <references>
         <name>Informative References</name>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5870.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6960.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8805.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9179.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.many-deepspace-ip-assessment.xml"/>
         <reference anchor="IPoverCCSDSSpaceLinks" target="https://public.ccsds.org/Pubs/702x1b1c2.pdf">
           <front>
@@ -419,13 +422,13 @@
                 <date month="Apr" year="2025"/>
             </front>
         </reference>
-        <refernce anchor="WGS84">
+        <reference anchor="WGS84">
             <front>
                 <title>Department of Defense World Geodetic System 1984, Third Edition, NIMA TR8350.2</title>
                 <author><organization>National Imagery and Mapping Agency</organization></author>
                 <date month="Jan" year="2000"/>
             </front>
-        </refernce>
+        </reference>
       </references>
     </references>
     <section anchor="Acknowledgements" numbered="false">

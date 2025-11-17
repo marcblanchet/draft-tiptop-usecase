@@ -21,12 +21,12 @@
       </address>
     </author>
     <author fullname="Wesley Eddy" initials="WE">
-      <organization>MTI Systems</organization>
+      <organization>Aalyria Technologies</organization>
       <address>
         <postal>
           <country>USA</country>
         </postal>
-        <email>wes@mti-systems.com</email>
+        <email>wes@aalyria.com</email>
       </address>
     </author>
     <author fullname="Marshall Eubanks" initials="TME">
@@ -215,9 +215,10 @@
     </section>
     <section>
         <name>Security Considerations</name>
-        <t>Security protocols and mitigations are most often based on time, such as keys and certificate lifetimes, tokens lifetime, firewall opened ports time windows, etc. Keys and certificates have also a lifecycle where they should be renewed.</t>
+	<t>The CCSDS has created a reference document covering general security threats against space missions, as well as classes of mitigations <xref target="CCSDS-Threats"/>.  This is a useful high-level reference, though it does not go into depth on networking protocols.</t>
+	<t>Security protocols and mitigations are most often based on time, such as keys and certificate lifetimes, tokens lifetime, firewall opened ports time windows, etc. Keys and certificates have also a lifecycle where they should be renewed.</t>
       <t>Given the delays to act, for example from Earth to a celestial body, notifications of security issues and mitigation actions will be delayed, which may increase the impact of security issues such as denial of service attacks. </t>
-      <t>Security validation, such as certificate validation, based on on-line immediate queries to validation databases, such as done with OCSP<xref target="RFC6960"/>, or with a certificate chain will likely take too long if the validation database is far from the validation querier. Techniques such as preemptive caching of validation chain and certs should be investigated.</t>
+      <t>Security validation, such as certificate validation, based on on-line immediate queries to validation databases, such as done with OCSP <xref target="RFC6960"/>, or with a certificate chain will likely take too long if the validation database is far from the validation querier. Techniques such as preemptive caching of validation chain and certs should be investigated.</t>
       <t>Certificate lifecycle should be well planned to take into account delays and intermittence, so that for example certificate renewals are done sufficiently in advance.</t>
       <t>Devices operating in deep space often have limited computational and memory resources. Key agreement - especially key updates - should be efficient and scalable. Given the potential lifetime of space systems and risk of quantum computing to cryptography, this includes requirements for efficiency and scalability in use of post quantum cryptography.</t>
     </section>
@@ -240,7 +241,7 @@
           <front>
             <title>IP OVER CCSDS SPACE LINKS, Blue Book 702</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2012" month="September"/>
           </front>
@@ -257,7 +258,7 @@
           <front>
             <title>AOS Space Data Link Protocol, Blue Book 732.0-B-4</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2021" month="October"/>
           </front>
@@ -266,7 +267,7 @@
           <front>
             <title>TM Space Data Link Protocol, Blue Book 132.0-B-3</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2021" month="October"/>
           </front>
@@ -275,7 +276,7 @@
           <front>
             <title>TC Space Data Link Protocol, Blue Book 232.0-B-4</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2021" month="October"/>
           </front>
@@ -284,7 +285,7 @@
           <front>
             <title>Proximity-1 Space Link Protocol—Data Link Layer, Blue Book 211.0-B-6</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2020" month="July"/>
           </front>
@@ -293,7 +294,7 @@
           <front>
             <title>Unified Space Data Link Protocol, Blue Book 732.1-B-2</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2021" month="October"/>
           </front>
@@ -302,7 +303,7 @@
           <front>
             <title>File Delivery Protocol, Blue Book 727.0-B-5</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2020" month="July"/>
           </front>
@@ -428,6 +429,15 @@
                 <author><organization>National Imagery and Mapping Agency</organization></author>
                 <date month="Jan" year="2000"/>
             </front>
+        </reference>
+        <reference anchor="CCSDS-Threats" target="https://ccsds.org/Pubs/350x1g3.pdf">
+          <front>
+            <title>Security Threats Against Space Missions, Green Book 350.1-G-3</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+            </author>
+            <date year="2022" month="February"/>
+          </front>
         </reference>
       </references>
     </references>

@@ -75,7 +75,9 @@
           <li>Direct-with-Earth (DWE): communications from/to a spacecraft directly to/from Earth, without the use of relays.</li>
           <li>Moon, Lunar: refers to Earth's Moon.</li>
           <li>Deep Space Network (DSN): NASA’s international array of giant radio antennas that supports interplanetary spacecraft missions <xref target="DSN"/>.</li>
-          <li>LunaNet Service Providers (LNSP): service providers to the lunar surface and orbital regions, including private commercial operators, as defined in the LunaNet Interoperability Specification <xref target="lnis"/>.</li>
+	  <li>LunaNet Service Providers (LNSP): service providers to the lunar surface and orbital regions, including private commercial operators, as defined in the LunaNet Interoperability Specification <xref target="lnis"/>.</li>
+	  <li>Lagrange Points: special points in the gravitational fields between bodies (e.g. Earth-Moon, Earth-Sun, etc.), that are popular mission locations due to stability (i.e. low fuel usage), visibility for communications or science instruments, or other reasons.  Also known as "libration points".</li>
+	  <li>Lunar Gateway: a space station orbiting the Moon, that can serve as a waypoint or other supporting infrastructure for lunar exploration <xref target="Gateway"/>.</li>
         </ul>
       </section>
       <section>
@@ -440,11 +442,19 @@
             <date year="2022" month="February"/>
           </front>
         </reference>
+        <reference anchor="Gateway" target="https://ntrs.nasa.gov/api/citations/20230014342/downloads/IEEE%20-%20Gateway%20Overview%20FINAL%20100223.pdf">
+          <front>
+            <title>The Gateway Program as Part of NASA's Plans for Human Exploration Beyond Low Earth Orbit</title>
+	    <author fullname="Emma Lehnhardt"/>
+	    <author fullname="Dylan Connell"/>
+	    <date month="July" year="2023"/>
+          </front>
+	</reference>
       </references>
     </references>
     <section anchor="Acknowledgements" numbered="false">
       <name>Acknowledgements</name>
-      <t>This following people have provided valuable feedback and comments, in no specific order: Roy Gladden, Padma Pillay-Esnault, Tomek Mrugalski, Atsushi Tagami.</t>
+      <t>This following people have provided valuable feedback and comments, in no specific order: Roy Gladden, Padma Pillay-Esnault, Tomek Mrugalski, Atsushi Tagami, Pascal Thubert, and Carles Gomez Montenegro.</t>
     </section>
   </back>
 </rfc>

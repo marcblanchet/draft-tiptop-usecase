@@ -21,12 +21,12 @@
       </address>
     </author>
     <author fullname="Wesley Eddy" initials="WE">
-      <organization>MTI Systems</organization>
+      <organization>Aalyria Technologies</organization>
       <address>
         <postal>
           <country>USA</country>
         </postal>
-        <email>wes@mti-systems.com</email>
+        <email>wes@aalyria.com</email>
       </address>
     </author>
     <author fullname="Marshall Eubanks" initials="TME">
@@ -75,7 +75,9 @@
           <li>Direct-with-Earth (DWE): communications from/to a spacecraft directly to/from Earth, without the use of relays.</li>
           <li>Moon, Lunar: refers to Earth's Moon.</li>
           <li>Deep Space Network (DSN): NASA’s international array of giant radio antennas that supports interplanetary spacecraft missions <xref target="DSN"/>.</li>
-          <li>LunaNet Service Providers (LNSP): service providers to the lunar surface and orbital regions, including private commercial operators, as defined in the LunaNet Interoperability Specification <xref target="lnis"/>.</li>
+	  <li>LunaNet Service Providers (LNSP): service providers to the lunar surface and orbital regions, including private commercial operators, as defined in the LunaNet Interoperability Specification <xref target="lnis"/>.</li>
+	  <li>Lagrange Points: special points in the gravitational fields between bodies (e.g. Earth-Moon, Earth-Sun, etc.), that are popular mission locations due to stability (i.e. low fuel usage), visibility for communications or science instruments, or other reasons.  Also known as "libration points".</li>
+	  <li>Lunar Gateway: a space station orbiting the Moon, that can serve as a waypoint or other supporting infrastructure for lunar exploration <xref target="Gateway"/>.</li>
         </ul>
       </section>
       <section>
@@ -106,7 +108,7 @@
         <t>Orbiters acting as communications relays are already deployed or planned for both the Moon and Mars. A sufficient number of orbiters can create a constellation which may provide full coverage of the celestial body surface <xref target="ioagmoon"/><xref target="ioagmars"/>, or at least key regions (e.g. the lunar south pole).  Relaying from one surface asset to another surface asset through these orbiters may use either CCSDS link-layers or link-layers similar to LEO constellations on Earth.</t>
         <t>Space missions are typically planned many years in advance and are long-lived, spanning over many years or decades. Spacecraft are controlled from Earth and therefore should always be manageable from Earth. Given the remoteness and the difficulty to physically access the spacecraft, software upgrades and configuration changes are avoided whenever possible and backward compatibility is paramount.</t>
         <t>Space exploration is more than ever carried by multiple stakeholders. A mixture of assets operated by government, commercial, and academic/research organizations from multiple nations are deployed.  They will operate largely independently, but collaboration over time is expected to meet shared science goals, joint exploration missions, and mission cross-support needs (e.g. in contingency and emergency cases).</t>
-        <t>While links can be noisy due to weak signals, interference, etc., often packet delivery is actually virtually error-free due to the strong coding available within the link layer.  Delivery is generally in-order.  Queuing in modems, gateways, and other systems may be significant in comparison to typical terrestrial device queues.  In some planetary proximity regimes, CCSDS COP-1 or COP-P link layer retransmissions may be performed, further improving reliability at the IP layer (at some expense to delays).  Packet losses might be more common in some specific cases of either very low link margins or aggressive Adaptive Coding and Modulation (ACM), even though they might generally be avoided through physical link engineering and contact planning.</t>
+	<t>While links can be noisy due to weak signals, interference, etc., often packet delivery is actually virtually error-free due to the strong coding available within the link layer.  Delivery is generally in-order.  Queuing in modems, gateways, and other systems may be significant in comparison to typical terrestrial device queues.  In some planetary proximity regimes, CCSDS COP-1 or COP-P link layer retransmissions may be performed, further improving reliability at the IP layer (at some expense to delays).  Packet losses might be more common in some specific cases of either very low link margins or aggressive Adaptive Coding and Modulation (ACM), even though they might generally be avoided through physical link engineering and contact planning.  See <xref target="time"/> for requirements related to timers used for loss detection.</t>
       </section>
       <section>
         <name>Moon</name>
@@ -177,11 +179,16 @@
         <t>Even if calculations can be done based on known orbital dynamics, events happen that result in missed communication windows. For example, some communication windows were not used on Mars because a rover may be still charging and therefore does not have enough energy to perform communications. Random events can also happen because of space weather. Therefore, while the window of comms can be calculated and used, the system should be able to cope with random long interruption events.</t>
         <t>Proper guards should be designed to avoid denial-of-service attacks by filling storage in the network.</t>
       </section>
-      <section>
+      <section anchor="time">
         <name>Time</name>
-        <t>Timers are used in transport protocols, application protocols and applications themselves for various purposes, such as detecting/presuming packet loss or data lifetime. Timers should be therefore adjusted and configured based on the expected travel time and RTT from the source to destination. Given variations and possible dynamic changes in the network that can cause much longer latency, appropriate safeguards should be put for timer values.</t>
+	<t>Timers are used in transport protocols, application protocols and applications themselves for various purposes, such as detecting/presuming packet loss or data lifetime. Timers should be therefore adjusted and configured based on the expected travel time and RTT from the source to destination. Given variations and possible dynamic changes in the network that can cause much longer latency, appropriate safeguards should be put for timer values.</t>
+	<t>There are two main challenges that deep space networks pose for use of timers in loss detection.  First, for cases like Mars, the time needed to infer a loss and request retransmission is much longer than what protocols are designed for in the Internet, and can be so long as to preclude retransmission within the same contact window.  Second, for cases where the timing can vary widely, finding appropriate timeout values and adjusting them automatically may be a challenge.  Mitigating the long propagation delays could be approached through various techniques such as higher-level erasure coding (e.g. in application or transport protocols), more aggressive retransmission policies, or other methods.  Mitigating varying delays can be approached through the use of planning/orchestration systems to provide guidance on proper values over time, or other methods.</t>
         <t>Lifetime is also attached to some data, such as content, security keys, certificates, tokens, session keys and naming records. Similarly, the lifetime should be adjusted and configured based on the characteristics of the applications and expected travel time and RTT.</t>
         <t>Current Internet protocols and applications typically use UTC as their time reference. There are currently work to define Lunar Standard Time, also called Coordinated Lunar Time and Mars Standard Time <xref target="lunartime"/>. Depending on the application and use case, it may be necessary to adapt the protocol or the application to use another time reference.</t>
+      </section>
+      <section>
+          <name>Location</name>
+          <t>Some IETF protocols such as <xref target="RFC5870"/><xref target="RFC8805"/> use a Earth coordinate system such as <xref target="WGS84"/> or address-based reference<xref target="RFC8805"/> for encoding location. Deep space uses various coordinate systems such as celestial body references<xref target="SANACelestialBodyReference"/> or orbit-relative references<xref target="SANAOrbitRelativeReference"/>. Therefore, IETF protocols carrying location information may need to be updated to also support space coordinate reference systems. An example of such space coordinate reference system addition for IETF protocols is in <xref target="RFC9179"/>.</t>
       </section>
       <section>
         <name>Signaling and Exchanges</name>
@@ -208,14 +215,22 @@
           <t>For intermediate nodes, storing in permanent memory the contact schedule or the expected next opportunities for neighbors may help faster recovery.</t>
           <t>For endpoints, applications may keep a state context in permanent memory, either at the application layer or at the transport layer or both.</t>
       </section>
+      <section>
+          <name>Energy</name>
+	  <t>Electrical power and energy are constrained in systems operating in deep space compared to the terrestrial Internet, although with increasing growth of the Internet of Things (IoT) on Earth, similar constraints are also present in many terrestrial systems.</t>
+	  <t>Since there are a variety of different types and sizes of deep space exploration hardware systems, there are different options to generate power including solar panels or radioisotope thermoelectric generators (RTGs).  Operating off of batteries is common, since sufficient power is not always able to be generated.  In any case, the available power is limited and when transmitting, a substantial amount must go to operating amplifiers and other communications system hardware.  Transmissions may be limited to specific times in order to conserve power and budget it during times when more is not available to generate (e.g. when operating in lunar "night" on a part of the moon not exposed to sunlight).  Some links and physical layer protocols operate synchronously and transmit continuously when active (e.g. using idle frames), while others transmit only data frames and use "Barker codes" or other burst transmission synchronization methods.</t>
+	  <t>The implications of this are that there are a variety of different modes that networking nodes may be in at any time, and some could manifest as temporary "disconnections", even if there is antenna visibility and connectivity would otherwise have been schedulable.</t>
+      </section>
     </section>
     <section>
         <name>Security Considerations</name>
-        <t>Security protocols and mitigations are most often based on time, such as keys and certificate lifetimes, tokens lifetime, firewall opened ports time windows, etc. Keys and certificates have also a lifecycle where they should be renewed.</t>
+	<t>The CCSDS has created a reference document covering general security threats against space missions, as well as classes of mitigations <xref target="CCSDS-Threats"/>.  This is a useful high-level reference, though it does not go into depth on networking protocols.</t>
+	<t>Security protocols and mitigations are most often based on time, such as keys and certificate lifetimes, tokens lifetime, firewall opened ports time windows, etc. Keys and certificates have also a lifecycle where they should be renewed.</t>
       <t>Given the delays to act, for example from Earth to a celestial body, notifications of security issues and mitigation actions will be delayed, which may increase the impact of security issues such as denial of service attacks. </t>
-      <t>Security validation, such as certificate validation, based on on-line immediate queries to validation databases, such as done with OCSP<xref target="RFC6960"/>, or with a certificate chain will likely take too long if the validation database is far from the validation querier. Techniques such as preemptive caching of validation chain and certs should be investigated.</t>
+      <t>Security validation, such as certificate validation, based on on-line immediate queries to validation databases, such as done with OCSP <xref target="RFC6960"/>, or with a certificate chain will likely take too long if the validation database is far from the validation querier. Techniques such as preemptive caching of validation chain and certs should be investigated.</t>
       <t>Certificate lifecycle should be well planned to take into account delays and intermittence, so that for example certificate renewals are done sufficiently in advance.</t>
-    <t> Given delays and potential intermittence of connections, resilience to link disruptions and reconnections require security protocols to tolerate interruptions and dynamic partnering, including re-keying when necessary. As such, protocols should support asynchronous re-keying. </t>
+    <t> Given delays and potential intermittence of connections, resilience to link disruptions and reconnections require security protocols to tolerate interruptions and dynamic partnering, including re-keying when necessary. As such, protocols should support asynchronous re-keying to support unilateral key updates with temporarily unreachable or offline partners.</t>
+      <t>Devices operating in deep space often have limited computational and memory resources. Key agreement - especially key updates - should be efficient and scalable. Given the potential lifetime of space systems and risk of quantum computing to cryptography, this includes requirements for efficiency and scalability in use of post quantum cryptography.</t>
     </section>
     <section>
       <name>IANA Considerations</name>
@@ -227,13 +242,16 @@
       <name>References</name>
       <references>
         <name>Informative References</name>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5870.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6960.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8805.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9179.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.many-deepspace-ip-assessment.xml"/>
         <reference anchor="IPoverCCSDSSpaceLinks" target="https://public.ccsds.org/Pubs/702x1b1c2.pdf">
           <front>
             <title>IP OVER CCSDS SPACE LINKS, Blue Book 702</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2012" month="September"/>
           </front>
@@ -241,14 +259,16 @@
         <reference anchor="SANAIPEHeaderRegistry" target="https://sanaregistry.org/r/ipe_header/">
           <front>
             <title>Internet Protocol Extension Header</title>
-            <author/>
+            <author>
+                <organization>Space Assigned Numbers Authority</organization>
+            </author>
           </front>
         </reference>
         <reference anchor="CCSDS_AOS" target="https://public.ccsds.org/Pubs/732x0b4.pdf">
           <front>
             <title>AOS Space Data Link Protocol, Blue Book 732.0-B-4</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2021" month="October"/>
           </front>
@@ -257,7 +277,7 @@
           <front>
             <title>TM Space Data Link Protocol, Blue Book 132.0-B-3</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2021" month="October"/>
           </front>
@@ -266,7 +286,7 @@
           <front>
             <title>TC Space Data Link Protocol, Blue Book 232.0-B-4</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2021" month="October"/>
           </front>
@@ -275,7 +295,7 @@
           <front>
             <title>Proximity-1 Space Link Protocol—Data Link Layer, Blue Book 211.0-B-6</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2020" month="July"/>
           </front>
@@ -284,7 +304,7 @@
           <front>
             <title>Unified Space Data Link Protocol, Blue Book 732.1-B-2</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2021" month="October"/>
           </front>
@@ -293,10 +313,28 @@
           <front>
             <title>File Delivery Protocol, Blue Book 727.0-B-5</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems(CCSDS)</organization>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
             </author>
             <date year="2020" month="July"/>
           </front>
+        </reference>
+        <reference anchor="SANACelestialBodyReference" target="https://sanaregistry.org/r/celestial_body_reference_frames/">
+            <front>
+                <title>Celestial Body Reference Frames</title>
+                <author>
+                    <organization>Space Assigned Numbers Authority</organization>
+                </author>
+                <date year="2023" month="May"/>
+            </front>
+        </reference>
+        <reference anchor="SANAOrbitRelativeReference" target="https://sanaregistry.org/r/orbit_relative_reference_frames/">
+            <front>
+                <title>Orbit-Relative Reference Frames</title>
+                <author>
+                    <organization>Space Assigned Numbers Authority</organization>
+                </author>
+                <date year="2025" month="July"/>
+            </front>
         </reference>
         <reference anchor="ioagmoon" target="https://www.ioag.org/Public%20Documents/Lunar%20communications%20architecture%20study%20report%20FINAL%20v1.3.pdf">
           <front>
@@ -349,9 +387,9 @@
         </reference>
         <reference anchor="lnis" target="https://www.nasa.gov/directorates/somd/space-communications-navigation-program/lunanet-interoperability-specification/">
           <front>
-            <title>LunaNet Interoperability Specification</title>
+            <title>LunaNet Interoperability Specification - Version 5</title>
             <author/>
-            <date month="September" year="2022"/>
+            <date month="February" year="2025"/>
           </front>
         </reference>
         <reference anchor="deepspacewikipedia" target="https://en.wikipedia.org/wiki/Deep_space_exploration">
@@ -395,11 +433,35 @@
                 <date month="Apr" year="2025"/>
             </front>
         </reference>
+        <reference anchor="WGS84">
+            <front>
+                <title>Department of Defense World Geodetic System 1984, Third Edition, NIMA TR8350.2</title>
+                <author><organization>National Imagery and Mapping Agency</organization></author>
+                <date month="Jan" year="2000"/>
+            </front>
+        </reference>
+        <reference anchor="CCSDS-Threats" target="https://ccsds.org/Pubs/350x1g3.pdf">
+          <front>
+            <title>Security Threats Against Space Missions, Green Book 350.1-G-3</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+            </author>
+            <date year="2022" month="February"/>
+          </front>
+        </reference>
+        <reference anchor="Gateway" target="https://ntrs.nasa.gov/api/citations/20230014342/downloads/IEEE%20-%20Gateway%20Overview%20FINAL%20100223.pdf">
+          <front>
+            <title>The Gateway Program as Part of NASA's Plans for Human Exploration Beyond Low Earth Orbit</title>
+	    <author fullname="Emma Lehnhardt"/>
+	    <author fullname="Dylan Connell"/>
+	    <date month="July" year="2023"/>
+          </front>
+	</reference>
       </references>
     </references>
     <section anchor="Acknowledgements" numbered="false">
       <name>Acknowledgements</name>
-      <t>This following people have provided valuable feedback and comments, in no specific order: Roy Gladden, Padma Pillay-Esnault, Tomek Mrugalski.</t>
+      <t>This following people have provided valuable feedback and comments, in no specific order: Roy Gladden, Padma Pillay-Esnault, Tomek Mrugalski, Atsushi Tagami, Pascal Thubert, and Carles Gomez Montenegro.</t>
     </section>
   </back>
 </rfc>

@@ -168,6 +168,30 @@
         <li>Network and Asset management: sending requests and getting answers from assets about their overall status, status of their components, energy levels, storage capacities, etc.</li>
       </ul>
     </section>
+    <section anchor="scenarios">
+      <name>Connectivity Scenarios</name>
+      <t>This section describes example connectivity scenarios in deep space. Each scenario is labeled with a two-letter acronym so that other documents, such as protocol profiles, can refer to them. This list is not intended to be exhaustive.</t>
+      <section anchor="scenario-lf">
+        <name>Earth-Moon with Full Connectivity (LF)</name>
+        <t>Moon assets are mostly always reachable, as with the terrestrial Internet. This can be accomplished in various ways, such as a constellation of low Moon orbit satellites connected together with Optical Inter-Satellite Links (OISL). For example, many rovers, drones and habitats on the Moon surface are connected to a 3GPP 6G network provided by such a constellation. At any single point in time, one or many of these satellites are communicating with Earth, providing full connectivity on the Moon and between the Moon and Earth. The Earth to Moon one-way delay is around 1.3 seconds. This scenario is the end goal for both the Moon and Mars.</t>
+      </section>
+      <section anchor="scenario-li">
+        <name>Earth-Moon with Intermittent Connectivity (LI)</name>
+        <t>Moon assets are reachable by intermittence from Earth. This can happen when there is a limited number of satellites which do not provide full-time connectivity. The Earth to Moon one-way delay is around 1.3 seconds.</t>
+      </section>
+      <section anchor="scenario-mf">
+        <name>Earth-Mars with Full Connectivity (MF)</name>
+        <t>Mars assets are mostly always reachable, as with the terrestrial Internet. As for the Moon, this can be accomplished in various ways, such as a constellation of satellites around Mars connected together with Optical Inter-Satellite Links (OISL). The Earth to Mars one-way delay is between 4 and 24 minutes, depending on the relative position of each planet. That one-way delay changes "slowly" as the planets are orbiting around the Sun.</t>
+      </section>
+      <section anchor="scenario-mi">
+        <name>Earth-Mars with Intermittent Connectivity (MI)</name>
+        <t>Mars assets are reachable by intermittence from Earth. For example, a rover on the Mars surface is connected to a Mars surface IP network which receives intermittent connectivity from a few orbiters, with an average of one overpass every 6 hours. Some of those orbiters have circular orbits, others elliptical; the latter means that the overpasses are not at a fixed frequency. The orbiters are connected to Earth ground stations while they are in line of sight with Earth. The Earth to Mars one-way delay is between 4 and 24 minutes, depending on the relative position of each planet, and changes "slowly" as the planets are orbiting around the Sun.</t>
+      </section>
+      <section anchor="scenario-cs">
+        <name>Earth to Cruising Spacecraft (CS)</name>
+        <t>A spacecraft cruising towards a deep space destination communicates directly with Earth. The one-way delay increases over time, but at orders of magnitude lower speed than the speed of light; therefore the round-trip time increases "slowly".</t>
+      </section>
+    </section>
     <section anchor="requirements">
       <name>Requirements</name>
       <section>

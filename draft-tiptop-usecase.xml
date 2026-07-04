@@ -7,10 +7,10 @@
 <!ENTITY nbhy "&#8209;">
 <!ENTITY wj "&#8288;">
 ]>
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info" docName="draft-ietf-tiptop-usecase-00" ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" version="3">
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info" docName="draft-ietf-tiptop-usecase-02" ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" version="3">
   <front>
     <title abbrev="IP in Deep Space">IP in Deep Space: Key Characteristics, Use Cases and Requirements</title>
-    <seriesInfo name="Internet-Draft" value="draft-ietf-tiptop-usecase-00"/>
+    <seriesInfo name="Internet-Draft" value="draft-ietf-tiptop-usecase-02"/>
     <author fullname="Marc Blanchet" initials="MB">
       <organization>Viagenie</organization>
       <address>
@@ -51,7 +51,7 @@
     <keyword>dns</keyword>
     <keyword>routing</keyword>
     <abstract>
-      <t>Deep space communications involve long delays (e.g., Earth to Mars has one-way delays 4-24 minutes) and intermittent communications, mainly because of orbital dynamics. The IP protocol stack used on the Internet is based on the assumptions of shorter delays and mostly uninterrupted communications. This document describes the key characteristics, use cases, and requirements for deep space networking, intended to help when profiling IP protocols in such environment.</t>
+      <t>Deep space communications involve long delays (e.g., Earth to Mars has one-way delays 4-24 minutes) and intermittent communications, mainly because of orbital dynamics. Most of the IP protocol stack used on the Internet, in particular reliable transport protocols and applications, is based on the assumptions of shorter delays and mostly uninterrupted communications. This document describes the key characteristics, use cases, and requirements for deep space networking, intended to help when profiling IP protocols in such environment.</t>
     </abstract>
   </front>
   <middle>
@@ -66,7 +66,7 @@
         <name>Limitations of this document</name>
         <t>Communication in deep space is vastly different than on Earth. This document does not describe space communication technologies below IP, but only the information relevant from the IP protocol stack viewpoint for the purpose of its engineering. More information is available for the Moon <xref target="ioagmoon"/> and Mars <xref target="ioagmars"/>.</t>
         <t>Position, Navigation and Timing (PNT) is not directly discussed in this memo, but is a vital offering from space network service providers, in addition to data communications.  Networking can support some of the data exchanges that facilitate PNT services.</t>
-        <t>Near Earth orbits, such as Low Earth Orbit (LEO), Medium Earth Orbit (MEO), and Geosynchronous Earth Orbit (GEO) communications and networking to and from Earth are out of scope for this memo. However, given the relatively small distance to the Moon, there are possibilities to use spacecraft around Earth or at Lagrange points as relays to communicate with lunar assets. In this context, these possibilities are in scope.</t>
+        <t>Near Earth orbits, such as Low Earth Orbit (LEO), Medium Earth Orbit (MEO), and Geosynchronous Earth Orbit (GEO) communications and networking to and from Earth are out of scope for this memo. Near-Earth satellite networking, including 3GPP Non-Terrestrial Networks (NTN), operates with round-trip times of milliseconds to hundreds of milliseconds and generally continuous connectivity through constellation handover; techniques developed there do not address the minutes-to-hours delays and scheduled multi-day disruptions characteristic of deep space, which are the focus of this document. However, the same 3GPP NTN technologies are expected to be used in low orbits around other celestial bodies; in that context, orbiting a celestial body and serving its surface and orbital assets, they are in scope of this document. In addition, given the relatively small distance to the Moon, there are possibilities to use spacecraft around Earth or at Lagrange points as relays to communicate with lunar assets. In this context, these possibilities are in scope.</t>
       </section>
       <section>
         <name>Terminology</name>
@@ -78,6 +78,7 @@
 	  <li>LunaNet Service Providers (LNSP): service providers to the lunar surface and orbital regions, including private commercial operators, as defined in the LunaNet Interoperability Specification <xref target="lnis"/>.</li>
 	  <li>Lagrange Points: special points in the gravitational fields between bodies (e.g. Earth-Moon, Earth-Sun, etc.), that are popular mission locations due to stability (i.e. low fuel usage), visibility for communications or science instruments, or other reasons.  Also known as "libration points".</li>
 	  <li>Lunar Gateway: a space station orbiting the Moon, that can serve as a waypoint or other supporting infrastructure for lunar exploration <xref target="Gateway"/>.</li>
+	  <li>Surface network: a network interconnecting assets on or near the surface of a celestial body, using terrestrial-style link technologies (e.g., IEEE 802.11, 3GPP). Its users include habitats, landers, rovers, crew equipment, and low-altitude mobile assets such as drones or hoppers, which are regarded as surface assets.</li>
         </ul>
       </section>
       <section>
@@ -108,13 +109,14 @@
         <t>Orbiters acting as communications relays are already deployed or planned for both the Moon and Mars. A sufficient number of orbiters can create a constellation which may provide full coverage of the celestial body surface <xref target="ioagmoon"/><xref target="ioagmars"/>, or at least key regions (e.g. the lunar south pole).  Relaying from one surface asset to another surface asset through these orbiters may use either CCSDS link-layers or link-layers similar to LEO constellations on Earth.</t>
         <t>Space missions are typically planned many years in advance and are long-lived, spanning over many years or decades. Spacecraft are controlled from Earth and therefore should always be manageable from Earth. Given the remoteness and the difficulty to physically access the spacecraft, software upgrades and configuration changes are avoided whenever possible and backward compatibility is paramount.</t>
         <t>Space exploration is more than ever carried by multiple stakeholders. A mixture of assets operated by government, commercial, and academic/research organizations from multiple nations are deployed.  They will operate largely independently, but collaboration over time is expected to meet shared science goals, joint exploration missions, and mission cross-support needs (e.g. in contingency and emergency cases).</t>
-	<t>While links can be noisy due to weak signals, interference, etc., often packet delivery is actually virtually error-free due to the strong coding available within the link layer.  Delivery is generally in-order.  Queuing in modems, gateways, and other systems may be significant in comparison to typical terrestrial device queues.  In some planetary proximity regimes, CCSDS COP-1 or COP-P link layer retransmissions may be performed, further improving reliability at the IP layer (at some expense to delays).  Packet losses might be more common in some specific cases of either very low link margins or aggressive Adaptive Coding and Modulation (ACM), even though they might generally be avoided through physical link engineering and contact planning.  See <xref target="time"/> for requirements related to timers used for loss detection.</t>
+	<t>While links can be noisy due to weak signals, interference, etc., often packet delivery is actually virtually error-free due to the strong coding available within the link layer.  Delivery is generally in-order.  Queuing in modems, gateways, and other systems may be significant in comparison to typical terrestrial device queues, while the memory available for such queues on space-qualified hardware is often severely constrained; both the depth and the sizing of these buffers should be considered.  In some planetary proximity regimes, CCSDS COP-1 or COP-P link layer retransmissions may be performed, further improving reliability at the IP layer (at some expense to delays).  Packet losses might be more common in some specific cases of either very low link margins or aggressive Adaptive Coding and Modulation (ACM), even though they might generally be avoided through physical link engineering and contact planning.  See <xref target="time"/> for requirements related to timers used for loss detection.</t>
       </section>
       <section>
         <name>Moon</name>
         <t>There are currently very few orbiters around Moon but there are plans to establish multiple constellations of them to be used as communication relays. As few as 5 cooperating orbiters at the right orbits is sufficient to provide full coverage <xref target="ioagmoon"/>, and smaller sets of orbiters can be targeted to provide full coverage of specific limited regions such as the far side or the polar regions <xref target="imconstellation"/>. Until full coverage is accomplished, interruptions of communications are expected.  While Earth ground stations are able to directly cover assets on the near side of Moon, use of relays may still be desirable to improve power usage, data capacity, and spectrum efficiency.</t>
         <t>Different types of networking nodes are expected on the lunar surface, with a wide range of capabilities, from those that have very limited functionality (similar to IoT devices on Earth), up to more highly-capable infrastructure hub nodes that provide access for other surface users (e.g. in a habitat or lander), and in-between cases such as crewed or uncrewed rovers that may have combinations of direct-to-Earth, with proximity orbiters, or via local wireless LAN or cellular capabilities.</t>
         <t>The LunaNet Interoperability Specification (LNIS) <xref target="lnis"/> is a framework including IP networking support for lunar service providers and users to acheive interoperability.</t>
+        <t>NASA has described plans for a sustained lunar surface base, the Moon Base program, near the lunar south pole, deployed in phases and comprising commercial landers, crewed and uncrewed rovers, drones, and later pressurized habitats and power infrastructure <xref target="nasamoonbase"/>. The networking use cases described in this document, including surface networks interconnecting habitats, rovers, drones and other surface assets, surface-to-orbiter relaying, and direct-with-Earth links, are intended to cover such deployments.</t>
         <t>For human / crewed operations, nearly continuous coverage and data flows might be expected. However, for other types of network users (such as science missions), only limited communication opportunities may be available.</t>
         <t>Some nodes (such as those supporting human missions) may have multiple/redundant links available simultaneously, but this should not be expected in general, and even then it is likely to be more for failover use than for multipath network transport.</t>
         <t>Data link operation is scheduled in advance through coordination between the end-user mission operations centers and LNSPs.  The time windows for operation and data rates are well-known in advance (typically days or more).  Successful link operation generally requires both directional pointing/tracking (with knowledge of vehicle locations and motion) of antenna systems, as well as pre-configuration of modem / signal processing and gateway systems that require prior coordination on many parameters.  Ad hoc or random access may be available at some later point, but is likely to be rare for at least proximity and direct-with-Earth links.</t>
@@ -128,7 +130,7 @@
         <t>There are currently some orbiters around Mars, of which 4 are actively in use as relays, and 2 active rovers. Multiple missions are planned<xref target="ioagmars"/> in the coming years. Communications are from ground stations on Earth, such as the DSN, to Mars orbiters acting as layer0-1 relays to surface assets such as rovers, and reverse. The relays do not have notion of frames, and only forward bits at different frequencies for each segment, a mechanism named "bag of bits"<xref target="ioagmars"/>. These orbiters can do as "bent-pipe" when the two segments are active, or by storing the bits as "store-and-forward" until the next segment becomes available. Since the current set of orbiters do not provide full coverage of Mars, the communication windows are calculated and planned between Earth and each orbiter, and between each orbiter and each surface asset. Currently, only one rover can use a relay link at any given time. The MaROS project<xref target="maros"/> sponsored by the Jet Propulsion Laboratory acts as a broker to enable missions to enter data about the communications capabilities such as frequencies, bandwidth, window of communication time, ... so that rover missions can schedule the available communications windows for transmitting and receiving. Most orbiters are used and scheduled in MaROS. One of the Mars orbiters is Mars Reconnaissance Orbiter(MRO)<xref target="mro"/>. It was launched in 2005 and has a single 40Mhz processor but over 100G of solid state memory. MaROS experience over years shows that the current bottleneck is not the temporary storage of the relays but the bandwidth from Mars surface assets to Mars orbiter relays. As demonstrated by a study<xref target="marscommstudy"/> on Mars communication windows, the communication windows seem to happen at a constant frequency, but the reality shows that the timing is pretty variable, which means a very large range of resulting round-trip time (RTT) for communications from Earth to Mars and back. For example, within 3 months in 2024, the calculated RTT of the various combinations of orbiters and rovers varied from 30 minutes to 170 hours.</t>
         <t>Surface assets are commanded directly from Earth but at a very low rate. The traffic from the assets to Earth goes through relays.</t>
         <t>It is expected that future constellations of Mars orbiters acting as relays will also have optical inter-satellite links<xref target="ioagmars"/>. The current orbiters were put in various orbits for the purpose of science, and usually have a small number of short relay opportunities per day. However, dedicated relay orbiters could be put at much higher altitudes to provide much better coverage.</t>
-        <t>About every two years, a solar conjunction happens for a period of around 2 weeks, where the Sun is between Earth and Mars, therefore causing the interruption of communications between Earth and Mars.</t>
+        <t>About every 26 months, a solar conjunction happens for a period of around two weeks, where the Sun is between Earth and Mars, therefore causing the interruption of communications between Earth and Mars, as described in <xref target="scenario-sc"/>.</t>
         <t>One-way delay from Earth to Mars is from 4 to 24 minutes, depending on the actual relative distance between them.</t>
         <t>It is envisioned that optical links between Earth and Mars may deliver hundreds of Mbps<xref target="ioagmars"/>.</t>
       </section>
@@ -162,7 +164,7 @@
         <li>On-demand/real-time media(audio, video, ...): when a active path from the asset to Earth, the asset sends a media feed. The delay is only the propagation delay.</li>
         <li>Delayed media: the asset sends the media, but it is expected that there is no active path from the asset to Earth, so data may be temporarily stored in the network.</li>
         <li>Emergency and Search and Rescue (SAR) messaging: sent from an asset
-            to one or many other assets (e.g. via broadcast or multicast) that support emergency operations.  Since crew or mission safety may be at risk, this traffic should be prioritized over most other types of packets when encountering queuing or storage within the network.  Timely delivery is necessary, but it should also be delivered reliably.</li>
+            to one or many other assets (e.g. via broadcast or multicast) that support emergency operations.  Since crew or mission safety may be at risk, this traffic should be prioritized over most other types of packets when encountering queuing or storage within the network.  Timely delivery is necessary, but it should also be delivered reliably. Unlike most traffic, emergency messages may have no useful expiration: they should not be dropped from network storage on lifetime grounds, and drop policies under storage exhaustion should preserve them ahead of all other traffic classes.</li>
         <li>Science data: Typically science data may take the form of large bulk file transfers unicasted from a spacecraft to Earth.  In many cases, storage and large delays in delivery can be tolerated. File transfer applications such as CCSDS File Delivery Protocol (CFDP)<xref target="CCSDS_CFDP" /> are typically used, that might be configured to either operate unidirectionally or may provide reliability through retransmissions, and require at least small amount of feedback.  Some science applications may also use messaging patterns to collaborate between different types of instruments in order to draw attention to events (e.g. gamma ray bursts, etc.) and bring different types of instruments to bear.  These messages may need to be quickly delivered and/or multicasted.</li>
         <li>Messaging: Many different types of machine-to-machine messaging need to be supported, including for uses such as (1) providing PNT data/measurements to feed positioning, orbit determination, and time transfer or clock calibration, (2) providing space weather alerts, (3) providing advisory or other network information (e.g. almanac data such as ephemeris data for relay and other network elements, scheduled future contacts, or other service management related messaging).  Messages are generally small (though may vary depending on type) and might be unicast, broadcast, or multicast. In cases where they are advisory, for instance, they may not need reliable transport, though often it will be important to provide timely transmission.</li>
         <li>Network and Asset management: sending requests and getting answers from assets about their overall status, status of their components, energy levels, storage capacities, etc.</li>
@@ -171,9 +173,13 @@
     <section anchor="scenarios">
       <name>Connectivity Scenarios</name>
       <t>This section describes example connectivity scenarios in deep space. Each scenario is labeled with a two-letter acronym so that other documents, such as protocol profiles, can refer to them. This list is not intended to be exhaustive.</t>
+      <section anchor="scenario-cs">
+        <name>Earth to Cruising Spacecraft (CS)</name>
+        <t>A spacecraft cruising towards a deep space destination communicates directly with Earth. The one-way delay increases over time, but at orders of magnitude lower speed than the speed of light; therefore the round-trip time increases "slowly".</t>
+      </section>
       <section anchor="scenario-lf">
         <name>Earth-Moon with Full Connectivity (LF)</name>
-        <t>Moon assets are mostly always reachable, as with the terrestrial Internet. This can be accomplished in various ways, such as a constellation of low Moon orbit satellites connected together with Optical Inter-Satellite Links (OISL). For example, many rovers, drones and habitats on the Moon surface are connected to a 3GPP 6G network provided by such a constellation. At any single point in time, one or many of these satellites are communicating with Earth, providing full connectivity on the Moon and between the Moon and Earth. The Earth to Moon one-way delay is around 1.3 seconds. This scenario is the end goal for both the Moon and Mars.</t>
+        <t>Moon assets are mostly always reachable, as with the terrestrial Internet. This can be accomplished in various ways, such as a constellation of low Moon orbit satellites connected together with Optical Inter-Satellite Links (OISL). For example, many rovers, drones and habitats on the Moon surface are connected to a 3GPP 6G network provided by such a constellation. At any single point in time, one or many of these satellites are communicating with Earth, providing full connectivity on the Moon and between the Moon and Earth. The Earth to Moon one-way delay is around 1.3 seconds. This scenario is the end goal for both the Moon and Mars. Given announced constellation deployment plans, essentially full coverage of the relevant lunar sites may be achieved in the near future. In such deployments, intermittence becomes an exception to be handled (e.g., equipment failures, contingencies, or power-save periods) rather than the general rule. Documents profiling protocols for these environments should therefore provide recommendations for both the intermittent and the full-connectivity regimes.</t>
       </section>
       <section anchor="scenario-li">
         <name>Earth-Moon with Intermittent Connectivity (LI)</name>
@@ -187,21 +193,39 @@
         <name>Earth-Mars with Intermittent Connectivity (MI)</name>
         <t>Mars assets are reachable by intermittence from Earth. For example, a rover on the Mars surface is connected to a Mars surface IP network which receives intermittent connectivity from a few orbiters, with an average of one overpass every 6 hours. Some of those orbiters have circular orbits, others elliptical; the latter means that the overpasses are not at a fixed frequency. The orbiters are connected to Earth ground stations while they are in line of sight with Earth. The Earth to Mars one-way delay is between 4 and 24 minutes, depending on the relative position of each planet, and changes "slowly" as the planets are orbiting around the Sun.</t>
       </section>
-      <section anchor="scenario-cs">
-        <name>Earth to Cruising Spacecraft (CS)</name>
-        <t>A spacecraft cruising towards a deep space destination communicates directly with Earth. The one-way delay increases over time, but at orders of magnitude lower speed than the speed of light; therefore the round-trip time increases "slowly".</t>
+      <section anchor="scenario-sc">
+        <name>Solar Conjunction (SC)</name>
+        <t>A solar conjunction happens when the Sun is between Earth and another celestial body, blocking or degrading direct communications between Earth and the assets at that body. For Mars, a solar conjunction occurs approximately every 26 months, which is the Earth-Mars synodic period. As the Sun-Earth-Mars angle becomes small, the charged particles of the solar corona increasingly corrupt the radio signals crossing near the Sun, degrading communications before interrupting them completely. Mission operators typically observe a communications moratorium of around two weeks, during which no commands are sent to Mars assets <xref target="marsconjunction"/>.</t>
+        <t>Solar conjunctions are precisely predictable years in advance. This scenario is therefore a scheduled, total interruption of the Earth-to-body communications that is much longer than the interruptions of the intermittent connectivity scenarios.</t>
+        <t>Other celestial bodies undergo the same phenomenon at a recurrence equal to their synodic period, such as approximately every 13 months for Jupiter and approximately every 12.4 months for Saturn; the duration of the interruption depends on the geometry and on how fast the body moves relative to the Sun as seen from Earth. Communications between Earth and the Moon are not subject to solar conjunctions, since the Moon orbits Earth. Communications local to the celestial body, such as between surface assets and orbiters, are not affected and continue to operate during a conjunction; only the long-haul links crossing near the Sun are interrupted. In the future, relay spacecraft located away from the direct Earth-to-body line, for example in heliocentric orbit or at Lagrange points, could provide an alternate path around a conjunction, at the cost of a longer path.</t>
+        <t>During a conjunction blackout, traffic sources that continue to generate data (e.g., steady telemetry or science flows) can fill the storage of relays and orbiters; store-and-forward capacity planning and source throttling policies should take these multi-week interruptions into account (see <xref target="requirements"/>). Cruising spacecraft on long-distance trajectories may also experience solar conjunctions when the Sun crosses the Earth-spacecraft line. A study of communication delays, disruptions and blackouts for crewed Mars missions is available in <xref target="conjunctionstudy"/>.</t>
       </section>
     </section>
     <section anchor="requirements">
       <name>Requirements</name>
+      <t>The characteristics described in this document (latency, bandwidth, unidirectionality, intermittence, topology) vary greatly between connectivity scenarios; no single set of constraints applies to all deployments. When evaluating protocol or security solutions against these requirements, the applicable connectivity scenario (see <xref target="scenarios"/>) should be identified first, since the constraints pull designs in different directions: very low bandwidth links make handshake-heavy mechanisms impractical, while unidirectional links preclude interactive exchanges entirely. Requirements in this section should be read as scenario-dependent and prioritized per deployment rather than simultaneously binding. <xref target="scenario-constraints"/> summarizes the main constraints of each scenario.</t>
+      <table anchor="scenario-constraints">
+        <name>Connectivity Scenarios and their Main Constraints</name>
+        <thead>
+          <tr><th>Scenario</th><th>One-way delay</th><th>Intermittence</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Earth to Cruising Spacecraft (CS)</td><td>increases slowly over the mission</td><td>rare; solar conjunctions possible on long-distance trajectories</td></tr>
+          <tr><td>Earth-Moon Full Connectivity (LF)</td><td>around 1.3 seconds</td><td>exceptional (equipment failures, contingencies, power-save periods)</td></tr>
+          <tr><td>Earth-Moon Intermittent Connectivity (LI)</td><td>around 1.3 seconds</td><td>frequent, mostly scheduled</td></tr>
+          <tr><td>Earth-Mars Full Connectivity (MF)</td><td>4 to 24 minutes</td><td>exceptional (equipment failures, contingencies, power-save periods)</td></tr>
+          <tr><td>Earth-Mars Intermittent Connectivity (MI)</td><td>4 to 24 minutes</td><td>frequent, mostly scheduled</td></tr>
+          <tr><td>Solar Conjunction (SC)</td><td>not applicable (no direct path)</td><td>total, scheduled interruption; around two weeks in the case of Mars</td></tr>
+        </tbody>
+      </table>
       <section>
         <name>Store-and-Forward</name>
-        <t>Until full coverage by orbiter constellations is achieved around a celestial body, the orbiters and other assets that are facing intermittent communications should provide store-and-forward capability. These can be implemented at - layer-1, like the current Mars orbiters, where frames are not seen ("bag of bits"), at layer-2 doing frame storage or at layer-3 doing packet storage. Storage higher in the stack enables more versatile, agile and policy-based routing. A key factor for designing the store and forward capability of an orbiter is its storage capacity.</t>
+        <t>Until full coverage by orbiter constellations is achieved around a celestial body, the orbiters and other assets that are facing intermittent communications should provide store-and-forward capability. These can be implemented at - layer-1, like the current Mars orbiters, where frames are not seen ("bag of bits"), at layer-2 doing frame storage or at layer-3 doing packet storage. Storage higher in the stack enables more versatile, agile and policy-based routing. For example, the current Mars relay orbiters store below the frame level ("bag of bits") and perform no routing: the stored data can only follow the pre-planned segment. Storage at the network layer allows the forwarding decision to be (re)evaluated at the time of transmission, which matters because the path may have been computed long before a stored packet is actually forwarded, and topology or policies may have changed in the interval. A key factor for designing the store and forward capability of an orbiter is its storage capacity.</t>
         <t>Surface assets that are facing intermittent communications also need the store-and-forward capability.</t>
         <t>Mechanisms should be defined to avoid as much as possible storage full events on a relay. This may include some in-advance signaling to the network about future full storage event, so that the network and/or the source can throttle down or reroute packets to avoid that event.</t>
         <t>In the event of full storage, a policy should be determined on which packets should be dropped, such as the last one in the queue, the first one in the queue, ones based on policies related to packet or transport fields like source or destination addresses, traffic classes, flow ids, etc. , similar to queue management used in terrestrial networks. These policies are important for differentiated trafic such as Emergency and Search and Rescue.</t>
         <t>Even if calculations can be done based on known orbital dynamics, events happen that result in missed communication windows. For example, some communication windows were not used on Mars because a rover may be still charging and therefore does not have enough energy to perform communications. Random events can also happen because of space weather. Therefore, while the window of comms can be calculated and used, the system should be able to cope with random long interruption events.</t>
-        <t>Proper guards should be designed to avoid denial-of-service attacks by filling storage in the network.</t>
+        <t>Proper guards should be designed to avoid denial-of-service attacks by filling storage in the network; this may include authentication and authorization of the traffic sources allowed to consume storage, and accounting of storage usage per source or traffic class.</t>
       </section>
       <section anchor="time">
         <name>Time</name>
@@ -244,6 +268,11 @@
 	  <t>Electrical power and energy are constrained in systems operating in deep space compared to the terrestrial Internet, although with increasing growth of the Internet of Things (IoT) on Earth, similar constraints are also present in many terrestrial systems.</t>
 	  <t>Since there are a variety of different types and sizes of deep space exploration hardware systems, there are different options to generate power including solar panels or radioisotope thermoelectric generators (RTGs).  Operating off of batteries is common, since sufficient power is not always able to be generated.  In any case, the available power is limited and when transmitting, a substantial amount must go to operating amplifiers and other communications system hardware.  Transmissions may be limited to specific times in order to conserve power and budget it during times when more is not available to generate (e.g. when operating in lunar "night" on a part of the moon not exposed to sunlight).  Some links and physical layer protocols operate synchronously and transmit continuously when active (e.g. using idle frames), while others transmit only data frames and use "Barker codes" or other burst transmission synchronization methods.</t>
 	  <t>The implications of this are that there are a variety of different modes that networking nodes may be in at any time, and some could manifest as temporary "disconnections", even if there is antenna visibility and connectivity would otherwise have been schedulable.</t>
+	  <t>Since transmission dominates the power budget, protocols may need asymmetrical behavior to protect the energy resources of constrained nodes: for example, minimizing the number and size of transmissions required from the constrained side of an exchange, even at the cost of additional transmissions from the well-resourced side.</t>
+      </section>
+      <section>
+          <name>Asynchronous Operation and Power Save Modes</name>
+          <t>Spacecraft frequently use power save modes with asymmetric radio states: the transmitter may be turned off (transmission dominates power usage) while the receiver remains on, or the node may be entirely asleep. Combined with network-layer store-and-forward, a destination may not be listening at the time packets are sent yet still receive them later. Protocols and applications should therefore not assume that a peer is continuously reachable or that a request implies a timely response; since buffered packets are delivered when the destination is listening again, the notion of the peers being simultaneously online does not apply. Key exchange and re-keying mechanisms should be usable asynchronously, tolerating exchanges that complete over an arbitrary delay.</t>
       </section>
     </section>
     <section>
@@ -253,6 +282,9 @@
       <t>Given the delays to act, for example from Earth to a celestial body, notifications of security issues and mitigation actions will be delayed, which may increase the impact of security issues such as denial of service attacks. </t>
       <t>Security validation, such as certificate validation, based on on-line immediate queries to validation databases, such as done with OCSP <xref target="RFC6960"/>, or with a certificate chain will likely take too long if the validation database is far from the validation querier. Techniques such as preemptive caching of validation chain and certs should be investigated.</t>
       <t>Certificate lifecycle should be well planned to take into account delays and intermittence, so that for example certificate renewals are done sufficiently in advance.</t>
+      <t>Forward secrecy and post-compromise security have different properties and requirements and should be considered separately. Because physical access to deep space assets is generally impossible, recovery from compromise depends on remote means: mechanisms to update trust anchors and credentials over the network, designed to operate under long delays and intermittence, should be part of the security architecture.</t>
+      <t>Some envisioned applications are inherently multi-party: astronaut suit radio networks, space weather alerts, and broadcast navigation or almanac signals (e.g., the LunaNet Augmented Forward Signal). Where such one-to-many traffic requires confidentiality or authentication, group key management adapted to long delays and intermittence would be needed; the specific protocol layers and mechanisms are out of scope of this document.</t>
+      <t>Key establishment and key update mechanisms should be usable asynchronously: given long RTTs and intermittence, mechanisms requiring interactive exchanges before new keys take effect create long windows during which a compromised key remains in use. Moreover, because packets may be buffered in intermediate nodes, a peer that is not reachable at the time of transmission may still receive and process a key update later; key management should therefore not depend on any notion of the peers being simultaneously online, but rather tolerate exchanges that complete over an arbitrary delay. Mechanisms that can establish keys in advance of their use, or complete key updates without an interactive exchange, should be preferred.</t>
       <t>Devices operating in deep space often have limited computational and memory resources. Key agreement - especially key updates - should be efficient and scalable. Given the potential lifetime of space systems and risk of quantum computing to cryptography, this includes requirements for efficiency and scalability in use of post quantum cryptography.</t>
     </section>
     <section>
@@ -400,6 +432,31 @@
             <date month="October" year="2024"/>
           </front>
         </reference>
+        <reference anchor="conjunctionstudy" target="https://ntrs.nasa.gov/citations/20220013418">
+          <front>
+            <title>Communication Delays, Disruptions, and Blackouts for Crewed Mars Missions</title>
+            <author initials="K.T." surname="McBrayer" fullname="Katherine T. McBrayer">
+              <organization>NASA Langley Research Center</organization>
+            </author>
+            <author initials="P.R." surname="Chai" fullname="Patrick R. Chai">
+              <organization>NASA Langley Research Center</organization>
+            </author>
+            <author initials="E.L." surname="Judd" fullname="Emily L. Judd">
+              <organization>NASA Langley Research Center</organization>
+            </author>
+            <date month="August" year="2022"/>
+          </front>
+          <refcontent>ASCEND 2022</refcontent>
+        </reference>
+        <reference anchor="marsconjunction" target="https://www.jpl.nasa.gov/news/whats-mars-solar-conjunction-and-why-does-it-matter/">
+          <front>
+            <title>What's Mars Solar Conjunction, and Why Does It Matter?</title>
+            <author>
+              <organization>NASA Jet Propulsion Laboratory</organization>
+            </author>
+            <date month="August" year="2019"/>
+          </front>
+        </reference>
         <reference anchor="idsis" target="https://internationaldeepspacestandards.com/wp-content/uploads/2024/02/communication_reva_final_9-2020.pdf">
           <front>
             <title>International Communication System
@@ -447,6 +504,15 @@
             <date month="Sep" year="2024"/>
           </front>
         </reference>
+        <reference anchor="nasamoonbase" target="https://www.nasa.gov/moonbase/">
+            <front>
+                <title>Moon Base</title>
+                <author>
+                    <organization>NASA</organization>
+                </author>
+                <date month="June" year="2026"/>
+            </front>
+        </reference>
         <reference anchor="imconstellation" target="https://www.intuitivemachines.com/post/intuitive-machines-expands-data-transmission-services-for-lunar-and-deep-space-missions">
             <front>
                 <title>Intuitive Machines Expands Data Transmission Services for Lunar and Deep Space Mission</title>
@@ -484,7 +550,7 @@
     </references>
     <section anchor="Acknowledgements" numbered="false">
       <name>Acknowledgements</name>
-      <t>This following people have provided valuable feedback and comments, in no specific order: Roy Gladden, Padma Pillay-Esnault, Tomek Mrugalski, Atsushi Tagami, Pascal Thubert, and Carles Gomez Montenegro.</t>
+      <t>This following people have provided valuable feedback and comments, in no specific order: Roy Gladden, Padma Pillay-Esnault, Tomek Mrugalski, Atsushi Tagami, Pascal Thubert, Carles Gomez Montenegro, Martin Duke, Xisen Tian, Dan York, Meiling Chen, Tony Li, Britta Hale, Eric Rescorla, Michael Richardson, and John Mattsson.</t>
     </section>
   </back>
 </rfc>

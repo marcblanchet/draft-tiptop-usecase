@@ -309,7 +309,7 @@
       </section>
       <section>
         <name>Transport</name>
-	<t>Since IP (and UDP) does not provide reliable transport services, such as loss, duplicates and reordered recovery, a reliable transport should be used and configured properly for space delays and intermittence for applications and protocols requiring it.
+	<t>Since IP (and UDP) do not provide reliable transport services, such as recovery from against packet loss, duplication, or reordering, a reliable transport should be used and configured properly for space delays and intermittence for applications and protocols requiring it.
         </t>
        	<t>Congestion control algorithms may sense congestion based on heuristics like increasing delays or loss/retransmission timer firings. In response, sources reduce their congestion window or sending rates to decrease their usage of the network capacity. However, given that forwarders in space may experience intermittent connectivity and buffer significantly, typical round trip measurements may be misleading and loss timer firings may be spurious. Due to these complications, when connectivity is intermittent, traditional congestion control should be adapted or administratively controlled. At least early on, while the networks are small scale, coordinated resource planning and management may be performed to avoid creating congestion.
        </t>

@@ -603,11 +603,11 @@
         <reference anchor="Gateway" target="https://ntrs.nasa.gov/api/citations/20230014342/downloads/IEEE%20-%20Gateway%20Overview%20FINAL%20100223.pdf">
           <front>
             <title>The Gateway Program as Part of NASA's Plans for Human Exploration Beyond Low Earth Orbit</title>
-            <author fullname="Emma Lehnhardt"/>
-            <author fullname="Dylan Connell"/>
-            <date month="July" year="2023"/>
+	    <author fullname="Emma Lehnhardt"/>
+	    <author fullname="Dylan Connell"/>
+	    <date month="July" year="2023"/>
           </front>
-        </reference>
+	</reference>
       </references>
     </references>
     <section anchor="Acknowledgements" numbered="false">

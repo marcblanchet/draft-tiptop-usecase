@@ -288,871 +288,330 @@
 </t>
 </section>
 <section anchor="time">
-        <name>Time</name>
-        <t>
-                Timers are used in transport protocols, application protocols
-                and applications themselves for various purposes, such as
-                detecting/presuming packet loss or data lifetime. Timers should
-                be therefore adjusted and configured based on the expected
-                travel time and RTT from the source to destination. Given
-                variations and possible dynamic changes in the network that can
-                cause much longer latency, appropriate safeguards should be put
-                for timer values.
-        </t>
-        <t>
-                There are two main challenges that deep space networks pose for
-                use of timers in loss detection. First, for cases like Mars,
-                the time needed to infer a loss and request retransmission is
-                much longer than what protocols are designed for in the
-                Internet, and can be so long as to preclude retransmission
-                within the same contact window. Second, for cases where the
-                timing can vary widely, finding appropriate timeout values and
-                adjusting them automatically may be a challenge. Mitigating the
-                long propagation delays could be approached through various
-                techniques such as higher-level erasure coding (e.g. in
-                application or transport protocols), more aggressive
-                retransmission policies, or other methods. Mitigating varying
-                delays can be approached through the use of
-                planning/orchestration systems to provide guidance on proper
-                values over time, or other methods.
-        </t>
-        <t>
-                Lifetime is also attached to some data, such as content,
-                security keys, certificates, tokens, session keys and naming
-                records. Similarly, the lifetime should be adjusted and
-                configured based on the characteristics of the applications and
-                expected travel time and RTT.
-        </t>
-        <t>
-                Current Internet protocols and applications typically use UTC as
-                their time reference. There are currently work to define Lunar
-                Standard Time, also called Coordinated Lunar Time and Mars
-                Standard Time
-                <xref target="lunartime"/>
-                . Depending on the application and use case, it may be necessary to adapt the protocol or the application to use another time reference.</t>
-        </section>
-        <section>
-                <name>Location</name>
-                <t>
-                        Some IETF protocols such as
-                        <xref target="RFC5870"/>
-                        <xref target="RFC8805"/>
-                        use a Earth coordinate system such as <xref target="WGS84"/>
-                        or address-based reference<xref target="RFC8805"/>
-                        for encoding location. Deep space uses various coordinate systems such as celestial body references<xref target="SANACelestialBodyReference"/>
-                        or orbit-relative references<xref target="SANAOrbitRelativeReference"/>
-                        . Therefore, IETF protocols carrying location information may need to be updated to also support space coordinate reference systems. An example of such space coordinate reference system addition for IETF protocols is in <xref target="RFC9179"/>
-                        .</t>
-                </section>
-                <section>
-                        <name>Signaling and Exchanges</name>
-                        <t>
-                                Given the large latency of space communications,
-                                multiple steps of exchanges or handshakes may
-                                still work but are far from optimal and may
-                                never converge. Therefore, applications and
-                                protocols should be adapted to minimize the
-                                number of exchanges.
-                        </t>
-                        <t>
-                                Similarly, applications, protocols or networking
-                                stack that depend on signaling back to the
-                                source or to somewhere in the path may arrive
-                                too late for any usefulness, because of the
-                                latency. Therefore, any signaling should be
-                                carefully designed based on the expected
-                                latency.
-                        </t>
-                </section>
-                <section>
-                        <name>Bandwidth</name>
-                        <t>
-                                Given that space communications will always have
-                                much lower bandwidth than what is possible in
-                                shorter distances such as on Earth, optimization
-                                of the bandwidth usage is important. This can be
-                                implemented at many levels in the networking
-                                stack, starting from layer-2 to IP header
-                                compression to transport and application data
-                                compression.
-                        </t>
-                </section>
-                <section>
-                        <name>Transport</name>
-                        <t>
-                                Since IP (and UDP) does not provide reliable
-                                transport services, such as loss, duplicates and
-                                reordered recovery, a reliable transport should
-                                be used and configured properly for space delays
-                                and intermittence for applications and protocols
-                                requiring it.
-                        </t>
-                        <t>
-                                Congestion control algorithms may sense
-                                congestion based on heuristics like increasing
-				delays or loss/retransmission timer firings. In response, sources
-				reduce their congestion window or sending rates to
-				decrease their usage of the network
-                                capacity. However, given that forwarders in
-                                space may experience intermittent connectivity and buffer significantly, typical round trip measurements may be misleading and loss timer firings may be spurious.
-                                Due to these complications, when connectivity is intermittent, traditional congestion control should be adapted or administratively controlled.
-                                At least
-                                early on, while the networks are small scale,
-                                coordinated resource planning and management may
-                                be performed to avoid creating congestion.
-                        </t>
-                </section>
-                <section>
-                        <name>Addressing and Routing</name>
-                        <t>
-                                To minimize routing and forwarding tables,
-                                optimal address aggregation is preferred, and it
-                                starts with proper allocation of addresses.
-                        </t>
-                        <t>
-                                The network in deep space, not including the
-                                surface networks on celestial bodies, will grow
-                                at a small pace, which does not warrant complex
-                                routing schemes. However, over time, the network
-                                will become sufficiently complex not only
-                                because of the number of forwarders but also
-                                because of the intrinsic intermittent and delay
-                                communication patterns, which may warrant more
-                                complex routing solutions and orchestration.
-                        </t>
-                </section>
-                <section>
-                        <name>Recovery on Reboot</name>
-                        <t>
-                                On a well-connected and low delay network such
-                                as Internet, an unexpected reboot of an
-                                intermediate node or a endpoint is recovered
-                                relatively fast: adjacency can be restored with
-                                neighbors for intermediate nodes, and endpoints
-                                can resume or restart their connections with
-                                their peers within short time. On the contrary,
-                                given the intermittence and long delays in deep
-                                space, this fast recovery is unlikely.
-                        </t>
-                        <t>
-                                For intermediate nodes, storing in permanent
-                                memory the contact schedule or the expected next
-                                opportunities for neighbors may help faster
-                                recovery.
-                        </t>
-                        <t>
-                                For endpoints, applications may keep a state
-                                context in permanent memory, either at the
-                                application layer or at the transport layer or
-                                both.
-                        </t>
-                </section>
-                <section>
-                        <name>Energy</name>
-                        <t>
-                                Electrical power and energy are constrained in
-                                systems operating in deep space compared to the
-                                terrestrial Internet, although with increasing
-                                growth of the Internet of Things (IoT) on Earth,
-                                similar constraints are also present in many
-                                terrestrial systems.
-                        </t>
-                        <t>
-                                Since there are a variety of different types and
-                                sizes of deep space exploration hardware
-                                systems, there are different options to generate
-                                power including solar panels or radioisotope
-                                thermoelectric generators (RTGs). Operating off
-                                of batteries is common, since sufficient power
-                                is not always able to be generated. In any
-                                case, the available power is limited and when
-                                transmitting, a substantial amount must go to
-                                operating amplifiers and other communications
-                                system hardware. Transmissions may be limited
-                                to specific times in order to conserve power and
-                                budget it during times when more is not
-                                available to generate (e.g. when operating in
-                                lunar "night" on a part of the moon not exposed
-                                to sunlight). Some links and physical layer
-                                protocols operate synchronously and transmit
-                                continuously when active (e.g. using idle
-                                frames), while others transmit only data frames
-                                and use "Barker codes" or other burst
-                                transmission synchronization methods.
-                        </t>
-                        <t>
-                                The implications of this are that there are a
-                                variety of different modes that networking nodes
-                                may be in at any time, and some could manifest
-                                as temporary "disconnections", even if there is
-                                antenna visibility and connectivity would
-                                otherwise have been schedulable.
-                        </t>
-                        <t>
-                                Since transmission dominates the power budget,
-                                protocols may need asymmetrical behavior to
-                                protect the energy resources of constrained
-                                nodes: for example, minimizing the number and
-                                size of transmissions required from the
-                                constrained side of an exchange, even at the
-                                cost of additional transmissions from the
-                                well-resourced side.
-                        </t>
-                </section>
-                <section>
-                        <name>Asynchronous Operation and Power Save Modes</name>
-                        <t>
-                                Spacecraft frequently use power save modes with
-                                asymmetric radio states: the transmitter may be
-                                turned off (transmission dominates power usage)
-                                while the receiver remains on, or the node may
-                                be entirely asleep. Due to buffering upstream,
-                                a destination may not be
-                                listening at the time packets are sent yet still
-                                receive them later. Protocols and applications
-                                should therefore not assume that a peer is
-                                continuously reachable or that a request implies
-                                a timely response; since buffered packets are
-                                delivered when the destination is listening
-                                again, the notion of the peers being
-                                simultaneously online does not apply. Key
-                                exchange and re-keying mechanisms should be
-                                usable asynchronously, tolerating exchanges that
-                                complete over an arbitrary delay.
-                        </t>
-                </section>
-        </section>
-        <section>
-                <name>Security Considerations</name>
-                <t>
-                        The CCSDS has created a reference document covering
-                        general security threats against space missions, as well
-                        as classes of mitigations
-                        <xref target="CCSDS-Threats"/>
-                        .  This is a useful high-level reference, though it does not go into depth on networking protocols.</t>
-                        <t>
-                                Security protocols and mitigations are most
-                                often based on time, such as keys and
-                                certificate lifetimes, tokens lifetime, firewall
-                                opened ports time windows, etc. Keys and
-                                certificates have also a lifecycle where they
-                                should be renewed.
-                        </t>
-                        <t>
-                                Given the delays to act, for example from Earth
-                                to a celestial body, notifications of security
-                                issues and mitigation actions will be delayed,
-                                which may increase the impact of security issues
-                                such as denial of service attacks.
-                        </t>
-                        <t>
-                                Security validation, such as certificate
-                                validation, based on on-line immediate queries
-                                to validation databases, such as done with OCSP
-                                <xref target="RFC6960"/>
-                                , or with a certificate chain will likely take too long if the validation database is far from the validation querier. Techniques such as preemptive caching of validation chain and certs should be investigated.</t>
-                                <t>
-                                        Certificate lifecycle should be well
-                                        planned to take into account delays and
-                                        intermittence, so that for example
-                                        certificate renewals are done
-                                        sufficiently in advance.
-                                </t>
-                                <t>
-                                        Forward secrecy and post-compromise
-                                        security have different properties and
-                                        requirements and should be considered
-                                        separately. Because physical access to
-                                        deep space assets is generally
-                                        impossible, recovery from compromise
-                                        depends on remote means: mechanisms to
-                                        update trust anchors and credentials
-                                        over the network, designed to operate
-                                        under long delays and intermittence,
-                                        should be part of the security
-                                        architecture.
-                                </t>
-                                <t>
-                                        Some envisioned applications are
-                                        inherently multi-party: astronaut suit
-                                        radio networks, space weather alerts,
-                                        and broadcast navigation or almanac
-                                        signals (e.g., the LunaNet Augmented
-                                        Forward Signal). Where such one-to-many
-                                        traffic requires confidentiality or
-                                        authentication, group key management
-                                        adapted to long delays and intermittence
-                                        would be needed; the specific protocol
-                                        layers and mechanisms are out of scope
-                                        of this document.
-                                </t>
-                                <t>
-                                        Key establishment and key update
-                                        mechanisms should be usable
-                                        asynchronously: given long RTTs and
-                                        intermittence, mechanisms requiring
-                                        interactive exchanges before new keys
-                                        take effect create long windows during
-                                        which a compromised key remains in use.
-                                        Moreover, because packets may be
-                                        buffered in intermediate nodes, a peer
-                                        that is not reachable at the time of
-                                        transmission may still receive and
-                                        process a key update later; key
-                                        management should therefore not depend
-                                        on any notion of the peers being
-                                        simultaneously online, but rather
-                                        tolerate exchanges that complete over an
-                                        arbitrary delay. Mechanisms that can
-                                        establish keys in advance of their use,
-                                        or complete key updates without an
-                                        interactive exchange, should be
-                                        preferred.
-                                </t>
-                                <t>
-                                        Devices operating in deep space often
-                                        have limited computational and memory
-                                        resources. Key agreement - especially
-                                        key updates - should be efficient and
-                                        scalable. Given the potential lifetime
-                                        of space systems and risk of quantum
-                                        computing to cryptography, this includes
-                                        requirements for efficiency and
-                                        scalability in use of post quantum
-                                        cryptography.
-                                </t>
-                        </section>
-                        <section>
-                                <name>IANA Considerations</name>
-                                <t>
-                                        There are no actions for IANA in this
-                                        document.
-                                </t>
-                        </section>
-                </middle>
-                <back>
-                        <references>
-                                <name>References</name>
-                                <references>
-                                        <name>Informative References</name>
-                                        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5870.xml"/>
-                                        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6960.xml"/>
-                                        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8805.xml"/>
-                                        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9179.xml"/>
-                                        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.many-deepspace-ip-assessment.xml"/>
-                                        <reference anchor="IPoverCCSDSSpaceLinks" target="https://public.ccsds.org/Pubs/702x1b1c2.pdf">
-                                                <front>
-                                                        <title>
-                                                                IP OVER CCSDS
-                                                                SPACE LINKS,
-                                                                Blue Book 702
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Consultative Committee
-                                                                        on Space
-                                                                        Data
-                                                                        Systems
-                                                                        (CCSDS)
-                                                                </organization>
-                                                        </author>
-                                                        <date year="2012" month="September"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="SANAIPEHeaderRegistry" target="https://sanaregistry.org/r/ipe_header/">
-                                                <front>
-                                                        <title>
-                                                                Internet Protocol
-                                                                Extension Header
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Space Assigned
-                                                                        Numbers
-                                                                        Authority
-                                                                </organization>
-                                                        </author>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="CCSDS_AOS" target="https://public.ccsds.org/Pubs/732x0b4.pdf">
-                                                <front>
-                                                        <title>
-                                                                AOS Space Data
-                                                                Link Protocol,
-                                                                Blue Book
-                                                                732.0-B-4
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Consultative Committee
-                                                                        on Space
-                                                                        Data
-                                                                        Systems
-                                                                        (CCSDS)
-                                                                </organization>
-                                                        </author>
-                                                        <date year="2021" month="October"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="CCSDS_TM" target="https://public.ccsds.org/Pubs/132x0b3.pdf">
-                                                <front>
-                                                        <title>
-                                                                TM Space Data
-                                                                Link Protocol,
-                                                                Blue Book
-                                                                132.0-B-3
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Consultative Committee
-                                                                        on Space
-                                                                        Data
-                                                                        Systems
-                                                                        (CCSDS)
-                                                                </organization>
-                                                        </author>
-                                                        <date year="2021" month="October"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="CCSDS_TC" target="https://public.ccsds.org/Pubs/232x0b4e1c1.pdf">
-                                                <front>
-                                                        <title>
-                                                                TC Space Data
-                                                                Link Protocol,
-                                                                Blue Book
-                                                                232.0-B-4
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Consultative Committee
-                                                                        on Space
-                                                                        Data
-                                                                        Systems
-                                                                        (CCSDS)
-                                                                </organization>
-                                                        </author>
-                                                        <date year="2021" month="October"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="CCSDS_PROX1" target="https://public.ccsds.org/Pubs/211x0b6e1.pdf">
-                                                <front>
-                                                        <title>
-                                                                Proximity-1 Space
-                                                                Link
-                                                                Protocol—Data
-                                                                Link Layer, Blue
-                                                                Book 211.0-B-6
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Consultative Committee
-                                                                        on Space
-                                                                        Data
-                                                                        Systems
-                                                                        (CCSDS)
-                                                                </organization>
-                                                        </author>
-                                                        <date year="2020" month="July"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="CCSDS_USLP" target="https://public.ccsds.org/Pubs/732x1b2s.pdf">
-                                                <front>
-                                                        <title>
-                                                                Unified Space
-                                                                Data Link
-                                                                Protocol, Blue
-                                                                Book 732.1-B-2
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Consultative Committee
-                                                                        on Space
-                                                                        Data
-                                                                        Systems
-                                                                        (CCSDS)
-                                                                </organization>
-                                                        </author>
-                                                        <date year="2021" month="October"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="CCSDS_CFDP" target="https://public.ccsds.org/Pubs/727x0b5e1.pdf">
-                                                <front>
-                                                        <title>
-                                                                File Delivery
-                                                                Protocol, Blue
-                                                                Book 727.0-B-5
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Consultative Committee
-                                                                        on Space
-                                                                        Data
-                                                                        Systems
-                                                                        (CCSDS)
-                                                                </organization>
-                                                        </author>
-                                                        <date year="2020" month="July"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="SANACelestialBodyReference" target="https://sanaregistry.org/r/celestial_body_reference_frames/">
-                                                <front>
-                                                        <title>
-                                                                Celestial Body
-                                                                Reference Frames
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Space Assigned
-                                                                        Numbers
-                                                                        Authority
-                                                                </organization>
-                                                        </author>
-                                                        <date year="2023" month="May"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="SANAOrbitRelativeReference" target="https://sanaregistry.org/r/orbit_relative_reference_frames/">
-                                                <front>
-                                                        <title>
-                                                                Orbit-Relative Reference
-                                                                Frames
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Space Assigned
-                                                                        Numbers
-                                                                        Authority
-                                                                </organization>
-                                                        </author>
-                                                        <date year="2025" month="July"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="ioagmoon" target="https://www.ioag.org/Public%20Documents/Lunar%20communications%20architecture%20study%20report%20FINAL%20v1.3.pdf">
-                                                <front>
-                                                        <title>
-                                                                The Future Lunar
-                                                                Communications
-                                                                Architecture,
-                                                                Report of the
-                                                                Interagency
-                                                                Operations
-                                                                Advisory Group
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Lunar Communications
-                                                                        Architecture
-                                                                        Working
-                                                                        Group,
-                                                                        Interagency
-                                                                        Operations
-                                                                        Advisory
-                                                                        Group
-                                                                </organization>
-                                                        </author>
-                                                        <date year="2022" month="January"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="ioagmars" target="https://www.ioag.org/Public%20Documents/MBC%20architecture%20report%20final%20version%20PDF.pdf">
-                                                <front>
-                                                        <title>
-                                                                The Future
-                                                                Mars
-                                                                Communications
-                                                                Architecture,
-                                                                Report of the
-                                                                Interagency
-                                                                Operations
-                                                                Advisory Group
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Mars and
-                                                                        Beyond
-                                                                        Communications
-                                                                        Architecture
-                                                                        Working
-                                                                        Group,
-                                                                        Interagency
-                                                                        Operations
-                                                                        Advisory
-                                                                        Group
-                                                                </organization>
-                                                        </author>
-                                                        <date year="2022" month="February"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="mro" target="https://science.nasa.gov/mission/mars-reconnaissance-orbiter/">
-                                                <front>
-                                                        <title>
-                                                                Mars Reconnaissance
-                                                                Orbiter
-                                                        </title>
-                                                        <author/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="DSN" target="https://www.nasa.gov/directorates/somd/space-communications-navigation-program/what-is-the-deep-space-network/">
-                                                <front>
-                                                        <title>
-                                                                Deep Space
-                                                                Network
-                                                        </title>
-                                                        <author/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="marscommstudy" target="https://deepspaceip.github.io/meetings/ietf121/ietf121-deepspaceip-mars-communications-study.pdf">
-                                                <front>
-                                                        <title>
-                                                                Earth-Mars Communication
-                                                                Windows Usage
-                                                                Study
-                                                        </title>
-                                                        <author fullname="Marc Blanchet" initials="M." surname="Blanchet">
-                                                                <organization>
-                                                                        Viagenie
-                                                                </organization>
-                                                        </author>
-                                                        <date month="October" year="2024"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="conjunctionstudy" target="https://ntrs.nasa.gov/citations/20220013418">
-                                                <front>
-                                                        <title>
-                                                                Communication Delays,
-                                                                Disruptions, and
-                                                                Blackouts for
-                                                                Crewed Mars
-                                                                Missions
-                                                        </title>
-                                                        <author initials="K.T." surname="McBrayer" fullname="Katherine T. McBrayer">
-                                                                <organization>
-                                                                        NASA Langley
-                                                                        Research
-                                                                        Center
-                                                                </organization>
-                                                        </author>
-                                                        <author initials="P.R." surname="Chai" fullname="Patrick R. Chai">
-                                                                <organization>
-                                                                        NASA Langley
-                                                                        Research
-                                                                        Center
-                                                                </organization>
-                                                        </author>
-                                                        <author initials="E.L." surname="Judd" fullname="Emily L. Judd">
-                                                                <organization>
-                                                                        NASA Langley
-                                                                        Research
-                                                                        Center
-                                                                </organization>
-                                                        </author>
-                                                        <date month="August" year="2022"/>
-                                                </front>
-                                                <refcontent>
-                                                        ASCEND 2022
-                                                </refcontent>
-                                        </reference>
-                                        <reference anchor="marsconjunction" target="https://www.jpl.nasa.gov/news/whats-mars-solar-conjunction-and-why-does-it-matter/">
-                                                <front>
-                                                        <title>
-                                                                What's Mars
-                                                                Solar
-                                                                Conjunction, and
-                                                                Why Does It
-                                                                Matter?
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        NASA Jet
-                                                                        Propulsion
-                                                                        Laboratory
-                                                                </organization>
-                                                        </author>
-                                                        <date month="August" year="2019"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="idsis" target="https://internationaldeepspacestandards.com/wp-content/uploads/2024/02/communication_reva_final_9-2020.pdf">
-                                                <front>
-                                                        <title>
-                                                                International Communication
-                                                                System
-                                                                Interoperability
-                                                                Standards
-                                                                (ICSIS)
-                                                        </title>
-                                                        <author/>
-                                                        <date month="September" year="2020"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="lnis" target="https://www.nasa.gov/directorates/somd/space-communications-navigation-program/lunanet-interoperability-specification/">
-                                                <front>
-                                                        <title>
-                                                                LunaNet Interoperability
-                                                                Specification -
-                                                                Version 5
-                                                        </title>
-                                                        <author/>
-                                                        <date month="February" year="2025"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="deepspacewikipedia" target="https://en.wikipedia.org/wiki/Deep_space_exploration">
-                                                <front>
-                                                        <title>
-                                                                Deep space
-                                                                exploration
-                                                        </title>
-                                                        <author/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="maros">
-                                                <front>
-                                                        <title>
-                                                                Mars Relay
-                                                                Operations
-                                                                Service (MaROS):
-                                                                A Present
-                                                                Service
-                                                                Preparing for
-                                                                the Future
-                                                        </title>
-                                                        <author initials="R." surname="Gladden" fullname="Roy E. Gladden">
-                                                                <organization>
-                                                                        AIAA SpaceOps
-                                                                        2014
-                                                                        Conference
-                                                                </organization>
-                                                        </author>
-                                                        <date month="May" year="2014"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="tte" target="https://en.wikipedia.org/wiki/TTEthernet">
-                                                <front>
-                                                        <title>
-                                                                TTEthernet
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Wikipedia
-                                                                </organization>
-                                                        </author>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="lunartime" target="https://www.nasa.gov/general/nasa-to-develop-lunar-time-standard-for-exploration-initiatives/#:~:text=The%20lunar%20time%20will%20be,Coordinated%20Universal%20Time%20(UTC)">
-                                                <front>
-                                                        <title>
-                                                                NASA to Develop
-                                                                Lunar Time
-                                                                Standard for
-                                                                Exploration
-                                                                Initiatives
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        NASA
-                                                                </organization>
-                                                        </author>
-                                                        <date month="Sep" year="2024"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="nasamoonbase" target="https://www.nasa.gov/moonbase/">
-                                                <front>
-                                                        <title>Moon Base</title>
-                                                        <author>
-                                                                <organization>
-                                                                        NASA
-                                                                </organization>
-                                                        </author>
-                                                        <date month="June" year="2026"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="imconstellation" target="https://www.intuitivemachines.com/post/intuitive-machines-expands-data-transmission-services-for-lunar-and-deep-space-missions">
-                                                <front>
-                                                        <title>
-                                                                Intuitive Machines
-                                                                Expands Data
-                                                                Transmission
-                                                                Services for
-                                                                Lunar and Deep
-                                                                Space Mission
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Intuitive Machines
-                                                                </organization>
-                                                        </author>
-                                                        <date month="Apr" year="2025"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="WGS84">
-                                                <front>
-                                                        <title>
-                                                                Department of
-                                                                Defense World
-                                                                Geodetic System
-                                                                1984, Third
-                                                                Edition, NIMA
-                                                                TR8350.2
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        National Imagery
-                                                                        and
-                                                                        Mapping
-                                                                        Agency
-                                                                </organization>
-                                                        </author>
-                                                        <date month="Jan" year="2000"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="CCSDS-Threats" target="https://ccsds.org/Pubs/350x1g3.pdf">
-                                                <front>
-                                                        <title>
-                                                                Security Threats
-                                                                Against Space
-                                                                Missions, Green
-                                                                Book 350.1-G-3
-                                                        </title>
-                                                        <author>
-                                                                <organization>
-                                                                        Consultative Committee
-                                                                        on Space
-                                                                        Data
-                                                                        Systems
-                                                                        (CCSDS)
-                                                                </organization>
-                                                        </author>
-                                                        <date year="2022" month="February"/>
-                                                </front>
-                                        </reference>
-                                        <reference anchor="Gateway" target="https://ntrs.nasa.gov/api/citations/20230014342/downloads/IEEE%20-%20Gateway%20Overview%20FINAL%20100223.pdf">
-                                                <front>
-                                                        <title>
-                                                                The Gateway
-                                                                Program as Part
-                                                                of NASA's Plans
-                                                                for Human
-                                                                Exploration
-                                                                Beyond Low Earth
-                                                                Orbit
-                                                        </title>
-                                                        <author fullname="Emma Lehnhardt"/>
-                                                        <author fullname="Dylan Connell"/>
-                                                        <date month="July" year="2023"/>
-                                                </front>
-                                        </reference>
-                                </references>
-                        </references>
-                        <section anchor="Acknowledgements" numbered="false">
-                                <name>Acknowledgements</name>
-                                <t>
-                                        This following people have provided
-                                        valuable feedback and comments, in no
-                                        specific order: Roy Gladden, Padma
-                                        Pillay-Esnault, Tomek Mrugalski, Atsushi
-                                        Tagami, Pascal Thubert, Carles Gomez
-                                        Montenegro, Martin Duke, Xisen Tian, Dan
-                                        York, Meiling Chen, Tony Li, Britta
-                                        Hale, Eric Rescorla, Michael Richardson,
-                                        and John Mattsson.
-                                </t>
-                        </section>
-                </back>
-        </rfc>
+	<name>Time</name>
+        <t>Timers are used in transport protocols, application protocols and applications themselves for various purposes, such as detecting/presuming packet loss or data lifetime. Timers should be therefore adjusted and configured based on the expected travel time and RTT from the source to destination. Given variations and possible dynamic changes in the network that can cause much longer latency, appropriate safeguards should be put for timer values.</t>
+        <t>There are two main challenges that deep space networks pose for use of timers in loss detection.  First, for cases like Mars, the time needed to infer a loss and request retransmission is much longer than what protocols are designed for in the Internet, and can be so long as to preclude retransmission within the same contact window.  Second, for cases where the timing can vary widely, finding appropriate timeout values and adjusting them automatically may be a challenge.  Mitigating the long propagation delays could be approached through various techniques such as higher-level erasure coding (e.g. in application or transport protocols), more aggressive retransmission policies, or other methods.  Mitigating varying delays can be approached through the use of planning/orchestration systems to provide guidance on proper values over time, or other methods.</t>
+        <t>Lifetime is also attached to some data, such as content, security keys, certificates, tokens, session keys and naming records. Similarly, the lifetime should be adjusted and configured based on the characteristics of the applications and expected travel time and RTT.</t>
+        <t>Current Internet protocols and applications typically use UTC as their time reference. There are currently work to define Lunar Standard Time, also called Coordinated Lunar Time and Mars Standard Time <xref target="lunartime"/>. Depending on the application and use case, it may be necessary to adapt the protocol or the application to use another time reference.</t>
+      </section>
+      <section>
+          <name>Location</name>
+          <t>Some IETF protocols such as <xref target="RFC5870"/><xref target="RFC8805"/> use a Earth coordinate system such as <xref target="WGS84"/> or address-based reference<xref target="RFC8805"/> for encoding location. Deep space uses various coordinate systems such as celestial body references<xref target="SANACelestialBodyReference"/> or orbit-relative references<xref target="SANAOrbitRelativeReference"/>. Therefore, IETF protocols carrying location information may need to be updated to also support space coordinate reference systems. An example of such space coordinate reference system addition for IETF protocols is in <xref target="RFC9179"/>.</t>
+      </section>
+      <section>
+        <name>Signaling and Exchanges</name>
+        <t>Given the large latency of space communications, multiple steps of exchanges or handshakes may still work but are far from optimal and may never converge. Therefore, applications and protocols should be adapted to minimize the number of exchanges.</t>
+        <t>Similarly, applications, protocols or networking stack that depend on signaling back to the source or to somewhere in the path may arrive too late for any usefulness, because of the latency. Therefore, any signaling should be carefully designed based on the expected latency.</t>
+      </section>
+      <section>
+        <name>Bandwidth</name>
+        <t>Given that space communications will always have much lower bandwidth than what is possible in shorter distances such as on Earth, optimization of the bandwidth usage is important. This can be implemented at many levels in the networking stack, starting from layer-2 to IP header compression to transport and application data compression.</t>
+      </section>
+      <section>
+          <name>Transport</name>
+          <t>Since IP (and UDP) does not provide reliable transport services, such as loss, duplicates and reordered recovery, a reliable transport should be used and configured properly for space delays and intermittence for applications and protocols requiring it.</t>
+          <t>Congestion control algorithms may declare congestion based on heuristics such as when delays are increasing. In that case, sources pace down to decrease their usage of the bandwidth. However, given that forwarders in space apply the store-and-forward technique when link intermittence happen, the congestion seen by the source is not actually congestion in the typical Internet sense, but deep buffer usage in forwarders, as a normal and expected operation. Therefore, congestion control should be adapted or not used because of intermittence. At least early on, while the networks are small scale, coordinated resource planning and management may be performed to avoid creating congestion.</t>
+      </section>
+      <section>
+        <name>Addressing and Routing</name>
+        <t>To minimize routing and forwarding tables, optimal address aggregation is preferred, and it starts with proper allocation of addresses.</t>
+        <t>The network in deep space, not including the surface networks on celestial bodies, will grow at a small pace, which does not warrant complex routing schemes. However, over time, the network will become sufficiently complex not only because of the number of forwarders but also because of the intrinsic intermittent and delay communication patterns, which may warrant more complex routing solutions and orchestration.</t>
+      </section>
+      <section>
+          <name>Recovery on Reboot</name>
+          <t>On a well-connected and low delay network such as Internet, an unexpected reboot of an intermediate node or a endpoint is recovered relatively fast: adjacency can be restored with neighbors for intermediate nodes, and endpoints can resume or restart their connections with their peers within short time. On the contrary, given the intermittence and long delays in deep space, this fast recovery is unlikely.</t>
+          <t>For intermediate nodes, storing in permanent memory the contact schedule or the expected next opportunities for neighbors may help faster recovery.</t>
+          <t>For endpoints, applications may keep a state context in permanent memory, either at the application layer or at the transport layer or both.</t>
+      </section>
+      <section>
+          <name>Energy</name>
+          <t>Electrical power and energy are constrained in systems operating in deep space compared to the terrestrial Internet, although with increasing growth of the Internet of Things (IoT) on Earth, similar constraints are also present in many terrestrial systems.</t>
+          <t>Since there are a variety of different types and sizes of deep space exploration hardware systems, there are different options to generate power including solar panels or radioisotope thermoelectric generators (RTGs).  Operating off of batteries is common, since sufficient power is not always able to be generated.  In any case, the available power is limited and when transmitting, a substantial amount must go to operating amplifiers and other communications system hardware.  Transmissions may be limited to specific times in order to conserve power and budget it during times when more is not available to generate (e.g. when operating in lunar "night" on a part of the moon not exposed to sunlight).  Some links and physical layer protocols operate synchronously and transmit continuously when active (e.g. using idle frames), while others transmit only data frames and use "Barker codes" or other burst transmission synchronization methods.</t>
+          <t>The implications of this are that there are a variety of different modes that networking nodes may be in at any time, and some could manifest as temporary "disconnections", even if there is antenna visibility and connectivity would otherwise have been schedulable.</t>
+          <t>Since transmission dominates the power budget, protocols may need asymmetrical behavior to protect the energy resources of constrained nodes: for example, minimizing the number and size of transmissions required from the constrained side of an exchange, even at the cost of additional transmissions from the well-resourced side.</t>
+      </section>
+      <section>
+          <name>Asynchronous Operation and Power Save Modes</name>
+          <t>Spacecraft frequently use power save modes with asymmetric radio states: the transmitter may be turned off (transmission dominates power usage) while the receiver remains on, or the node may be entirely asleep. Combined with network-layer store-and-forward, a destination may not be listening at the time packets are sent yet still receive them later. Protocols and applications should therefore not assume that a peer is continuously reachable or that a request implies a timely response; since buffered packets are delivered when the destination is listening again, the notion of the peers being simultaneously online does not apply. Key exchange and re-keying mechanisms should be usable asynchronously, tolerating exchanges that complete over an arbitrary delay.</t>
+      </section>
+    </section>
+    <section>
+        <name>Security Considerations</name>
+        <t>The CCSDS has created a reference document covering general security threats against space missions, as well as classes of mitigations <xref target="CCSDS-Threats"/>.  This is a useful high-level reference, though it does not go into depth on networking protocols.</t>
+        <t>Security protocols and mitigations are most often based on time, such as keys and certificate lifetimes, tokens lifetime, firewall opened ports time windows, etc. Keys and certificates have also a lifecycle where they should be renewed.</t>
+      <t>Given the delays to act, for example from Earth to a celestial body, notifications of security issues and mitigation actions will be delayed, which may increase the impact of security issues such as denial of service attacks. </t>
+      <t>Security validation, such as certificate validation, based on on-line immediate queries to validation databases, such as done with OCSP <xref target="RFC6960"/>, or with a certificate chain will likely take too long if the validation database is far from the validation querier. Techniques such as preemptive caching of validation chain and certs should be investigated.</t>
+      <t>Certificate lifecycle should be well planned to take into account delays and intermittence, so that for example certificate renewals are done sufficiently in advance.</t>
+     <t>Forward secrecy and post-compromise security have different properties and requirements and should be considered separately. Because physical access to deep space assets is generally impossible, recovery from compromise depends on remote means: mechanisms to update trust anchors and credentials over the network, designed to operate under long delays and intermittence, should be part of the security architecture.</t>
+      <t>Some envisioned applications are inherently multi-party: astronaut suit radio networks, space weather alerts, and broadcast navigation or almanac signals (e.g., the LunaNet Augmented Forward Signal). Where such one-to-many traffic requires confidentiality or authentication, group key management adapted to long delays and intermittence would be needed; the specific protocol layers and mechanisms are out of scope of this document.</t>
+      <t>Key establishment and key update mechanisms should be usable asynchronously: given long RTTs and intermittence, mechanisms requiring interactive exchanges before new keys take effect create long windows during which a compromised key remains in use. Moreover, because packets may be buffered in intermediate nodes, a peer that is not reachable at the time of transmission may still receive and process a key update later; key management should therefore not depend on any notion of the peers being simultaneously online, but rather tolerate exchanges that complete over an arbitrary delay. Mechanisms that can establish keys in advance of their use, or complete key updates without an interactive exchange, should be preferred.</t>
+      <t>Devices operating in deep space often have limited computational and memory resources. Key agreement - especially key updates - should be efficient and scalable. Given the potential lifetime of space systems and risk of quantum computing to cryptography, this includes requirements for efficiency and scalability in use of post quantum cryptography.</t>
+    </section>
+    <section>
+      <name>IANA Considerations</name>
+      <t>There are no actions for IANA in this document.</t>
+    </section>
+  </middle>
+  <back>
+    <references>
+      <name>References</name>
+      <references>
+        <name>Informative References</name>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5870.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6960.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8805.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9179.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.many-deepspace-ip-assessment.xml"/>
+        <reference anchor="IPoverCCSDSSpaceLinks" target="https://public.ccsds.org/Pubs/702x1b1c2.pdf">
+          <front>
+            <title>IP OVER CCSDS SPACE LINKS, Blue Book 702</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+            </author>
+            <date year="2012" month="September"/>
+          </front>
+        </reference>
+        <reference anchor="SANAIPEHeaderRegistry" target="https://sanaregistry.org/r/ipe_header/">
+          <front>
+            <title>Internet Protocol Extension Header</title>
+            <author>
+                <organization>Space Assigned Numbers Authority</organization>
+            </author>
+          </front>
+        </reference>
+        <reference anchor="CCSDS_AOS" target="https://public.ccsds.org/Pubs/732x0b4.pdf">
+          <front>
+            <title>AOS Space Data Link Protocol, Blue Book 732.0-B-4</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+            </author>
+            <date year="2021" month="October"/>
+          </front>
+        </reference>
+        <reference anchor="CCSDS_TM" target="https://public.ccsds.org/Pubs/132x0b3.pdf">
+          <front>
+            <title>TM Space Data Link Protocol, Blue Book 132.0-B-3</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+            </author>
+            <date year="2021" month="October"/>
+          </front>
+        </reference>
+        <reference anchor="CCSDS_TC" target="https://public.ccsds.org/Pubs/232x0b4e1c1.pdf">
+          <front>
+            <title>TC Space Data Link Protocol, Blue Book 232.0-B-4</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+            </author>
+            <date year="2021" month="October"/>
+          </front>
+        </reference>
+        <reference anchor="CCSDS_PROX1" target="https://public.ccsds.org/Pubs/211x0b6e1.pdf">
+          <front>
+            <title>Proximity-1 Space Link Protocol—Data Link Layer, Blue Book 211.0-B-6</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+            </author>
+            <date year="2020" month="July"/>
+          </front>
+        </reference>
+        <reference anchor="CCSDS_USLP" target="https://public.ccsds.org/Pubs/732x1b2s.pdf">
+          <front>
+            <title>Unified Space Data Link Protocol, Blue Book 732.1-B-2</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+            </author>
+            <date year="2021" month="October"/>
+          </front>
+        </reference>
+        <reference anchor="CCSDS_CFDP" target="https://public.ccsds.org/Pubs/727x0b5e1.pdf">
+          <front>
+            <title>File Delivery Protocol, Blue Book 727.0-B-5</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+            </author>
+            <date year="2020" month="July"/>
+          </front>
+        </reference>
+        <reference anchor="SANACelestialBodyReference" target="https://sanaregistry.org/r/celestial_body_reference_frames/">
+            <front>
+                <title>Celestial Body Reference Frames</title>
+                <author>
+                    <organization>Space Assigned Numbers Authority</organization>
+                </author>
+                <date year="2023" month="May"/>
+            </front>
+        </reference>
+        <reference anchor="SANAOrbitRelativeReference" target="https://sanaregistry.org/r/orbit_relative_reference_frames/">
+            <front>
+                <title>Orbit-Relative Reference Frames</title>
+                <author>
+                    <organization>Space Assigned Numbers Authority</organization>
+                </author>
+                <date year="2025" month="July"/>
+            </front>
+        </reference>
+        <reference anchor="ioagmoon" target="https://www.ioag.org/Public%20Documents/Lunar%20communications%20architecture%20study%20report%20FINAL%20v1.3.pdf">
+          <front>
+            <title>The Future Lunar Communications Architecture, Report of the Interagency Operations Advisory Group</title>
+            <author>
+              <organization>Lunar Communications Architecture Working Group, Interagency Operations Advisory Group</organization>
+            </author>
+            <date year="2022" month="January"/>
+          </front>
+        </reference>
+        <reference anchor="ioagmars" target="https://www.ioag.org/Public%20Documents/MBC%20architecture%20report%20final%20version%20PDF.pdf">
+          <front>
+            <title>The Future
+                Mars Communications Architecture, Report of the Interagency Operations Advisory Group
+                </title>
+            <author>
+              <organization>Mars and Beyond Communications Architecture Working Group, Interagency Operations Advisory Group</organization>
+            </author>
+            <date year="2022" month="February"/>
+          </front>
+        </reference>
+        <reference anchor="mro" target="https://science.nasa.gov/mission/mars-reconnaissance-orbiter/">
+          <front>
+            <title>Mars Reconnaissance Orbiter</title>
+            <author/>
+          </front>
+        </reference>
+        <reference anchor="DSN" target="https://www.nasa.gov/directorates/somd/space-communications-navigation-program/what-is-the-deep-space-network/">
+          <front>
+            <title>Deep Space Network</title>
+            <author/>
+          </front>
+        </reference>
+        <reference anchor="marscommstudy" target="https://deepspaceip.github.io/meetings/ietf121/ietf121-deepspaceip-mars-communications-study.pdf">
+          <front>
+            <title>Earth-Mars Communication Windows Usage Study</title>
+            <author fullname="Marc Blanchet" initials="M." surname="Blanchet">
+              <organization>Viagenie</organization>
+            </author>
+            <date month="October" year="2024"/>
+          </front>
+        </reference>
+       <reference anchor="conjunctionstudy" target="https://ntrs.nasa.gov/citations/20220013418">
+          <front>
+            <title>Communication Delays, Disruptions, and Blackouts for Crewed Mars Missions</title>
+            <author initials="K.T." surname="McBrayer" fullname="Katherine T. McBrayer">
+              <organization>NASA Langley Research Center</organization>
+            </author>
+            <author initials="P.R." surname="Chai" fullname="Patrick R. Chai">
+              <organization>NASA Langley Research Center</organization>
+            </author>
+            <author initials="E.L." surname="Judd" fullname="Emily L. Judd">
+              <organization>NASA Langley Research Center</organization>
+            </author>
+            <date month="August" year="2022"/>
+          </front>
+          <refcontent>ASCEND 2022</refcontent>
+        </reference>
+        <reference anchor="marsconjunction" target="https://www.jpl.nasa.gov/news/whats-mars-solar-conjunction-and-why-does-it-matter/">
+          <front>
+            <title>What's Mars Solar Conjunction, and Why Does It Matter?</title>
+            <author>
+              <organization>NASA Jet Propulsion Laboratory</organization>
+            </author>
+            <date month="August" year="2019"/>
+          </front>
+        </reference>
+        <reference anchor="idsis" target="https://internationaldeepspacestandards.com/wp-content/uploads/2024/02/communication_reva_final_9-2020.pdf">
+          <front>
+            <title>International Communication System
+            Interoperability Standards (ICSIS)</title>
+            <author/>
+            <date month="September" year="2020"/>
+          </front>
+        </reference>
+        <reference anchor="lnis" target="https://www.nasa.gov/directorates/somd/space-communications-navigation-program/lunanet-interoperability-specification/">
+          <front>
+            <title>LunaNet Interoperability Specification - Version 5</title>
+            <author/>
+            <date month="February" year="2025"/>
+          </front>
+        </reference>
+        <reference anchor="deepspacewikipedia" target="https://en.wikipedia.org/wiki/Deep_space_exploration">
+          <front>
+            <title>Deep space exploration</title>
+            <author/>
+          </front>
+        </reference>
+        <reference anchor="maros">
+          <front>
+            <title>Mars Relay Operations Service (MaROS): A Present Service Preparing for the Future</title>
+            <author initials="R." surname="Gladden" fullname="Roy E. Gladden">
+              <organization>AIAA SpaceOps 2014 Conference</organization>
+            </author>
+            <date month="May" year="2014"/>
+          </front>
+        </reference>
+        <reference anchor="tte" target="https://en.wikipedia.org/wiki/TTEthernet">
+          <front>
+            <title>TTEthernet</title>
+            <author>
+              <organization>Wikipedia</organization>
+            </author>
+          </front>
+        </reference>
+        <reference anchor="lunartime" target="https://www.nasa.gov/general/nasa-to-develop-lunar-time-standard-for-exploration-initiatives/#:~:text=The%20lunar%20time%20will%20be,Coordinated%20Universal%20Time%20(UTC)">
+          <front>
+            <title>NASA to Develop Lunar Time Standard for Exploration Initiatives</title>
+            <author>
+              <organization>NASA</organization>
+            </author>
+            <date month="Sep" year="2024"/>
+          </front>
+        </reference>
+        <reference anchor="nasamoonbase" target="https://www.nasa.gov/moonbase/">
+            <front>
+                <title>Moon Base</title>
+                <author>
+                    <organization>NASA</organization>
+                </author>
+                <date month="June" year="2026"/>
+            </front>
+        </reference>
+        <reference anchor="imconstellation" target="https://www.intuitivemachines.com/post/intuitive-machines-expands-data-transmission-services-for-lunar-and-deep-space-missions">
+            <front>
+                <title>Intuitive Machines Expands Data Transmission Services for Lunar and Deep Space Mission</title>
+                <author>
+                    <organization>Intuitive Machines</organization>
+                </author>
+                <date month="Apr" year="2025"/>
+            </front>
+        </reference>
+        <reference anchor="WGS84">
+            <front>
+                <title>Department of Defense World Geodetic System 1984, Third Edition, NIMA TR8350.2</title>
+                <author><organization>National Imagery and Mapping Agency</organization></author>
+                <date month="Jan" year="2000"/>
+            </front>
+        </reference>
+        <reference anchor="CCSDS-Threats" target="https://ccsds.org/Pubs/350x1g3.pdf">
+          <front>
+            <title>Security Threats Against Space Missions, Green Book 350.1-G-3</title>
+            <author>
+              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+            </author>
+            <date year="2022" month="February"/>
+          </front>
+        </reference>
+        <reference anchor="Gateway" target="https://ntrs.nasa.gov/api/citations/20230014342/downloads/IEEE%20-%20Gateway%20Overview%20FINAL%20100223.pdf">
+          <front>
+            <title>The Gateway Program as Part of NASA's Plans for Human Exploration Beyond Low Earth Orbit</title>
+            <author fullname="Emma Lehnhardt"/>
+            <author fullname="Dylan Connell"/>
+            <date month="July" year="2023"/>
+          </front>
+        </reference>
+      </references>
+    </references>
+    <section anchor="Acknowledgements" numbered="false">
+      <name>Acknowledgements</name>
+      <t>This following people have provided valuable feedback and comments, in no specific order: Roy Gladden, Padma Pillay-Esnault, Tomek Mrugalski, Atsushi Tagami, Pascal Thubert, Carles Gomez Montenegro, Martin Duke, Xisen Tian, Dan York, Meiling Chen, Tony Li, Britta Hale, Eric Rescorla, Michael Richardson, and John Mattsson.</t>
+    </section>
+  </back>
+</rfc>
+

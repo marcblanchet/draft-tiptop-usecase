@@ -127,8 +127,8 @@
       </section>
       <section>
         <name>Mars</name>
-        <t>There are currently some orbiters around Mars, of which 4 are actively in use as relays, and 2 active rovers. Multiple missions are planned<xref target="ioagmars"/> in the coming years. Communications are from ground stations on Earth, such as the DSN, to Mars orbiters acting as layer0-1 relays to surface assets such as rovers, and reverse. The relays do not have notion of frames, and only forward bits at different frequencies for each segment, a mechanism named "bag of bits"<xref target="ioagmars"/>. These orbiters can do as "bent-pipe" when the two segments are active, or by storing the bits as "store-and-forward" until the next segment becomes available. Since the current set of orbiters do not provide full coverage of Mars, the communication windows are calculated and planned between Earth and each orbiter, and between each orbiter and each surface asset. Currently, only one rover can use a relay link at any given time. The MaROS project<xref target="maros"/> sponsored by the Jet Propulsion Laboratory acts as a broker to enable missions to enter data about the communications capabilities such as frequencies, bandwidth, window of communication time, ... so that rover missions can schedule the available communications windows for transmitting and receiving. Most orbiters are used and scheduled in MaROS. One of the Mars orbiters is Mars Reconnaissance Orbiter(MRO)<xref target="mro"/>. It was launched in 2005 and has a single 40Mhz processor but over 100G of solid state memory. MaROS experience over years shows that the current bottleneck is not the temporary storage of the relays but the bandwidth from Mars surface assets to Mars orbiter relays. As demonstrated by a study<xref target="marscommstudy"/> on Mars communication windows, the communication windows seem to happen at a constant frequency, but the reality shows that the timing is pretty variable, which means a very large range of resulting round-trip time (RTT) for communications from Earth to Mars and back. For example, within 3 months in 2024, the calculated RTT of the various combinations of orbiters and rovers varied from 30 minutes to 170 hours.</t>
-        <t>Surface assets are commanded directly from Earth but at a very low rate. The traffic from the assets to Earth goes through relays.</t>
+        <t>There are currently some orbiters around Mars, of which 4 are actively in use as relays, and 2 active rovers. Multiple missions are planned<xref target="ioagmars"/> in the coming years. Communications are from ground stations on Earth, such as the DSN, to Mars orbiters acting as layer0-1 relays to surface assets such as rovers, and reverse. The relays do not have notion of frames, and only forward bits at different frequencies for each segment, a mechanism named "bag of bits"<xref target="ioagmars"/>. These orbiters can operate as "bent-pipe" when the two segments are active, or by storing the bits as "store-and-forward" until the next segment becomes available. Since the current set of orbiters do not provide full coverage of Mars, the communication windows are calculated and planned between Earth and each orbiter, and between each orbiter and each surface asset. Currently, only one rover can use a relay link at any given time. The MaROS project<xref target="maros"/> sponsored by the Jet Propulsion Laboratory acts as a broker to enable missions to enter data about the communications capabilities such as frequencies, bandwidth, window of communication time, ... so that rover missions can schedule the available communications windows for transmitting and receiving. Most orbiters are used and scheduled in MaROS. One of the Mars orbiters is Mars Reconnaissance Orbiter(MRO)<xref target="mro"/>. It was launched in 2005 and has a single 40Mhz processor but over 100G of solid state memory. MaROS experience over years shows that the current bottleneck is not the temporary storage of the relays but the bandwidth from Mars surface assets to Mars orbiter relays. As demonstrated by a study<xref target="marscommstudy"/> on Mars communication windows, the communication windows seem to happen at a constant frequency, but the reality shows that the timing is pretty variable, which means a very large range of resulting round-trip time (RTT) for communications from Earth to Mars and back. For example, within 3 months in 2024, the calculated RTT of the various combinations of orbiters and rovers varied from 30 minutes to 170 hours.</t>
+        <t>Surface assets are commanded directly from Earth but at a very low rate. The traffic from the assets to Earth generally goes through relays.</t>
         <t>It is expected that future constellations of Mars orbiters acting as relays will also have optical inter-satellite links<xref target="ioagmars"/>. The current orbiters were put in various orbits for the purpose of science, and usually have a small number of short relay opportunities per day. However, dedicated relay orbiters could be put at much higher altitudes to provide much better coverage.</t>
         <t>About every 26 months, a solar conjunction happens for a period of around two weeks, where the Sun is between Earth and Mars, therefore causing the interruption of communications between Earth and Mars, as described in <xref target="scenario-sc"/>.</t>
         <t>One-way delay from Earth to Mars is from 4 to 24 minutes, depending on the actual relative distance between them.</t>
@@ -159,15 +159,15 @@
       <t>It is expected that surface assets (for Moon, Mars, asteroids, etc.) will communicate with other surface assets on the same body through typical Earth-based wireless technologies such as WiFi or 4G/5G/6G, or via a orbiting relays.</t>
       <t>Regarding applications, the following is an incomplete list:</t>
       <ul>
-        <li>Telecommand: Commanding can take different forms, either individual commands or batching commands together.  Individual commands sent to a mission/spacecraft from Earth are typically small (may fit within a single packet in many cases), and should typically be received reliably and in-order to be processed. Commands with dependencies or other relations may be grouped together for transmission and to help assure coherent execution rather than sent individually.  This can resemble small file transfer, for instance.  Commands may be time-sensitive, or have an "expiration date" after which they are not useful to store/carry in the network.  Required data rates may typically be in kbps and bursty.</li>
+        <li>Telecommand: Commanding can take different forms, either individual commands or batching commands together.  Individual commands sent to a mission/spacecraft from Earth are typically small (may fit within a single packet in many cases), and should typically be received reliably and in-order to be processed. Commands with dependencies or other relations may be grouped together for transmission and to help assure coherent execution rather than sent individually.  This can resemble small file transfer, for instance.  Commands may be time-sensitive, or have an "expiration date" after which they are not useful to carry within the network.  Required data rates may typically be in kbps and bursty.</li>
         <li>Telemetry: Spacecraft stream telemetry data (periodically measured onboard status, metrics, etc.) to Earth for monitoring and other purposes.  Timely delivery is useful, but storage in the network is fine, if needed.  Required data rates may be approaching the Mbps range, and often a constant/steady stream of data is produced.</li>
         <li>On-demand/real-time media(audio, video, ...): when a active path from the asset to Earth, the asset sends a media feed. The delay is only the propagation delay.</li>
-        <li>Delayed media: the asset sends the media, but it is expected that there is no active path from the asset to Earth, so data may be temporarily stored in the network.</li>
+        <li>Delayed media: the asset sends the media, but it is expected that there is no active path from the asset to Earth, so data may be temporarily buffered within the network.</li>
         <li>Emergency and Search and Rescue (SAR) messaging: sent from an asset
             to one or many other assets (e.g. via broadcast or multicast) that support emergency operations.  Since crew or mission safety may be at risk, this traffic should be prioritized over most other types of packets when encountering queuing or storage within the network.  Timely delivery is necessary, but it should also be delivered reliably. Unlike most traffic, emergency messages may have no useful expiration: they should not be dropped from network storage on lifetime grounds, and drop policies under storage exhaustion should preserve them ahead of all other traffic classes.</li>
         <li>Science data: Typically science data may take the form of large bulk file transfers unicasted from a spacecraft to Earth.  In many cases, storage and large delays in delivery can be tolerated. File transfer applications such as CCSDS File Delivery Protocol (CFDP)<xref target="CCSDS_CFDP" /> are typically used, that might be configured to either operate unidirectionally or may provide reliability through retransmissions, and require at least small amount of feedback.  Some science applications may also use messaging patterns to collaborate between different types of instruments in order to draw attention to events (e.g. gamma ray bursts, etc.) and bring different types of instruments to bear.  These messages may need to be quickly delivered and/or multicasted.</li>
         <li>Messaging: Many different types of machine-to-machine messaging need to be supported, including for uses such as (1) providing PNT data/measurements to feed positioning, orbit determination, and time transfer or clock calibration, (2) providing space weather alerts, (3) providing advisory or other network information (e.g. almanac data such as ephemeris data for relay and other network elements, scheduled future contacts, or other service management related messaging).  Messages are generally small (though may vary depending on type) and might be unicast, broadcast, or multicast. In cases where they are advisory, for instance, they may not need reliable transport, though often it will be important to provide timely transmission.</li>
-        <li>Network and Asset management: sending requests and getting answers from assets about their overall status, status of their components, energy levels, storage capacities, etc.</li>
+        <li>Network and Asset management: sending requests and getting answers from assets about their overall status, status of their components, energy levels, buffer capacities, etc.</li>
       </ul>
     </section>
     <section anchor="scenarios">
@@ -198,7 +198,7 @@
         <t>A solar conjunction happens when the Sun is between Earth and another celestial body, blocking or degrading direct communications between Earth and the assets at that body. For Mars, a solar conjunction occurs approximately every 26 months, which is the Earth-Mars synodic period. As the Sun-Earth-Mars angle becomes small, the charged particles of the solar corona increasingly corrupt the radio signals crossing near the Sun, degrading communications before interrupting them completely. Mission operators typically observe a communications moratorium of around two weeks, during which no commands are sent to Mars assets <xref target="marsconjunction"/>.</t>
         <t>Solar conjunctions are precisely predictable years in advance. This scenario is therefore a scheduled, total interruption of the Earth-to-body communications that is much longer than the interruptions of the intermittent connectivity scenarios.</t>
         <t>Other celestial bodies undergo the same phenomenon at a recurrence equal to their synodic period, such as approximately every 13 months for Jupiter and approximately every 12.4 months for Saturn; the duration of the interruption depends on the geometry and on how fast the body moves relative to the Sun as seen from Earth. Communications between Earth and the Moon are not subject to solar conjunctions, since the Moon orbits Earth. Communications local to the celestial body, such as between surface assets and orbiters, are not affected and continue to operate during a conjunction; only the long-haul links crossing near the Sun are interrupted. In the future, relay spacecraft located away from the direct Earth-to-body line, for example in heliocentric orbit or at Lagrange points, could provide an alternate path around a conjunction, at the cost of a longer path.</t>
-        <t>During a conjunction blackout, traffic sources that continue to generate data (e.g., steady telemetry or science flows) can fill the storage of relays and orbiters; store-and-forward capacity planning and source throttling policies should take these multi-week interruptions into account (see <xref target="requirements"/>). Cruising spacecraft on long-distance trajectories may also experience solar conjunctions when the Sun crosses the Earth-spacecraft line. A study of communication delays, disruptions and blackouts for crewed Mars missions is available in <xref target="conjunctionstudy"/>.</t>
+        <t>During a conjunction blackout, traffic sources that continue to generate data (e.g., steady telemetry or science flows) can fill the buffer capacity of relays and orbiters; buffer capacity planning and source throttling policies should take these multi-week interruptions into account (see <xref target="requirements"/>). Cruising spacecraft on long-distance trajectories may also experience solar conjunctions when the Sun crosses the Earth-spacecraft line. A study of communication delays, disruptions and blackouts for crewed Mars missions is available in <xref target="conjunctionstudy"/>.</t>
       </section>
     </section>
     <section anchor="requirements">
@@ -219,16 +219,76 @@
         </tbody>
       </table>
       <section>
-        <name>Store-and-Forward</name>
-        <t>Until full coverage by orbiter constellations is achieved around a celestial body, the orbiters and other assets that are facing intermittent communications should provide store-and-forward capability. These can be implemented at - layer-1, like the current Mars orbiters, where frames are not seen ("bag of bits"), at layer-2 doing frame storage or at layer-3 doing packet storage. Storage higher in the stack enables more versatile, agile and policy-based routing. For example, the current Mars relay orbiters store below the frame level ("bag of bits") and perform no routing: the stored data can only follow the pre-planned segment. Storage at the network layer allows the forwarding decision to be (re)evaluated at the time of transmission, which matters because the path may have been computed long before a stored packet is actually forwarded, and topology or policies may have changed in the interval. A key factor for designing the store and forward capability of an orbiter is its storage capacity.</t>
-        <t>Surface assets that are facing intermittent communications also need the store-and-forward capability.</t>
-        <t>Mechanisms should be defined to avoid as much as possible storage full events on a relay. This may include some in-advance signaling to the network about future full storage event, so that the network and/or the source can throttle down or reroute packets to avoid that event.</t>
-        <t>In the event of full storage, a policy should be determined on which packets should be dropped, such as the last one in the queue, the first one in the queue, ones based on policies related to packet or transport fields like source or destination addresses, traffic classes, flow ids, etc. , similar to queue management used in terrestrial networks. These policies are important for differentiated trafic such as Emergency and Search and Rescue.</t>
-        <t>Even if calculations can be done based on known orbital dynamics, events happen that result in missed communication windows. For example, some communication windows were not used on Mars because a rover may be still charging and therefore does not have enough energy to perform communications. Random events can also happen because of space weather. Therefore, while the window of comms can be calculated and used, the system should be able to cope with random long interruption events.</t>
-        <t>Proper guards should be designed to avoid denial-of-service attacks by filling storage in the network; this may include authentication and authorization of the traffic sources allowed to consume storage, and accounting of storage usage per source or traffic class.</t>
-      </section>
-      <section anchor="time">
-        <name>Time</name>
+        <name>Buffers and Store-and-Forward Capabilities</name>
+	<t>
+	Since full coverage by constellations is expensive to
+        acheive for each celestial body, any orbiters, surface nodes, or other
+        assets that are facing intermittent communications may provide a
+        buffering capability rather than discarding packets when an outgoing
+        route or link is not immediately available. Buffering packets for a
+        planned later transmission rather than dropping packets is a type of
+        "store and forward" behavior. This document uses the term "buffering"
+        in order to avoid confusion with other uses of the "store and
+        forward" terminology, and for consistency with how queue
+        management in layer-2 and layer-3 is generally discussed.
+        Implementations might provide buffering at different layers:
+	</t>
+	<ul>
+        <li>
+                Layer-1 buffering data to be transmitted without distinction to
+                frame boundaries ("bag of bits") has been supported in the past,
+                e.g. by some Mars obiters. In this case, the buffered data can
+                only follow pre-planned segments, and the processing of upper
+                layers need to be coordinated beyond the relay platform. The
+                benefit is that relays can be simplified in not processing or
+                being fully compatible at higher layers.
+        </li>
+        <li>
+                Layer-2 buffering outgoing frames is similar to layer-1 in
+                lacking flexibility for routing, but permitting simplicity and
+                limiting compatibility needs to the link layer only.
+        </li>
+        <li>
+                Layer-3 buffering IP packets enables more versatile, agile, and
+                policy-based routing. By permitting the IP forwading decision
+                to be (re)evaluated at the time of tranmission, any changes can
+                be considered that might have occured since the packet was first
+                buffered.
+        </li>
+	</ul>
+	<t>
+                In all cases, the buffering capacity is a key consideration in
+                the node and network design. Mechanisms should
+                be provided to protect buffer resources, similar to the
+                protection that Active Queue Management (AQM) and signalling
+                such as Explicit Congestion Notification (ECN) typically
+                provides in the terrestrial Internet. Packet addresses, traffic
+                class, flow IDs, or other fields may be used in determining
+                treatment. This may be needed to support differentiation of
+                trafic such as Emergency and Search and Rescue.
+                Proper guards should be designed to avoid denial-of-service
+                attacks that fill buffers within the network This may include
+                authentication and authorization of the traffic
+                sources allowed to consume buffer space, and accounting of
+                storage usage per source or traffic class.
+        </t>
+
+<t>
+        Even though nominal transmission schedules can be calculated based on
+        known orbits, there is potential for unplanned events
+        resulting in missed communication windows. For example, a rover
+        may be in a low battery charge state lacking enough energy to
+        communicate. Different types of events can randomly disturb plans, such
+        as unpredicted space weather events, or rescheduling of assets.
+        Even though nominal communications windows can be calculated, any
+        system should be able to cope with random long interruption events.
+</t>
+<t>
+
+</t>
+</section>
+<section anchor="time">
+	<name>Time</name>
 	<t>Timers are used in transport protocols, application protocols and applications themselves for various purposes, such as detecting/presuming packet loss or data lifetime. Timers should be therefore adjusted and configured based on the expected travel time and RTT from the source to destination. Given variations and possible dynamic changes in the network that can cause much longer latency, appropriate safeguards should be put for timer values.</t>
 	<t>There are two main challenges that deep space networks pose for use of timers in loss detection.  First, for cases like Mars, the time needed to infer a loss and request retransmission is much longer than what protocols are designed for in the Internet, and can be so long as to preclude retransmission within the same contact window.  Second, for cases where the timing can vary widely, finding appropriate timeout values and adjusting them automatically may be a challenge.  Mitigating the long propagation delays could be approached through various techniques such as higher-level erasure coding (e.g. in application or transport protocols), more aggressive retransmission policies, or other methods.  Mitigating varying delays can be approached through the use of planning/orchestration systems to provide guidance on proper values over time, or other methods.</t>
         <t>Lifetime is also attached to some data, such as content, security keys, certificates, tokens, session keys and naming records. Similarly, the lifetime should be adjusted and configured based on the characteristics of the applications and expected travel time and RTT.</t>
@@ -248,9 +308,11 @@
         <t>Given that space communications will always have much lower bandwidth than what is possible in shorter distances such as on Earth, optimization of the bandwidth usage is important. This can be implemented at many levels in the networking stack, starting from layer-2 to IP header compression to transport and application data compression.</t>
       </section>
       <section>
-          <name>Transport</name>
-          <t>Since IP (and UDP) does not provide reliable transport services, such as loss, duplicates and reordered recovery, a reliable transport should be used and configured properly for space delays and intermittence for applications and protocols requiring it.</t>
-          <t>Congestion control algorithms may declare congestion based on heuristics such as when delays are increasing. In that case, sources pace down to decrease their usage of the bandwidth. However, given that forwarders in space apply the store-and-forward technique when link intermittence happen, the congestion seen by the source is not actually congestion in the typical Internet sense, but deep buffer usage in forwarders, as a normal and expected operation. Therefore, congestion control should be adapted or not used because of intermittence. At least early on, while the networks are small scale, coordinated resource planning and management may be performed to avoid creating congestion.</t>
+        <name>Transport</name>
+	<t>Since IP (and UDP) do not provide reliable transport services, such as recovery from against packet loss, duplication, or reordering, a reliable transport should be used and configured properly for space delays and intermittence for applications and protocols requiring it.
+        </t>
+       	<t>Congestion control algorithms may sense congestion based on heuristics like increasing delays or loss/retransmission timer firings. In response, sources reduce their congestion window or sending rates to decrease their usage of the network capacity. However, given that forwarders in space may experience intermittent connectivity and buffer significantly, typical round trip measurements may be misleading and loss timer firings may be spurious. Due to these complications, when connectivity is intermittent, traditional congestion control should be adapted or administratively controlled. At least early on, while the networks are small scale, coordinated resource planning and management may be performed to avoid creating congestion.
+       </t>
       </section>
       <section>
         <name>Addressing and Routing</name>
@@ -272,7 +334,7 @@
       </section>
       <section>
           <name>Asynchronous Operation and Power Save Modes</name>
-          <t>Spacecraft frequently use power save modes with asymmetric radio states: the transmitter may be turned off (transmission dominates power usage) while the receiver remains on, or the node may be entirely asleep. Combined with network-layer store-and-forward, a destination may not be listening at the time packets are sent yet still receive them later. Protocols and applications should therefore not assume that a peer is continuously reachable or that a request implies a timely response; since buffered packets are delivered when the destination is listening again, the notion of the peers being simultaneously online does not apply. Key exchange and re-keying mechanisms should be usable asynchronously, tolerating exchanges that complete over an arbitrary delay.</t>
+          <t>Spacecraft frequently use power save modes with asymmetric radio states: the transmitter may be turned off (transmission dominates power usage) while the receiver remains on, or the node may be entirely asleep. Combined with network-layer buffering, a destination may not be listening at the time packets are sent yet still receive them later. Protocols and applications should therefore not assume that a peer is continuously reachable or that a request implies a timely response; since buffered packets are delivered when the destination is listening again, the notion of the peers being simultaneously online does not apply. Key exchange and re-keying mechanisms should be usable asynchronously, tolerating exchanges that complete over an arbitrary delay.</t>
       </section>
     </section>
     <section>
@@ -554,3 +616,4 @@
     </section>
   </back>
 </rfc>
+

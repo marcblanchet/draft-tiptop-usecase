@@ -75,7 +75,7 @@
           <li>Direct-with-Earth (DWE): communications from/to a spacecraft directly to/from Earth, without the use of relays.</li>
           <li>Moon, Lunar: refers to Earth's Moon.</li>
           <li>Deep Space Network (DSN): NASA’s international array of giant radio antennas that supports interplanetary spacecraft missions <xref target="DSN"/>.</li>
-	  <li>LunaNet Service Providers (LNSP): service providers to the lunar surface and orbital regions, including private commercial operators, as defined in the LunaNet Interoperability Specification <xref target="lnis"/>.</li>
+	  <li>LunaNet Service Providers (LNSP): service providers to the lunar surface and orbital regions, including private commercial operators, as defined in the LunaNet Interoperability Specification <xref target="LNIS"/>.</li>
 	  <li>Lagrange Points: special points in the gravitational fields between bodies (e.g. Earth-Moon, Earth-Sun, etc.), that are popular mission locations due to stability (i.e. low fuel usage), visibility for communications or science instruments, or other reasons.  Also known as "libration points".</li>
 	  <li>Lunar Gateway: a space station orbiting the Moon, that can serve as a waypoint or other supporting infrastructure for lunar exploration <xref target="Gateway"/>.</li>
 	  <li>Surface network: a network interconnecting assets on or near the surface of a celestial body, using terrestrial-style link technologies (e.g., IEEE 802.11, 3GPP). Its users include habitats, landers, rovers, crew equipment, and low-altitude mobile assets such as drones or hoppers, which are regarded as surface assets.</li>
@@ -114,11 +114,11 @@
 	<section anchor="link-model">
 		<name>Link Model</name>
 
-		<t>This subsection includes further details on the "link model" assumptions for deep space data links.  While there are diverse connectivity scenarios described later in this document, this "link model" is generally applicable across the whole set.  This includes deeper consideration into how IP packets are encpasulated within the data link layer, MTU settings, and what impacts physical layer errors in a received stream of bits may have on IP packet streams.</t>
+		<t>This subsection includes further details on the "link model" assumptions for deep space data links.  While there are diverse connectivity scenarios described later in this document, this "link model" is generally applicable across the whole set (and includes both RF and optical links).  This subsection includes deeper consideration into how IP packets are encpasulated within the data link layer, MTU settings, and what impacts physical layer errors in a received stream of bits may have on IP packet streams.</t>
 
-		<t>Commonly, the space data link layer is split between an upper portion that provides framing (allowing multiple virtual channels to be multiplexed, etc.), and a lower portion that provides error correction and synchronization functionality on "codeblocks".  For decades, very powerful block error correction codes have been specifically developed and used for deep space missions, and can be further layered via "concatenated" coding (e.g. an outer block code and inner convolutional code), and interleaved for robustness to burst error patterns.</t>
+		<t>Commonly, the space data link layer is split between an upper portion that provides framing (allowing multiple virtual channels to be multiplexed, etc.), and a lower portion that provides error correction and synchronization functionality on "codeblocks" (e.g. see Section 2.3 of <xref target="CCSDS_SDLP"/> for CCSDS radio links).  For decades, very powerful block error correction codes have been specifically developed and used for deep space missions, and can be further layered via "concatenated" coding (e.g. an outer block code and inner convolutional code), and interleaved for robustness to burst error patterns (e.g. see <xref target="CCSDS_130.1-G"/> for some CCSDS RF links).</t>
 
-		<t>Frames and code blocks traditionally aligned one-to-one, however, this is no longer true in all cases (a recent optional "slicing" capability adds a secondary level of synchronization for the stream of frames within codeblock data).  Additionally, space data link layer frames have historically mixed the use of fixed length frames in some cases (such as telemetry links) and variable length frames in other cases (such as telecommand links), but recently there has been symmetrical use of fixed length frames in both directions (e.g. with the AOS data link).  Since IP packets can vary in length, addtional protocol methods are needed in order to transfer a stream of IP packets over a data link with fixed frame sizes.  Generally, the expected means to encapsulate either IPv4 or IPv6 packets into data link layer frames is via CCSDS Encapsulation Packets.  The Encapsulation Packet provides a means to signal each packet's protocol type and its total size, and can support flexibly packing IP packets into frames such that a given IP packet may either:</t>
+		<t>Frames and code blocks traditionally aligned one-to-one, however, this is no longer true in all cases (a recent optional "slicing" capability adds a secondary level of synchronization for the stream of frames within codeblock data <xref target="CCSDS_131.0-B"/>).  Additionally, space data link layer frames have historically mixed the use of fixed length frames in some cases (such as telemetry links) and variable length frames in other cases (such as telecommand links), but recently there has been symmetrical use of fixed length frames in both directions (e.g. with the AOS data link).  Since IP packets can vary in length, addtional protocol methods are needed in order to transfer a stream of IP packets over a data link with fixed frame sizes.  Generally, the expected means to encapsulate either IPv4 or IPv6 packets into data link layer frames is via CCSDS Encapsulation Packets <xref target="IPoverCCSDSSpaceLinks"/>.  The Encapsulation Packet provides a means to signal each packet's protocol type and its total size, and can support flexibly packing IP packets into frames such that a given IP packet may either:</t>
 		<ol>
 			<li>Fit into a single frame, e.g. if the IP packet is ~1kB in size and an 8kb codeblock is used, along with a 1:1 mapping between frames and codeblocks.</li>
 			<li>Span multiple frames, e.g. for a large IP packet and a small fixed-length frame size.  The beginning (or end) of a packet may be in the same frame as the end (or beginning) of another packet.</li>
@@ -132,15 +132,15 @@
 			<li>Using codeblock sizes that correspond to standardized / common block codes that have well-known performance and efficient algorithms in proper hardware/software.</li>
 		</ul>
 
-		<t>As an example, the LunaNet Interoperability Specification (LNIS) version 5 has some block code options including 1024, 4096, 7136, or 16384 bits of payload (128, 512, 892, or 2048 bytes).  This would lead to most QUIC data packets spanning from 1 to 10 or more codeblocks, for instance, depending on the specific code selection, even if only the minimal MTU is supported.</t>
+		<t>As an example, the LunaNet Interoperability Specification (LNIS) version 5 <xref target="LNIS"/> has some block code options including 1024, 4096, 7136, or 16384 bits of payload (128, 512, 892, or 2048 bytes).  This would lead to most QUIC data packets spanning from 1 to 10 or more codeblocks, for instance, depending on the specific code selection, even if only the minimal MTU is supported.</t>
 
-		<t>Due to the typical one-to-one relationship  between frames and codeblocks, the frame error rate that would impact user data could be directly established from the probability of an uncorrectable codeblock, so a frame error rate is a typical figure of merit (though with variable length frames and secondary synchronization, the relationship is broken).  An uncorrectable codeblock typically generates a failure resulting in loss/discard of the data, rather than passing data with bit errors through to be processed by upper layers.  As a point of reference, the DSN catalog includes a table of example frame rejection rates, with example of less than 1 in 10**-6 frames when using a common concatenated code selections. Actual results can be much better than this due to circumstances discussed below.</t>
+		<t>Due to the typical one-to-one relationship  between frames and codeblocks, the frame error rate that would impact user data could be directly established from the probability of an uncorrectable codeblock, so a frame error rate is a typical figure of merit (though with variable length frames and secondary synchronization, the relationship is broken).  An uncorrectable codeblock typically generates a failure resulting in loss/discard of the data, rather than passing data with bit errors through to be processed by upper layers.  As a point of reference, the DSN catalog <xref target="DSN_catalog"/> includes a table of example frame rejection rates, with example of less than 1 in 10**-6 frames when using a common concatenated code selections. Actual results can be much better than this due to circumstances discussed below.</t>
 
-		<t>Modern coding options in common use have very steep performance curves, such that within only a few dB, there can be a difference of many orders of magnitude in the error rate performance.  This means practically that the error rates are either negligibly small (e.g. below 1e**-12), or high enough to prevent proper synchronization / locking.  Significant mission design and analysis activities are performed in order to provide strong confidence that communications will be reliable, and maintain operating points within the nearly error-free regime.  This includes computing detailed link budgets in order to determine received power levels and signal to noise ratios, generally reserving decent margins to provide high confidence of performance meeting expectations.  Through this analysis, the expected bit error rates and codeblock error rates can be determined.  The margins designed in may often be multiple dB, enabling much better actual error performance than the designed upper bounds on error rate.  Further, since links are highly planned and coordinated, they can often be scheduled in order to avoid circumstances that would lead to higher potential errors.  Anecdotally, often missions do not see upper-layer retransmission mechanisms needing to be triggered because links perform well enough to avoid losses apparent to the upper layers.</t>
+		<t>Modern coding options in common use for RF and optical links have very steep performance curves, such that within only a few dB, there can be a difference of many orders of magnitude in the error rate performance.  This means practically that the error rates are either negligibly small (e.g. below 1e**-12), or high enough to prevent proper synchronization / locking.  Significant mission design and analysis activities are performed in order to provide strong confidence that communications will be reliable, and maintain operating points within the nearly error-free regime.  This includes computing detailed link budgets in order to determine received power levels and signal to noise ratios, generally reserving decent margins to provide high confidence of performance meeting expectations.  Through this analysis, the expected bit error rates and codeblock error rates can be determined.  The margins designed in may often be multiple dB, enabling much better actual error performance than the designed upper bounds on error rate.  Further, since links are highly planned and coordinated, they can often be scheduled in order to avoid circumstances that would lead to higher potential errors.  Anecdotally, often missions do not see upper-layer retransmission mechanisms needing to be triggered because links perform well enough to avoid losses apparent to the upper layers.</t>
 
 		<t>In the future, more use of variable and/or adaptive modulation and coding (VCM or ACM) may become common.  At present, this has started to become common for LEO use, but realtime control is also supporting use in LEO, so deep space usage may differ.  In any case, it is still good for work on IP in deep space to assume the possibility of VCM or ACM that will cause data to be sent often at high rates but with lower link margins, resulting in a potentially observable error rate.</t>
 
-		<t>When considering packet loss behaviors for deep space IP, it is advisable to consider different possible cases, either where margin is high and error rates are so small as to be neglibible, or cases where errors may be present, but also bounded by a value such as 1e-6 probability of uniform randomly distributed packet losses.  While other cases such as correlated burst losses are possible, they do not seem to bear special consideration at this time, due to factors described above.</t>
+		<t>In conslusion, deep space links can support typical Internet MTU-sized packets (e.g. 1500 or 2k bytes), and nominal error rates.  For protocol design, simulation, analysis, etc., it is advisable to consider different possible cases of error behaviors, either where margin is high and error rates are so small as to be neglibible, or cases where errors may be present, but bounded by a value such as 1e-6 probability of uniform randomly distributed packet losses.  While other cases such as correlated burst losses are possible, they do not seem to bear special consideration at this time, due to factors described above.  An error-free or very low packet error rate is representative for nominal cases where RF or optical links are designed using traditional practicies, operationally scheduled to avoid known interference, blockages, etc., and use current technologies.</t>
 
 	</section>
 
@@ -149,7 +149,7 @@
         <name>Moon</name>
         <t>There are currently very few orbiters around Moon but there are plans to establish multiple constellations of them to be used as communication relays. As few as 5 cooperating orbiters at the right orbits is sufficient to provide full coverage <xref target="ioagmoon"/>, and smaller sets of orbiters can be targeted to provide full coverage of specific limited regions such as the far side or the polar regions <xref target="imconstellation"/>. Until full coverage is accomplished, interruptions of communications are expected.  While Earth ground stations are able to directly cover assets on the near side of Moon, use of relays may still be desirable to improve power usage, data capacity, and spectrum efficiency.</t>
         <t>Different types of networking nodes are expected on the lunar surface, with a wide range of capabilities, from those that have very limited functionality (similar to IoT devices on Earth), up to more highly-capable infrastructure hub nodes that provide access for other surface users (e.g. in a habitat or lander), and in-between cases such as crewed or uncrewed rovers that may have combinations of direct-to-Earth, with proximity orbiters, or via local wireless LAN or cellular capabilities.</t>
-        <t>The LunaNet Interoperability Specification (LNIS) <xref target="lnis"/> is a framework including IP networking support for lunar service providers and users to acheive interoperability.</t>
+        <t>The LunaNet Interoperability Specification (LNIS) <xref target="LNIS"/> is a framework including IP networking support for lunar service providers and users to acheive interoperability.</t>
         <t>NASA has described plans for a sustained lunar surface base, the Moon Base program, near the lunar south pole, deployed in phases and comprising commercial landers, crewed and uncrewed rovers, drones, and later pressurized habitats and power infrastructure <xref target="nasamoonbase"/>. The networking use cases described in this document, including surface networks interconnecting habitats, rovers, drones and other surface assets, surface-to-orbiter relaying, and direct-with-Earth links, are intended to cover such deployments.</t>
         <t>For human / crewed operations, nearly continuous coverage and data flows might be expected. However, for other types of network users (such as science missions), only limited communication opportunities may be available.</t>
         <t>Some nodes (such as those supporting human missions) may have multiple/redundant links available simultaneously, but this should not be expected in general, and even then it is likely to be more for failover use than for multipath network transport.</t>
@@ -185,7 +185,7 @@
     </section>
     <section anchor="usecases">
       <name>Use Cases</name>
-      <t>Multiple countries are developing systems aimed for a sustained lunar presence combining crewed and robotic missions.  The technologies developed for lunar use are intended to be applied later for Mars as well, and might equally apply for missions to asteroids and other deep space bodies.  IP has been included in the stack for the International Deep Space Interoperability Standards <xref target="idsis"/>, and the LunaNet Interoperability Specification <xref target="lnis"/>.  There is a general intention to extend and reuse systems developed for lunar use to later Mars use.</t>
+      <t>Multiple countries are developing systems aimed for a sustained lunar presence combining crewed and robotic missions.  The technologies developed for lunar use are intended to be applied later for Mars as well, and might equally apply for missions to asteroids and other deep space bodies.  IP has been included in the stack for the International Deep Space Interoperability Standards <xref target="idsis"/>, and the LunaNet Interoperability Specification <xref target="LNIS"/>.  There is a general intention to extend and reuse systems developed for lunar use to later Mars use.</t>
       <t>Separate space agencies and private companies are deploying lunar space stations, orbiters, landers, rovers, habitats, crewed mission elements, and other assets.  Due to pervasive use and support of IP in modern computing systems, it is used onboard many space systems already, and between co-located systems (e.g. onboard ISS), and planned to be needed for networking on the Lunar Gateway, in Lunar 3GPP surface networks, and in Lunar habitat LAN and WLAN networks.</t>
       <t>As more-and-more IP-enabled assets become deployed in lunar vicinity, it will increasingly create opportunities to interconnect them.  In fact, internetworking of lunar (and future Mars) systems is becoming essential, as plans call explicitly for cooperation between mission elements and communications/navigation system assets operated by different space agencies and/or private companies acting as service providers.</t>
       <t>There are expected to be several different interoperable LNSPs offering a variety of relay and/or DWE services, to provide wide coverage and cross-support opportunities.  As more significant numbers of missions target Mars and other bodies, the same concepts should apply.</t>
@@ -460,7 +460,47 @@
             <date year="2021" month="October"/>
           </front>
         </reference>
-        <reference anchor="CCSDS_CFDP" target="https://public.ccsds.org/Pubs/727x0b5e1.pdf">
+
+	<reference anchor="CCSDS_SDLP">
+		<front>
+			<title>Space Data Link Protocols -- Summary of Concept and Rationale, Green Book 130.2-G-3</title>
+			<author>
+				<organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+			</author>
+			<date year="2015" month="September"/>
+		</front>
+	</reference>
+
+	<reference anchor="CCSDS_130.1-G">
+		<front>
+			<title>TM Synchronization and Channel Coding -- Summary of Concept and Rationale, Green Book 130.1-G-3</title>
+			<author>
+				<organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+			</author>
+			<date year="2020" month="June"/>
+		</front>
+	</reference>
+
+	<reference anchor="CCSDS_131.0-B">
+		<front>
+			<title>TM Synchronization and Channel Coding, Blue Book 131.0-B-6</title>
+			<author>
+				<organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+			</author>
+			<date year="2020" month="June"/>
+		</front>
+	</reference>
+
+	<reference anchor="DSN_catalog" target="https://deepspace.jpl.nasa.gov/files/820-100-F1.pdf">
+		<front>
+			<title>Deep Space Network Services Catalog, DSN No. 820-100, Rev F/</title>
+			<author>
+			</author>
+			<date year="2015" month="February"/>
+		</front>
+	</reference>
+
+	<reference anchor="CCSDS_CFDP" target="https://public.ccsds.org/Pubs/727x0b5e1.pdf">
           <front>
             <title>File Delivery Protocol, Blue Book 727.0-B-5</title>
             <author>
@@ -561,7 +601,7 @@
             <date month="September" year="2020"/>
           </front>
         </reference>
-        <reference anchor="lnis" target="https://www.nasa.gov/directorates/somd/space-communications-navigation-program/lunanet-interoperability-specification/">
+        <reference anchor="LNIS" target="https://www.nasa.gov/directorates/somd/space-communications-navigation-program/lunanet-interoperability-specification/">
           <front>
             <title>LunaNet Interoperability Specification - Version 5</title>
             <author/>

@@ -225,7 +225,7 @@
       </section>
       <section anchor="scenario-mi">
         <name>Earth-Mars with Intermittent Connectivity (MI)</name>
-        <t>Mars assets are reachable by intermittence from Earth. For example, a rover on the Mars surface is connected to a Mars surface IP network which receives intermittent connectivity from a few orbiters, with an average of one overpass every 6 hours. Some of those orbiters have circular orbits, others elliptical; the latter means that the overpasses are not at a fixed frequency. The orbiters are connected to Earth ground stations while they are in line of sight with Earth. The Earth to Mars one-way delay is between 4 and 24 minutes, depending on the relative position of each planet, and changes "slowly" as the planets are orbiting around the Sun.</t>
+        <t>Mars assets are reachable by intermittence from Earth. For example, a rover on the Mars surface is connected to a Mars surface IP network which receives intermittent connectivity from a few orbiters, with an average of one contact every 6 hours. Some of those orbiters have circular orbits, others elliptical; the latter means that the overpasses are not at a fixed frequency. The orbiters are connected to Earth ground stations while they are in line of sight with Earth. The Earth to Mars one-way delay is between 4 and 24 minutes, depending on the relative position of each planet, and changes "slowly" as the planets are orbiting around the Sun.</t>
       </section>
       <section anchor="scenario-sc">
         <name>Solar Conjunction (SC)</name>
@@ -233,6 +233,39 @@
         <t>Solar conjunctions are precisely predictable years in advance. This scenario is therefore a scheduled, total interruption of the Earth-to-body communications that is much longer than the interruptions of the intermittent connectivity scenarios.</t>
         <t>Other celestial bodies undergo the same phenomenon at a recurrence equal to their synodic period, such as approximately every 13 months for Jupiter and approximately every 12.4 months for Saturn; the duration of the interruption depends on the geometry and on how fast the body moves relative to the Sun as seen from Earth. Communications between Earth and the Moon are not subject to solar conjunctions, since the Moon orbits Earth. Communications local to the celestial body, such as between surface assets and orbiters, are not affected and continue to operate during a conjunction; only the long-haul links crossing near the Sun are interrupted. In the future, relay spacecraft located away from the direct Earth-to-body line, for example in heliocentric orbit or at Lagrange points, could provide an alternate path around a conjunction, at the cost of a longer path.</t>
         <t>During a conjunction blackout, traffic sources that continue to generate data (e.g., steady telemetry or science flows) can fill the buffer capacity of relays and orbiters; buffer capacity planning and source throttling policies should take these multi-week interruptions into account (see <xref target="requirements"/>). Cruising spacecraft on long-distance trajectories may also experience solar conjunctions when the Sun crosses the Earth-spacecraft line. A study of communication delays, disruptions and blackouts for crewed Mars missions is available in <xref target="conjunctionstudy"/>.</t>
+      </section>
+    </section>
+    <section anchor="path_calculations">
+      <name>Path Characteristics Calculations</name>
+      <t>Protocols and applications use the expected round-trip time (RTT) and the expected bandwidth of a path for various purposes, such as configuring timers for loss detection, retransmissions, keep-alives and idle timeouts, or sizing windows and buffers. Since space missions and their communications are planned in advance, these path characteristics can be calculated in advance of the mission. This section describes how to calculate the minimum and maximum RTT (minRTT, maxRTT) and the minimum and maximum bandwidth-delay product (minBDP, maxBDP) of a path, so that other documents, such as protocol profiles, can refer to these definitions. Examples are given using the connectivity scenarios described in <xref target="scenarios"/>.</t>
+      <section anchor="calculate_rtt">
+        <name>RTT Calculation</name>
+        <t>In deep space, the RTT between two nodes has two main components: the two-way propagation delay, which varies with the distance between the nodes, and the waiting time, when the path is subject to intermittent connectivity: a packet, or its response, may be buffered within the network (see <xref target="buffers"/>) until the next communication opportunity. Both components are known in advance, from the orbital dynamics and from the contact schedule respectively.</t>
+        <t>The minimum RTT of a path, named minRTT, is the minimum two-way propagation delay, with no waiting time, since the whole path is available at some point in time in all scenarios except during a solar conjunction.</t>
+        <t>The maximum RTT of a path, named maxRTT, is the sum of the maximum two-way propagation delay and the maximum waiting time before a communication opportunity, the latter derived from the contact schedule, such as the time between orbiter overpasses.</t>
+        <t>For example, in the Earth-Mars with intermittent connectivity (MI) scenario (<xref target="scenario-mi"/>), the minimum two-way propagation delay is 8 minutes, twice the 4-minute minimum one-way delay; therefore, minRTT is 8 minutes. The maximum two-way propagation delay is 48 minutes, twice the 24-minute maximum one-way delay, and the maximum waiting time with an overpass every 6 hours is 6 hours; therefore, maxRTT is 6 hours 48 minutes.</t>
+        <t>The waiting time of a deployed system may vary much more than its propagation delay. For example, over three months in 2024, the calculated RTT of the various combinations of Mars orbiters and rovers varied from 30 minutes to 170 hours <xref target="marscommstudy"/>. Therefore, maxRTT should be calculated using the actual contact schedule of the mission. <xref target="scenario-rtt"/> summarizes minRTT and maxRTT for the connectivity scenarios of <xref target="scenarios"/>.</t>
+        <table anchor="scenario-rtt">
+          <name>minRTT and maxRTT for the Connectivity Scenarios</name>
+          <thead>
+            <tr><th>Scenario</th><th>minRTT</th><th>maxRTT</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Earth to Cruising Spacecraft (CS)</td><td>two-way propagation delay at the closest planned distance</td><td>two-way propagation delay at the farthest planned distance, increasing slowly over the mission</td></tr>
+            <tr><td>Earth-Moon Full Connectivity (LF)</td><td>around 2.6 seconds</td><td>around 2.6 seconds</td></tr>
+            <tr><td>Earth-Moon Intermittent Connectivity (LI)</td><td>around 2.6 seconds</td><td>around 2.6 seconds plus the maximum contact gap</td></tr>
+            <tr><td>Earth-Mars Full Connectivity (MF)</td><td>8 minutes</td><td>48 minutes</td></tr>
+            <tr><td>Earth-Mars Intermittent Connectivity (MI)</td><td>8 minutes</td><td>48 minutes plus the maximum contact gap; 6 hours 48 minutes with an overpass every 6 hours</td></tr>
+            <tr><td>Solar Conjunction (SC)</td><td>not applicable (no direct path)</td><td>the conjunction duration, around two weeks for Mars, plus the maximum two-way propagation delay, if the communications are kept active across the conjunction</td></tr>
+          </tbody>
+        </table>
+      </section>
+      <section anchor="calculate_bdp">
+        <name>Bandwidth-Delay Product (BDP) Calculation</name>
+        <t>The bandwidth-delay product (BDP) of a path is the product of its bandwidth and its RTT. It corresponds to the amount of data sent before receiving the first acknowledgement or response, and is therefore used, for example, to size transport windows and buffers so that the available bandwidth of the path can be fully used. For a path composed of several links, the path bandwidth is the bandwidth of its bottleneck link. Under intermittent connectivity, part of that data is not in transit but buffered within the network (see <xref target="buffers"/>); the BDP is then also an input to sizing the buffers of the intermediate nodes.</t>
+        <t>The minimum BDP of a path, named minBDP, is the product of minRTT and the minimum bandwidth used during those times. The maximum BDP of a path, named maxBDP, is the product of maxRTT and the maximum bandwidth.</t>
+        <t>For example, in the Earth-Moon with full connectivity (LF) scenario (<xref target="scenario-lf"/>) with a 100 Mbps radio link, the BDP is around 2.6 seconds times 100 Mbps, that is 260 megabits or around 33 megabytes; with a 1 Gbps optical link, the BDP is around 325 megabytes.</t>
+        <t>In the Earth-Mars with intermittent connectivity (MI) scenario (<xref target="scenario-mi"/>), assuming a 1 Mbps bottleneck link between the surface asset and the orbiter, minBDP is 8 minutes (480 seconds) times 1 Mbps, that is 480 megabits or 60 megabytes, and maxBDP is 6 hours 48 minutes (24480 seconds) times 1 Mbps, that is around 24.5 gigabits or around 3 gigabytes, most of which is buffered within the network while waiting for the next contact rather than in transit.</t>
       </section>
     </section>
     <section anchor="requirements">
@@ -252,7 +285,7 @@
           <tr><td>Solar Conjunction (SC)</td><td>not applicable (no direct path)</td><td>total, scheduled interruption; around two weeks in the case of Mars</td></tr>
         </tbody>
       </table>
-      <section>
+      <section anchor="buffers">
         <name>Buffers and Store-and-Forward Capabilities</name>
 	<t>
 	Since full coverage by constellations is expensive to
@@ -323,7 +356,7 @@
 </section>
 <section anchor="time">
 	<name>Time</name>
-	<t>Timers are used in transport protocols, application protocols and applications themselves for various purposes, such as detecting/presuming packet loss or data lifetime. Timers should be therefore adjusted and configured based on the expected travel time and RTT from the source to destination. Given variations and possible dynamic changes in the network that can cause much longer latency, appropriate safeguards should be put for timer values.</t>
+	<t>Timers are used in transport protocols, application protocols and applications themselves for various purposes, such as detecting/presuming packet loss or data lifetime. Timers should be therefore adjusted and configured based on the expected travel time and RTT from the source to destination (see <xref target="calculate_rtt"/>). Given variations and possible dynamic changes in the network that can cause much longer latency, appropriate safeguards should be put for timer values.</t>
 	<t>There are two main challenges that deep space networks pose for use of timers in loss detection.  First, for cases like Mars, the time needed to infer a loss and request retransmission is much longer than what protocols are designed for in the Internet, and can be so long as to preclude retransmission within the same contact window.  Second, for cases where the timing can vary widely, finding appropriate timeout values and adjusting them automatically may be a challenge.  Mitigating the long propagation delays could be approached through various techniques such as higher-level erasure coding (e.g. in application or transport protocols), more aggressive retransmission policies, or other methods.  Mitigating varying delays can be approached through the use of planning/orchestration systems to provide guidance on proper values over time, or other methods.</t>
         <t>Lifetime is also attached to some data, such as content, security keys, certificates, tokens, session keys and naming records. Similarly, the lifetime should be adjusted and configured based on the characteristics of the applications and expected travel time and RTT.</t>
         <t>Current Internet protocols and applications typically use UTC as their time reference. There are currently work to define Lunar Standard Time, also called Coordinated Lunar Time and Mars Standard Time <xref target="lunartime"/>. Depending on the application and use case, it may be necessary to adapt the protocol or the application to use another time reference.</t>

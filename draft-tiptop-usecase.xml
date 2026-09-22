@@ -74,7 +74,7 @@
           <li>Deep space: while the ITU definition <xref target="deepspacewikipedia"/> of deep space is beyond 2 million km, in this document, the Moon and its environs are included since networking for this regime bears more similarities to other deep space bodies than to terrestrial and Earth-orbiting conditions.</li>
           <li>Direct-with-Earth (DWE): communications from/to a spacecraft directly to/from Earth, without the use of relays.</li>
           <li>Moon, Lunar: refers to Earth's Moon.</li>
-          <li>Deep Space Network (DSN): NASA’s international array of giant radio antennas that supports interplanetary spacecraft missions <xref target="DSN"/>.</li>
+          <li>Deep Space Network (DSN): NASA international array of giant radio antennas that supports interplanetary spacecraft missions <xref target="DSN"/>.</li>
 	  <li>LunaNet Service Providers (LNSP): service providers to the lunar surface and orbital regions, including private commercial operators, as defined in the LunaNet Interoperability Specification <xref target="LNIS"/>.</li>
 	  <li>Lagrange Points: special points in the gravitational fields between bodies (e.g. Earth-Moon, Earth-Sun, etc.), that are popular mission locations due to stability (i.e. low fuel usage), visibility for communications or science instruments, or other reasons.  Also known as "libration points".</li>
 	  <li>Lunar Gateway: a space station orbiting the Moon, that can serve as a waypoint or other supporting infrastructure for lunar exploration <xref target="Gateway"/>.</li>
@@ -560,7 +560,8 @@
                 <date year="2025" month="July"/>
             </front>
         </reference>
-        <reference anchor="ioagmoon" target="https://www.ioag.org/Public%20Documents/Lunar%20communications%20architecture%20study%20report%20FINAL%20v1.3.pdf">
+        <reference anchor="ioagmoon" 
+target="https://www.ioag.org/Public%20Documents/Lunar%20communications%20architecture%20study%20report%20FINAL%20v1.3.pdf">
           <front>
             <title>The Future Lunar Communications Architecture, Report of the Interagency Operations Advisory Group</title>
             <author>
@@ -664,7 +665,8 @@
             </author>
           </front>
         </reference>
-        <reference anchor="lunartime" target="https://www.nasa.gov/general/nasa-to-develop-lunar-time-standard-for-exploration-initiatives/#:~:text=The%20lunar%20time%20will%20be,Coordinated%20Universal%20Time%20(UTC)">
+        <reference anchor="lunartime" 
+target="https://www.nasa.gov/general/nasa-to-develop-lunar-time-standard-for-exploration-initiatives/">
           <front>
             <title>NASA to Develop Lunar Time Standard for Exploration Initiatives</title>
             <author>

@@ -225,7 +225,7 @@
       </section>
       <section anchor="scenario-mi">
         <name>Earth-Mars with Intermittent Connectivity (MI)</name>
-        <t>Mars assets are reachable by intermittence from Earth. For example, a rover on the Mars surface is connected to a Mars surface IP network which receives intermittent connectivity from a few orbiters, with an average of one overpass every 6 hours. Some of those orbiters have circular orbits, others elliptical; the latter means that the overpasses are not at a fixed frequency. The orbiters are connected to Earth ground stations while they are in line of sight with Earth. The Earth to Mars one-way delay is between 4 and 24 minutes, depending on the relative position of each planet, and changes "slowly" as the planets are orbiting around the Sun.</t>
+        <t>Mars assets are reachable by intermittence from Earth. For example, a rover on the Mars surface is connected to a Mars surface IP network which receives intermittent connectivity from a few orbiters, with an average of one contact every 6 hours. Some of those orbiters have circular orbits, others elliptical; the latter means that the overpasses are not at a fixed frequency. The orbiters are connected to Earth ground stations while they are in line of sight with Earth. The Earth to Mars one-way delay is between 4 and 24 minutes, depending on the relative position of each planet, and changes "slowly" as the planets are orbiting around the Sun.</t>
       </section>
       <section anchor="scenario-sc">
         <name>Solar Conjunction (SC)</name>

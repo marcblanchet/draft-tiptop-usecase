@@ -209,7 +209,7 @@
       <t>This section describes example connectivity scenarios in deep space. Each scenario is labeled with a two-letter acronym so that other documents, such as protocol profiles, can refer to them. This list is not intended to be exhaustive.</t>
       <section anchor="scenario-cs">
         <name>Earth to Cruising Spacecraft (CS)</name>
-        <t>In this secenario, a spacecraft cruising towards a deep space destination communicates directly with Earth. The one-way delay increases over time, but at orders of magnitude lower speed than the speed of light; therefore the round-trip time increases "slowly".</t>
+        <t>In this scenario, a spacecraft cruising towards a deep space destination communicates directly with Earth. The one-way delay increases over time, but at orders of magnitude lower speed than the speed of light; therefore the round-trip time increases "slowly".</t>
       </section>
       <section anchor="scenario-lf">
         <name>Earth-Moon with Full Connectivity (LF)</name>

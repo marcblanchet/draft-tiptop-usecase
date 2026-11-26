@@ -9,7 +9,9 @@
 ]>
 <rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info" docName="draft-ietf-tiptop-usecase-04" ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" version="3">
   <front>
-    <title abbrev="IP in Deep Space">IP in Deep Space: Key Characteristics, Use Cases and Requirements</title>
+    <title abbrev="IP in Deep Space">
+      IP in Deep Space: Key Characteristics, Use Cases and Requirements
+    </title>
     <seriesInfo name="Internet-Draft" value="draft-ietf-tiptop-usecase-04"/>
     <author fullname="Marc Blanchet" initials="MB">
       <organization>Viagenie</organization>
@@ -51,268 +53,1058 @@
     <keyword>dns</keyword>
     <keyword>routing</keyword>
     <abstract>
-      <t>Deep space communications involve long delays (e.g., Earth to Mars has one-way delays 4-24 minutes) and intermittent communications, mainly because of orbital dynamics. Most of the IP protocol stack used on the Internet, in particular reliable transport protocols and applications, is based on the assumptions of shorter delays and mostly uninterrupted communications. This document describes the key characteristics, use cases, and requirements for deep space networking, intended to help when profiling IP protocols in such environment.</t>
+      <t>
+        Deep space communications involve long delays (e.g., Earth to Mars has
+        one-way delays 4-24 minutes) and intermittent communications, mainly
+        because of orbital dynamics. Most of the IP protocol stack used on the
+        Internet, in particular reliable transport protocols and applications,
+        is based on the assumptions of shorter delays and mostly uninterrupted
+        communications. This document describes the key characteristics, use
+        cases, and requirements for deep space networking, intended to help when
+        profiling IP protocols in such environment.
+      </t>
     </abstract>
   </front>
   <middle>
     <section anchor="intro">
       <name>Introduction</name>
-      <t>Deep space communications involve long delays (e.g., Earth to Mars is 4-24 minutes one way) and intermittent communications, mainly because of orbital dynamics. Up to now, communications have typically been done on a layer-2 point to point basis, in some cases with relays operating at layer-2 or below.  Most missions have operated on their own, without direct data exchanges between spacecrafts at higher layers.</t>
-      <t>Use of networking technologies, including IP, has become established within space vehicles that have their own onboard networks.  Complex human exploration and collaborative science missions are driving increased networking between vehicles.  Additionally, there is a rising need for interoperability between mission end-users and multiple service providers.  As the scale of missions, link interconnections, and application interactions grows, it will be increasingly important to support standard IP-based network data flows.</t>
-      <t>This document describes the key characteristics and use cases for networking in deep space. It provides examples taken from the current communications facilities to reach the Moon and Mars, as well as future plans. While these examples provide great insight on what is possible today, the resulting architecture should also consider future possibilities and farther celestial bodies. For example, while the number of relays and orbiters around the Moon and Mars is currently limited, it is expected that their number will increase significantly, therefore providing improved coverage around those celestial bodies, resulting in an impact on communications and networking traffic patterns, intermittence and alternate paths.</t>
-      <t>Initially the needs considered in this document are to support IP-based applications in or between private networks, without assumption of reachability to/from the global Internet. At least initially, interplanetary IP networks are likely to be protected from the Internet, and vice-versa the Internet is protected from them (since they may have unique routing, congestion control, and other behaviors).  However, over time it is possible that connectivity to the Internet may become available for some mission assets, and eventually interplanetary networks could become part of the Internet.</t>
-      <t>This work is a followup of an assessment on the use of the IP protocol stack in deep space <xref target="I-D.many-deepspace-ip-assessment"/>.</t>
+      <t>
+        Deep space communications involve long delays (e.g., Earth to Mars is
+        4-24 minutes one way) and intermittent communications, mainly because of
+        orbital dynamics. Up to now, communications have typically been done on
+        a layer-2 point to point basis, in some cases with relays operating at
+        layer-2 or below. Most missions have operated on their own, without
+        direct data exchanges between spacecrafts at higher layers.
+      </t>
+      <t>
+        Use of networking technologies, including IP, has become established
+        within space vehicles that have their own onboard networks. Complex
+        human exploration and collaborative science missions are driving
+        increased networking between vehicles. Additionally, there is a rising
+        need for interoperability between mission end-users and multiple service
+        providers. As the scale of missions, link interconnections, and
+        application interactions grows, it will be increasingly important to
+        support standard IP-based network data flows.
+      </t>
+      <t>
+        This document describes the key characteristics and use cases for
+        networking in deep space. It provides examples taken from the current
+        communications facilities to reach the Moon and Mars, as well as future
+        plans. While these examples provide great insight on what is possible
+        today, the resulting architecture should also consider future
+        possibilities and farther celestial bodies. For example, while the
+        number of relays and orbiters around the Moon and Mars is currently
+        limited, it is expected that their number will increase significantly,
+        therefore providing improved coverage around those celestial bodies,
+        resulting in an impact on communications and networking traffic
+        patterns, intermittence and alternate paths.
+      </t>
+      <t>
+        Initially the needs considered in this document are to support IP-based
+        applications in or between private networks, without assumption of
+        reachability to/from the global Internet. At least initially,
+        interplanetary IP networks are likely to be protected from the Internet,
+        and vice-versa the Internet is protected from them (since they may have
+        unique routing, congestion control, and other behaviors). However, over
+        time it is possible that connectivity to the Internet may become
+        available for some mission assets, and eventually interplanetary
+        networks could become part of the Internet.
+      </t>
+      <t>
+        This work is a followup of an assessment on the use of the IP protocol
+        stack in deep space <xref target="I-D.many-deepspace-ip-assessment"/>.
+      </t>
       <section>
         <name>Context</name>
         <t>
-                IP has been used by space missions for decades now, though
-                predominantly for near-space missions. Some historic examples
-                include:
+          IP has been used by space missions for decades now, though
+          predominantly for near-space missions. Some historic examples include:
         </t>
         <ul>
           <li>
-                In 1996, the first commanding of an in-flight spacecraft via IP
-                was done by Eric Travis to the STRV-1b spacecraft in geostationary
-                transfer orbit <xref target="hooke"/>.
+            In 1996, the first commanding of an in-flight spacecraft via IP was
+            done by Eric Travis to the STRV-1b spacecraft in geostationary
+            transfer orbit <xref target="hooke"/>.
           </li>
           <li>
-                Starting in the late 1990s, NASA's Goddard Spaceflight Center
-                (GSFC) began the Operating Missions as Nodes on the Internet
-                (OMNI) project that defined and demonstrated IP-based
-                communications architecture for space missions. The system
-                architecture included onboard local area networking with IP, in-space IP
-                routing capability, and use of IP over space links with
-                Earth-based ground stations and control centers or other users.
-                Testing on-orbit began in 2000, with the UoSAT-12 commercial
-                satellite operated by Surrey Satellite Technology Ltd. (SSTL),
-                including use of NTP, FTP, and other protocols
-                <xref target="OMNI"/>.  UoSat-12 then hosted the first HTTP/web
-                server in space in 2001, and SSTL proceeded to use IP
-                for its Disaster Monitoring Constellation (DMC) series
-                of spacecraft including AlSAT-1, BILSAT, NigeriaSat-1,
-                and the UK-DMC <xref target="hogie2005"/>.
-
-	  </li>
-          <li>
-                In 2003, the Cosmic Hot Interstellar Plasma Spectrometer Satellite
-                (CHIPSat) operated by UC Berkeley for NASA used IP for its
-                onboard applications <xref target="chips"/>.
-	  </li>
-          <li>
-                Also in 2003, NASA's Communications and Navigation Demonstration
-                on Shuttle (CANDOS) included a payload on the STS-107 Space Shuttle
-                mission, that involved use of IP, Mobile IP, UDP, NTP, FTP, SCP,
-                and SSH <xref target="candos"/>.
+            Starting in the late 1990s, NASA's Goddard Spaceflight Center (GSFC)
+            began the Operating Missions as Nodes on the Internet (OMNI) project
+            that defined and demonstrated IP-based communications architecture
+            for space missions. The system architecture included onboard local
+            area networking with IP, in-space IP routing capability, and use of
+            IP over space links with Earth-based ground stations and control
+            centers or other users. Testing on-orbit began in 2000, with the
+            UoSAT-12 commercial satellite operated by Surrey Satellite
+            Technology Ltd. (SSTL), including use of NTP, FTP, and other
+            protocols <xref target="OMNI"/>. UoSat-12 then hosted the first
+            HTTP/web server in space in 2001, and SSTL proceeded to use IP for
+            its Disaster Monitoring Constellation (DMC) series of spacecraft
+            including AlSAT-1, BILSAT, NigeriaSat-1, and the UK-DMC
+            <xref target="hogie2005"/>.
           </li>
           <li>
-                Again in 2003, the Cisco router in Low Earth Orbit (CLEO)
-                launched as a payload on the UK-DMC satellite and was used for
-                experiments with IPv6, IPsec, and other protocols over several
-                years <xref target="cleo-paper"/>.
-	  </li>
-          <li>
-                IP is used on the International Space Station and its onboard
-                LANs, using standard devices and operating systems.
+            In 2003, the Cosmic Hot Interstellar Plasma Spectrometer Satellite
+            (CHIPSat) operated by UC Berkeley for NASA used IP for its onboard
+            applications <xref target="chips"/>.
           </li>
           <li>
-                In 2004 NASA's Constellation Program began work on the Orion
-                crew capsule as part of the architecture for lunar and Mars
-                exploration (Orion has continued to be a part of the present
-                Artemis Program for lunar missions). The Constellation architecture used IP end-to-end, and
-                included IP networking onboard the vehicles such as Orion
-                <xref target="bhasin-paper"/>.
+            Also in 2003, NASA's Communications and Navigation Demonstration on
+            Shuttle (CANDOS) included a payload on the STS-107 Space Shuttle
+            mission, that involved use of IP, Mobile IP, UDP, NTP, FTP, SCP, and
+            SSH <xref target="candos"/>.
+          </li>
+          <li>
+            Again in 2003, the Cisco router in Low Earth Orbit (CLEO) launched
+            as a payload on the UK-DMC satellite and was used for experiments
+            with IPv6, IPsec, and other protocols over several years
+            <xref target="cleo-paper"/>.
+          </li>
+          <li>
+            IP is used on the International Space Station and its onboard LANs,
+            using standard devices and operating systems.
+          </li>
+          <li>
+            In 2004 NASA's Constellation Program began work on the Orion crew
+            capsule as part of the architecture for lunar and Mars exploration
+            (Orion has continued to be a part of the present Artemis Program for
+            lunar missions). The Constellation architecture used IP end-to-end,
+            and included IP networking onboard the vehicles such as Orion
+            <xref target="bhasin-paper"/>.
           </li>
         </ul>
         <t>
-            As an established protocol for near-space operations, it is
-                natural to envision use of IP extending to more
-                upcoming lunar missions, and IP is included within the LunaNet
-                Interoperability Specification (LNIS) <xref target="LNIS"/>
-		as well as the International Communication System Interoperability
-	       	Standards (ICSIS) <xref target="idsis"/> applicable for upcoming lunar missions.
-                Lunar missions are viewed by space agencies as establishing
-                hardware and methods to be extended to larger scale Mars
-                missions, so it is desirable for IP-based technology to continue to extend
-                from lunar to Mars use.
-	</t>
+          As an established protocol for near-space operations, it is natural to
+          envision use of IP extending to more upcoming lunar missions, and IP
+          is included within the LunaNet Interoperability Specification (LNIS)
+          <xref target="LNIS"/> as well as the International Communication
+          System Interoperability Standards (ICSIS) <xref target="idsis"/>
+          applicable for upcoming lunar missions. Lunar missions are viewed by
+          space agencies as establishing hardware and methods to be extended to
+          larger scale Mars missions, so it is desirable for IP-based technology
+          to continue to extend from lunar to Mars use.
+        </t>
         <t>
-The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xref target="RFC9171"/> for Delay-Tolerant Networking (DTN).  The intended use cases for BPv7 also include deep space.  BPv7 operates as an overlay protocol, that is able to run over multiple types of underlying networks and connectivity, including IP-based networks.  On hops between its overlay agents, DTN/BPv7 can make use of IP stack protocol tunings and configurations for deep space.
+          The IETF has also created the Bundle Protocol version 7 (BPv7)
+          specification <xref target="RFC9171"/> for Delay-Tolerant Networking
+          (DTN). The intended use cases for BPv7 also include deep space. BPv7
+          operates as an overlay protocol, that is able to run over multiple
+          types of underlying networks and connectivity, including IP-based
+          networks. On hops between its overlay agents, DTN/BPv7 can make use of
+          IP stack protocol tunings and configurations for deep space.
         </t>
       </section>
       <section>
         <name>Limitations of this document</name>
-        <t>Communication in deep space is vastly different than on Earth. This document does not describe space communication technologies below IP, but only the information relevant from the IP protocol stack viewpoint for the purpose of its engineering. More information is available for the Moon <xref target="ioagmoon"/> and Mars <xref target="ioagmars"/>.</t>
-        <t>Position, Navigation and Timing (PNT) is not directly discussed in this memo, but is a vital offering from space network service providers, in addition to data communications.  Networking can support some of the data exchanges that facilitate PNT services.</t>
-        <t>Near Earth orbits, such as Low Earth Orbit (LEO), Medium Earth Orbit (MEO), and Geosynchronous Earth Orbit (GEO) communications and networking to and from Earth are out of scope for this memo. Near-Earth satellite networking, including 3GPP Non-Terrestrial Networks (NTN), operates with round-trip times of milliseconds to hundreds of milliseconds and generally continuous connectivity through constellation handover; techniques developed there do not address the minutes-to-hours delays and scheduled multi-day disruptions characteristic of deep space, which are the focus of this document. However, the same 3GPP NTN technologies are expected to be used in low orbits around other celestial bodies; in that context, orbiting a celestial body and serving its surface and orbital assets, they are in scope of this document. In addition, given the relatively small distance to the Moon, there are possibilities to use spacecraft around Earth or at Lagrange points as relays to communicate with lunar assets. In this context, these possibilities are in scope.</t>
+        <t>
+          Communication in deep space is vastly different than on Earth. This
+          document does not describe space communication technologies below IP,
+          but only the information relevant from the IP protocol stack viewpoint
+          for the purpose of its engineering. More information is available for
+          the Moon <xref target="ioagmoon"/> and Mars <xref target="ioagmars"/>.
+        </t>
+        <t>
+          Position, Navigation and Timing (PNT) is not directly discussed in
+          this memo, but is a vital offering from space network service
+          providers, in addition to data communications. Networking can support
+          some of the data exchanges that facilitate PNT services.
+        </t>
+        <t>
+          Near Earth orbits, such as Low Earth Orbit (LEO), Medium Earth Orbit
+          (MEO), and Geosynchronous Earth Orbit (GEO) communications and
+          networking to and from Earth are out of scope for this memo.
+          Near-Earth satellite networking, including 3GPP Non-Terrestrial
+          Networks (NTN), operates with round-trip times of milliseconds to
+          hundreds of milliseconds and generally continuous connectivity through
+          constellation handover; techniques developed there do not address the
+          minutes-to-hours delays and scheduled multi-day disruptions
+          characteristic of deep space, which are the focus of this document.
+          However, the same 3GPP NTN technologies are expected to be used in low
+          orbits around other celestial bodies; in that context, orbiting a
+          celestial body and serving its surface and orbital assets, they are in
+          scope of this document. In addition, given the relatively small
+          distance to the Moon, there are possibilities to use spacecraft around
+          Earth or at Lagrange points as relays to communicate with lunar
+          assets. In this context, these possibilities are in scope.
+        </t>
       </section>
       <section>
         <name>Terminology</name>
         <ul>
-          <li>Deep space: while the ITU definition <xref target="deepspacewikipedia"/> of deep space is beyond 2 million km, in this document, the Moon and its environs are included since networking for this regime bears more similarities to other deep space bodies than to terrestrial and Earth-orbiting conditions.</li>
-          <li>Direct-with-Earth (DWE): communications from/to a spacecraft directly to/from Earth, without the use of relays.</li>
+          <li>
+            Deep space: while the ITU definition
+            <xref target="deepspacewikipedia"/> of deep space is beyond 2
+            million km, in this document, the Moon and its environs are included
+            since networking for this regime bears more similarities to other
+            deep space bodies than to terrestrial and Earth-orbiting conditions.
+          </li>
+          <li>
+            Direct-with-Earth (DWE): communications from/to a spacecraft
+            directly to/from Earth, without the use of relays.
+          </li>
           <li>Moon, Lunar: refers to Earth's Moon.</li>
-          <li>Deep Space Network (DSN): NASA international array of giant radio antennas that supports interplanetary spacecraft missions <xref target="DSN"/>.</li>
-          <li>LunaNet Service Providers (LNSP): service providers to the lunar surface and orbital regions, including private commercial operators, as defined in the LunaNet Interoperability Specification <xref target="LNIS"/>.</li>
-          <li>Lagrange Points: special points in the gravitational fields between bodies (e.g. Earth-Moon, Earth-Sun, etc.), that are popular mission locations due to stability (i.e. low fuel usage), visibility for communications or science instruments, or other reasons.  Also known as "libration points".</li>
-          <li>Lunar Gateway: a space station orbiting the Moon, that can serve as a waypoint or other supporting infrastructure for lunar exploration <xref target="Gateway"/>.</li>
-          <li>Surface network: a network interconnecting assets on or near the surface of a celestial body, using terrestrial-style link technologies (e.g., IEEE 802.11, 3GPP). Its users include habitats, landers, rovers, crew equipment, and low-altitude mobile assets such as drones or hoppers, which are regarded as surface assets.</li>
+          <li>
+            Deep Space Network (DSN): NASA international array of giant radio
+            antennas that supports interplanetary spacecraft missions
+            <xref target="DSN"/>.
+          </li>
+          <li>
+            LunaNet Service Providers (LNSP): service providers to the lunar
+            surface and orbital regions, including private commercial operators,
+            as defined in the LunaNet Interoperability Specification
+            <xref target="LNIS"/>.
+          </li>
+          <li>
+            Lagrange Points: special points in the gravitational fields between
+            bodies (e.g. Earth-Moon, Earth-Sun, etc.), that are popular mission
+            locations due to stability (i.e. low fuel usage), visibility for
+            communications or science instruments, or other reasons. Also known
+            as "libration points".
+          </li>
+          <li>
+            Lunar Gateway: a space station orbiting the Moon, that can serve as
+            a waypoint or other supporting infrastructure for lunar exploration
+            <xref target="Gateway"/>.
+          </li>
+          <li>
+            Surface network: a network interconnecting assets on or near the
+            surface of a celestial body, using terrestrial-style link
+            technologies (e.g., IEEE 802.11, 3GPP). Its users include habitats,
+            landers, rovers, crew equipment, and low-altitude mobile assets such
+            as drones or hoppers, which are regarded as surface assets.
+          </li>
         </ul>
       </section>
       <section>
         <name>Document and Discussion Locations</name>
-        <t>The source of this document is located at https://github.com/marcblanchet/draft-tiptop-usecase. Comments or changes are welcomed by filing a PR or an issue against that repository.</t>
-        <t>This subject should be discussed on the IETF tiptop working group mailing list.</t>
+        <t>
+          The source of this document is located at
+          https://github.com/marcblanchet/draft-tiptop-usecase. Comments or
+          changes are welcomed by filing a PR or an issue against that
+          repository.
+        </t>
+        <t>
+          This subject should be discussed on the IETF tiptop working group
+          mailing list.
+        </t>
       </section>
     </section>
     <section anchor="keycharacteristics">
       <name>Characteristics</name>
-      <t>Compared to Internet on Earth, deep space communications and networking have multiple challenges, such as:</t>
+      <t>
+        Compared to Internet on Earth, deep space communications and networking
+        have multiple challenges, such as:
+      </t>
       <ul>
-        <li>Significant and variable delays (e.g. round trips of multiple seconds, minutes, or hours).</li>
-        <li>Frequent and long interruptions of communications, often with no alternate path. Because of orbital dynamics, a spacecraft may not be reachable from Earth because it is occluded by a celestial body. However, spacecraft location and reachability can be generally precalculated so that the communication windows can be planned between pairs of spacecraft or between a spacecraft and a celestial body such as Earth, Moon or Mars.</li>
-        <li>Lower bandwidth, sometimes even measured in "bits per second" rather than typical terrestrial Mbps and Gbps rates.</li>
+        <li>
+          Significant and variable delays (e.g. round trips of multiple seconds,
+          minutes, or hours).
+        </li>
+        <li>
+          Frequent and long interruptions of communications, often with no
+          alternate path. Because of orbital dynamics, a spacecraft may not be
+          reachable from Earth because it is occluded by a celestial body.
+          However, spacecraft location and reachability can be generally
+          precalculated so that the communication windows can be planned between
+          pairs of spacecraft or between a spacecraft and a celestial body such
+          as Earth, Moon or Mars.
+        </li>
+        <li>
+          Lower bandwidth, sometimes even measured in "bits per second" rather
+          than typical terrestrial Mbps and Gbps rates.
+        </li>
         <li>One-way / unidirectional links are sometimes used.</li>
-        <li>Highly asymmetrical bandwidth and data rates are often present between uplink (DWE to a spacecraft) and downlink (DWE from a spacecraft), due to varying transmission power levels, antenna sizes, and other physical link properties.</li>
-        <li>Limited onboard computing resources can lead to simplified or streamlined protocol implementations.</li>
-        <li>Limited energy supply can further reduce contact opportunities and performance.</li>
+        <li>
+          Highly asymmetrical bandwidth and data rates are often present between
+          uplink (DWE to a spacecraft) and downlink (DWE from a spacecraft), due
+          to varying transmission power levels, antenna sizes, and other
+          physical link properties.
+        </li>
+        <li>
+          Limited onboard computing resources can lead to simplified or
+          streamlined protocol implementations.
+        </li>
+        <li>
+          Limited energy supply can further reduce contact opportunities and
+          performance.
+        </li>
       </ul>
-      <t>Without any changes, a typical Internet application will not work in this environment, though some Internet stack protocols are more suitable than others.  Among the challenges in this list, the primary factors impacting Internet stack protocols are delays and disruptions, discussed in this memo.</t>
-      <t>This section describes the following cases of mission operating environments: Moon (surface and orbiting), Mars (surface and orbiting), Lagrange points, cruising spacecraft, and onboard spacecraft, starting with some commonality between all cases.</t>
-      <t>The concept of a "protocol radius" is useful to consider with regard to different mission cases described in this section <xref target="protocol-radius"/>.  For a given protocol and configuration, there is a limited zone where it can be expected to perform well.  Due to differences in delays or significance of disconnections, different protocols or parameter tunings may be needed to address the full set of cases.</t>
+      <t>
+        Without any changes, a typical Internet application will not work in
+        this environment, though some Internet stack protocols are more suitable
+        than others. Among the challenges in this list, the primary factors
+        impacting Internet stack protocols are delays and disruptions, discussed
+        in this memo.
+      </t>
+      <t>
+        This section describes the following cases of mission operating
+        environments: Moon (surface and orbiting), Mars (surface and orbiting),
+        Lagrange points, cruising spacecraft, and onboard spacecraft, starting
+        with some commonality between all cases.
+      </t>
+      <t>
+        The concept of a "protocol radius" is useful to consider with regard to
+        different mission cases described in this section
+        <xref target="protocol-radius"/>. For a given protocol and
+        configuration, there is a limited zone where it can be expected to
+        perform well. Due to differences in delays or significance of
+        disconnections, different protocols or parameter tunings may be needed
+        to address the full set of cases.
+      </t>
       <section>
         <name>Common Aspects</name>
-        <t>The Consultative Committee for Space Data Systems (CCSDS) is an organization comprised of many space agencies that has developed various link-layer protocols used on the links between Earth, orbiters and surface assets. Examples include Telecommand (TC) <xref target="CCSDS_TC"/>, Telemetry (TM) <xref target="CCSDS_TM"/>, Advanced Orbiting Systems (AOS) <xref target="CCSDS_AOS"/>, and Proximity1 (Prox1) <xref target="CCSDS_PROX1"/>]. A newer Unified Space Data Link Protocol (USLP) <xref target="CCSDS_USLP"/>, has been designed to replace these in the future. A generic encapsulation mechanism is defined by CCSDS to support networking and other uses over these link layer protocols, including IPv4, IPv6, and IP header compression options <xref target="IPoverCCSDSSpaceLinks"/><xref target="SANAIPEHeaderRegistry"/>. IP packets can be transported over any CCSDS link layers.</t>
-        <t>Surface assets on celestial bodies, such as habitats, rovers, stations and others may communicate with each other while on the surface network using Earth terrestrial technologies such as IEEE 802.11 and 3GPP technologies <xref target="ioagmoon"/><xref target="ioagmars"/> using IP, similar to the Internet, where links are almost always connected and there are no significant delays. They may also communicate using a relay orbiter.</t>
-        <t>Multiple providers, such as the LNSPs for the Moon, will provide various services including communications and networking.</t>
-        <t>Orbiters acting as communications relays are already deployed or planned for both the Moon and Mars. A sufficient number of orbiters can create a constellation which may provide full coverage of the celestial body surface <xref target="ioagmoon"/><xref target="ioagmars"/>, or at least key regions (e.g. the lunar south pole).  Relaying from one surface asset to another surface asset through these orbiters may use either CCSDS link-layers or link-layers similar to LEO constellations on Earth.</t>
-        <t>Space missions are typically planned many years in advance and are long-lived, spanning over many years or decades. Spacecraft are controlled from Earth and therefore should always be manageable from Earth. Given the remoteness and the difficulty to physically access the spacecraft, software upgrades and configuration changes are avoided whenever possible and backward compatibility is paramount.</t>
-        <t>Space exploration is more than ever carried by multiple stakeholders. A mixture of assets operated by government, commercial, and academic/research organizations from multiple nations are deployed.  They will operate largely independently, but collaboration over time is expected to meet shared science goals, joint exploration missions, and mission cross-support needs (e.g. in contingency and emergency cases).</t>
-        <t>While links can be noisy due to weak signals, interference, etc., often packet delivery is actually virtually error-free due to the strong coding available within the link layer (discussed in more detail in <xref target="link-model"/>).  Delivery of packets is generally in-order.  Queuing in modems, gateways, and other systems may be significant in comparison to typical terrestrial device queues, while the memory available for such queues on space-qualified hardware is often severely constrained; both the depth and the sizing of these buffers should be considered.  In some planetary proximity regimes, CCSDS COP-1 or COP-P link layer retransmissions may be performed, further improving reliability at the IP layer (at some expense to delays).  Packet losses might be more common in some specific cases of either very low link margins or aggressive Adaptive Coding and Modulation (ACM), even though they might generally be avoided through physical link engineering and contact planning.  See <xref target="time"/> for requirements related to timers used for loss detection.</t>
+        <t>
+          The Consultative Committee for Space Data Systems (CCSDS) is an
+          organization comprised of many space agencies that has developed
+          various link-layer protocols used on the links between Earth, orbiters
+          and surface assets. Examples include Telecommand (TC)
+          <xref target="CCSDS_TC"/>, Telemetry (TM) <xref target="CCSDS_TM"/>,
+          Advanced Orbiting Systems (AOS) <xref target="CCSDS_AOS"/>, and
+          Proximity1 (Prox1) <xref target="CCSDS_PROX1"/>]. A newer Unified
+          Space Data Link Protocol (USLP) <xref target="CCSDS_USLP"/>, has been
+          designed to replace these in the future. A generic encapsulation
+          mechanism is defined by CCSDS to support networking and other uses
+          over these link layer protocols, including IPv4, IPv6, and IP header
+          compression options
+          <xref target="IPoverCCSDSSpaceLinks"/><xref target="SANAIPEHeaderRegistry"/>.
+          IP packets can be transported over any CCSDS link layers.
+        </t>
+        <t>
+          Surface assets on celestial bodies, such as habitats, rovers, stations
+          and others may communicate with each other while on the surface
+          network using Earth terrestrial technologies such as IEEE 802.11 and
+          3GPP technologies <xref target="ioagmoon"/><xref target="ioagmars"/>
+          using IP, similar to the Internet, where links are almost always
+          connected and there are no significant delays. They may also
+          communicate using a relay orbiter.
+        </t>
+        <t>
+          Multiple providers, such as the LNSPs for the Moon, will provide
+          various services including communications and networking.
+        </t>
+        <t>
+          Orbiters acting as communications relays are already deployed or
+          planned for both the Moon and Mars. A sufficient number of orbiters
+          can create a constellation which may provide full coverage of the
+          celestial body surface
+          <xref target="ioagmoon"/><xref target="ioagmars"/>, or at least key
+          regions (e.g. the lunar south pole). Relaying from one surface asset
+          to another surface asset through these orbiters may use either CCSDS
+          link-layers or link-layers similar to LEO constellations on Earth.
+        </t>
+        <t>
+          Space missions are typically planned many years in advance and are
+          long-lived, spanning over many years or decades. Spacecraft are
+          controlled from Earth and therefore should always be manageable from
+          Earth. Given the remoteness and the difficulty to physically access
+          the spacecraft, software upgrades and configuration changes are
+          avoided whenever possible and backward compatibility is paramount.
+        </t>
+        <t>
+          Space exploration is more than ever carried by multiple stakeholders.
+          A mixture of assets operated by government, commercial, and
+          academic/research organizations from multiple nations are deployed.
+          They will operate largely independently, but collaboration over time
+          is expected to meet shared science goals, joint exploration missions,
+          and mission cross-support needs (e.g. in contingency and emergency
+          cases).
+        </t>
+        <t>
+          While links can be noisy due to weak signals, interference, etc.,
+          often packet delivery is actually virtually error-free due to the
+          strong coding available within the link layer (discussed in more
+          detail in <xref target="link-model"/>). Delivery of packets is
+          generally in-order. Queuing in modems, gateways, and other systems may
+          be significant in comparison to typical terrestrial device queues,
+          while the memory available for such queues on space-qualified hardware
+          is often severely constrained; both the depth and the sizing of these
+          buffers should be considered. In some planetary proximity regimes,
+          CCSDS COP-1 or COP-P link layer retransmissions may be performed,
+          further improving reliability at the IP layer (at some expense to
+          delays). Packet losses might be more common in some specific cases of
+          either very low link margins or aggressive Adaptive Coding and
+          Modulation (ACM), even though they might generally be avoided through
+          physical link engineering and contact planning. See
+          <xref target="time"/> for requirements related to timers used for loss
+          detection.
+        </t>
         <section anchor="link-model">
           <name>Link Model</name>
-          <t>This subsection includes further details on the "link model" assumptions for deep space data links.  While there are diverse connectivity scenarios described later in this document, this "link model" is generally applicable across the whole set (and includes both RF and optical links).  This subsection includes deeper consideration into how IP packets are encpasulated within the data link layer, MTU settings, and what impacts physical layer errors in a received stream of bits may have on IP packet streams.</t>
-          <t>Commonly, the space data link layer is split between an upper portion that provides framing (allowing multiple virtual channels to be multiplexed, etc.), and a lower portion that provides error correction and synchronization functionality on "codeblocks" (e.g. see Section 2.3 of <xref target="CCSDS_SDLP"/> for CCSDS radio links).  For decades, very powerful block error correction codes have been specifically developed and used for deep space missions, and can be further layered via "concatenated" coding (e.g. an outer block code and inner convolutional code), and interleaved for robustness to burst error patterns (e.g. see <xref target="CCSDS_130.1-G"/> for some CCSDS RF links).</t>
-          <t>Frames and code blocks traditionally aligned one-to-one, however, this is no longer true in all cases (a recent optional "slicing" capability adds a secondary level of synchronization for the stream of frames within codeblock data <xref target="CCSDS_131.0-B"/>).  Additionally, space data link layer frames have historically mixed the use of fixed length frames in some cases (such as telemetry links) and variable length frames in other cases (such as telecommand links), but recently there has been symmetrical use of fixed length frames in both directions (e.g. with the AOS data link).  Since IP packets can vary in length, addtional protocol methods are needed in order to transfer a stream of IP packets over a data link with fixed frame sizes.  Generally, the expected means to encapsulate either IPv4 or IPv6 packets into data link layer frames is via CCSDS Encapsulation Packets <xref target="IPoverCCSDSSpaceLinks"/>.  The Encapsulation Packet provides a means to signal each packet's protocol type and its total size, and can support flexibly packing IP packets into frames such that a given IP packet may either:</t>
+          <t>
+            This subsection includes further details on the "link model"
+            assumptions for deep space data links. While there are diverse
+            connectivity scenarios described later in this document, this "link
+            model" is generally applicable across the whole set (and includes
+            both RF and optical links). This subsection includes deeper
+            consideration into how IP packets are encpasulated within the data
+            link layer, MTU settings, and what impacts physical layer errors in
+            a received stream of bits may have on IP packet streams.
+          </t>
+          <t>
+            Commonly, the space data link layer is split between an upper
+            portion that provides framing (allowing multiple virtual channels to
+            be multiplexed, etc.), and a lower portion that provides error
+            correction and synchronization functionality on "codeblocks"
+            (e.g. see Section 2.3 of <xref target="CCSDS_SDLP"/> for CCSDS radio
+            links). For decades, very powerful block error correction codes have
+            been specifically developed and used for deep space missions, and
+            can be further layered via "concatenated" coding (e.g. an outer
+            block code and inner convolutional code), and interleaved for
+            robustness to burst error patterns (e.g. see
+            <xref target="CCSDS_130.1-G"/> for some CCSDS RF links).
+          </t>
+          <t>
+            Frames and code blocks traditionally aligned one-to-one, however,
+            this is no longer true in all cases (a recent optional "slicing"
+            capability adds a secondary level of synchronization for the stream
+            of frames within codeblock data <xref target="CCSDS_131.0-B"/>).
+            Additionally, space data link layer frames have historically mixed
+            the use of fixed length frames in some cases (such as telemetry
+            links) and variable length frames in other cases (such as
+            telecommand links), but recently there has been symmetrical use of
+            fixed length frames in both directions (e.g. with the AOS data
+            link). Since IP packets can vary in length, addtional protocol
+            methods are needed in order to transfer a stream of IP packets over
+            a data link with fixed frame sizes. Generally, the expected means to
+            encapsulate either IPv4 or IPv6 packets into data link layer frames
+            is via CCSDS Encapsulation Packets
+            <xref target="IPoverCCSDSSpaceLinks"/>. The Encapsulation Packet
+            provides a means to signal each packet's protocol type and its total
+            size, and can support flexibly packing IP packets into frames such
+            that a given IP packet may either:
+          </t>
           <ol>
-            <li>Fit into a single frame, e.g. if the IP packet is ~1kB in size and an 8kb codeblock is used, along with a 1:1 mapping between frames and codeblocks.</li>
-            <li>Span multiple frames, e.g. for a large IP packet and a small fixed-length frame size.  The beginning (or end) of a packet may be in the same frame as the end (or beginning) of another packet.</li>
-            <li>If small, e.g. like a simple "ACK" or an ICMP packet, be packed into a single frame with multiple other small packets.</li>
+            <li>
+              Fit into a single frame, e.g. if the IP packet is ~1kB in size and
+              an 8kb codeblock is used, along with a 1:1 mapping between frames
+              and codeblocks.
+            </li>
+            <li>
+              Span multiple frames, e.g. for a large IP packet and a small
+              fixed-length frame size. The beginning (or end) of a packet may be
+              in the same frame as the end (or beginning) of another packet.
+            </li>
+            <li>
+              If small, e.g. like a simple "ACK" or an ICMP packet, be packed
+              into a single frame with multiple other small packets.
+            </li>
           </ol>
-          <t>The link MTU versus the frame size and codeblock size are set in order to balance between different goals of:</t>
+          <t>
+            The link MTU versus the frame size and codeblock size are set in
+            order to balance between different goals of:
+          </t>
           <ul>
-            <li>Having an MTU large enough to support packet sizes needed for modern upper layer protocols (e.g. &gt;1200 bytes of UDP payload size for QUIC).  MTUs that are much larger than the codeblock size will, however, potentially lead to a higher packet loss rate, as loss of a single codeblock will cause the entire packet to be lost.</li>
-            <li>Having an MTU small enough to not cause large head-of-line blocking problems when packets from real-time flows need to be multiplexed on a link.  This depends on the link rate, and is mainly an issue for lower capacity links.</li>
-            <li>Having either a fixed frame size large enough to efficiently hold packets of MTU length (after encapsulation), or having variable frame size (with an upper limit).</li>
-            <li>Using codeblock sizes that correspond to standardized / common block codes that have well-known performance and efficient algorithms in proper hardware/software.</li>
+            <li>
+              Having an MTU large enough to support packet sizes needed for
+              modern upper layer protocols (e.g. &gt;1200 bytes of UDP payload
+              size for QUIC). MTUs that are much larger than the codeblock size
+              will, however, potentially lead to a higher packet loss rate, as
+              loss of a single codeblock will cause the entire packet to be
+              lost.
+            </li>
+            <li>
+              Having an MTU small enough to not cause large head-of-line
+              blocking problems when packets from real-time flows need to be
+              multiplexed on a link. This depends on the link rate, and is
+              mainly an issue for lower capacity links.
+            </li>
+            <li>
+              Having either a fixed frame size large enough to efficiently hold
+              packets of MTU length (after encapsulation), or having variable
+              frame size (with an upper limit).
+            </li>
+            <li>
+              Using codeblock sizes that correspond to standardized / common
+              block codes that have well-known performance and efficient
+              algorithms in proper hardware/software.
+            </li>
           </ul>
-          <t>As an example, the LunaNet Interoperability Specification (LNIS) version 5 <xref target="LNIS"/> has some block code options including 1024, 4096, 7136, or 16384 bits of payload (128, 512, 892, or 2048 bytes).  This would lead to most QUIC data packets spanning from 1 to 10 or more codeblocks, for instance, depending on the specific code selection, even if only the minimal MTU is supported.</t>
-          <t>Due to the typical one-to-one relationship  between frames and codeblocks, the frame error rate that would impact user data could be directly established from the probability of an uncorrectable codeblock, so a frame error rate is a typical figure of merit (though with variable length frames and secondary synchronization, the relationship is broken).  An uncorrectable codeblock typically generates a failure resulting in loss/discard of the data, rather than passing data with bit errors through to be processed by upper layers.  As a point of reference, the DSN catalog <xref target="DSN_catalog"/> includes a table of example frame rejection rates, with example of less than 1 in 10**-6 frames when using a common concatenated code selections. Actual results can be much better than this due to circumstances discussed below.</t>
-          <t>Modern coding options in common use for RF and optical links have very steep performance curves, such that within only a few dB, there can be a difference of many orders of magnitude in the error rate performance.  This means practically that the bit error rates are either negligibly small (e.g. below 1e**-12), or high enough to prevent proper synchronization / locking.  Significant mission design and analysis activities are performed in order to provide strong confidence that communications will be reliable, and maintain operating points within the nearly error-free regime.  This includes computing detailed link budgets in order to determine received power levels and signal to noise ratios, generally reserving decent margins to provide high confidence of performance meeting expectations.  Through this analysis, the expected bit error rates and codeblock error rates can be determined.  The margins designed in may often be multiple dB, enabling much better actual error performance than the designed upper bounds on error rate.  Further, since links are highly planned and coordinated, they can often be scheduled in order to avoid circumstances that would lead to higher potential errors.  Anecdotally, often missions do not see upper-layer retransmission mechanisms needing to be triggered because links perform well enough to avoid losses apparent to the upper layers.</t>
-          <t>In the future, more use of variable and/or adaptive modulation and coding (VCM or ACM) may become common.  At present, this has started to become common for LEO use, but realtime control is also supporting use in LEO, so deep space usage may differ.  In any case, it is still good for work on IP in deep space to assume the possibility of VCM or ACM that will cause data to be sent often at high rates but with lower link margins, resulting in a potentially observable error rate.</t>
-          <t>In conclusion, deep space links can support typical Internet MTU-sized packets (e.g. 1500 or 2k bytes), and nominal error rates.  For protocol design, simulation, analysis, etc., it is advisable to consider different possible cases of error behaviors, either where margin is high and error rates are so small as to be neglibible, or cases where errors may be present, but bounded by a value such as 1e-6 probability of uniform randomly distributed packet losses.  While other cases such as correlated burst losses are possible, they do not seem to bear special consideration at this time, due to factors described above.  An error-free or very low packet error rate is representative for nominal cases where RF or optical links are designed using traditional practicies, operationally scheduled to avoid known interference, blockages, etc., and use current technologies.</t>
+          <t>
+            As an example, the LunaNet Interoperability Specification (LNIS)
+            version 5 <xref target="LNIS"/> has some block code options
+            including 1024, 4096, 7136, or 16384 bits of payload (128, 512, 892,
+            or 2048 bytes). This would lead to most QUIC data packets spanning
+            from 1 to 10 or more codeblocks, for instance, depending on the
+            specific code selection, even if only the minimal MTU is supported.
+          </t>
+          <t>
+            Due to the typical one-to-one relationship between frames and
+            codeblocks, the frame error rate that would impact user data could
+            be directly established from the probability of an uncorrectable
+            codeblock, so a frame error rate is a typical figure of merit
+            (though with variable length frames and secondary synchronization,
+            the relationship is broken). An uncorrectable codeblock typically
+            generates a failure resulting in loss/discard of the data, rather
+            than passing data with bit errors through to be processed by upper
+            layers. As a point of reference, the DSN catalog
+            <xref target="DSN_catalog"/> includes a table of example frame
+            rejection rates, with example of less than 1 in 10**-6 frames when
+            using a common concatenated code selections. Actual results can be
+            much better than this due to circumstances discussed below.
+          </t>
+          <t>
+            Modern coding options in common use for RF and optical links have
+            very steep performance curves, such that within only a few dB, there
+            can be a difference of many orders of magnitude in the error rate
+            performance. This means practically that the bit error rates are
+            either negligibly small (e.g. below 1e**-12), or high enough to
+            prevent proper synchronization / locking. Significant mission design
+            and analysis activities are performed in order to provide strong
+            confidence that communications will be reliable, and maintain
+            operating points within the nearly error-free regime. This includes
+            computing detailed link budgets in order to determine received power
+            levels and signal to noise ratios, generally reserving decent
+            margins to provide high confidence of performance meeting
+            expectations. Through this analysis, the expected bit error rates
+            and codeblock error rates can be determined. The margins designed in
+            may often be multiple dB, enabling much better actual error
+            performance than the designed upper bounds on error rate. Further,
+            since links are highly planned and coordinated, they can often be
+            scheduled in order to avoid circumstances that would lead to higher
+            potential errors. Anecdotally, often missions do not see upper-layer
+            retransmission mechanisms needing to be triggered because links
+            perform well enough to avoid losses apparent to the upper layers.
+          </t>
+          <t>
+            In the future, more use of variable and/or adaptive modulation and
+            coding (VCM or ACM) may become common. At present, this has started
+            to become common for LEO use, but realtime control is also
+            supporting use in LEO, so deep space usage may differ. In any case,
+            it is still good for work on IP in deep space to assume the
+            possibility of VCM or ACM that will cause data to be sent often at
+            high rates but with lower link margins, resulting in a potentially
+            observable error rate.
+          </t>
+          <t>
+            In conclusion, deep space links can support typical Internet
+            MTU-sized packets (e.g. 1500 or 2k bytes), and nominal error rates.
+            For protocol design, simulation, analysis, etc., it is advisable to
+            consider different possible cases of error behaviors, either where
+            margin is high and error rates are so small as to be neglibible, or
+            cases where errors may be present, but bounded by a value such as
+            1e-6 probability of uniform randomly distributed packet losses.
+            While other cases such as correlated burst losses are possible, they
+            do not seem to bear special consideration at this time, due to
+            factors described above. An error-free or very low packet error rate
+            is representative for nominal cases where RF or optical links are
+            designed using traditional practicies, operationally scheduled to
+            avoid known interference, blockages, etc., and use current
+            technologies.
+          </t>
         </section>
       </section>
       <section>
         <name>Moon</name>
-        <t>There are currently very few orbiters around Moon but there are plans to establish multiple constellations of them to be used as communication relays. As few as 5 cooperating orbiters at the right orbits is sufficient to provide full coverage <xref target="ioagmoon"/>, and smaller sets of orbiters can be targeted to provide full coverage of specific limited regions such as the far side or the polar regions <xref target="imconstellation"/>. Until full coverage is accomplished, interruptions of communications are expected.  While Earth ground stations are able to directly cover assets on the near side of Moon, use of relays may still be desirable to improve power usage, data capacity, and spectrum efficiency.</t>
-        <t>Different types of networking nodes are expected on the lunar surface, with a wide range of capabilities, from those that have very limited functionality (similar to IoT devices on Earth), up to more highly-capable infrastructure hub nodes that provide access for other surface users (e.g. in a habitat or lander), and in-between cases such as crewed or uncrewed rovers that may have combinations of direct-to-Earth, with proximity orbiters, or via local wireless LAN or cellular capabilities.</t>
-        <t>The LunaNet Interoperability Specification (LNIS) <xref target="LNIS"/> is a framework including IP networking support for lunar service providers and users to acheive interoperability.</t>
-        <t>NASA has described plans for a sustained lunar surface base, the Moon Base program, near the lunar south pole, deployed in phases and comprising commercial landers, crewed and uncrewed rovers, drones, and later pressurized habitats and power infrastructure <xref target="nasamoonbase"/>. The networking use cases described in this document, including surface networks interconnecting habitats, rovers, drones and other surface assets, surface-to-orbiter relaying, and DWE links, are intended to cover such deployments.</t>
-        <t>For human / crewed operations, nearly continuous coverage and data flows might be expected. However, for other types of network users (such as science missions), only limited communication opportunities may be available.</t>
-        <t>Some nodes (such as those supporting human missions) may have multiple/redundant links available simultaneously, but this should not be expected in general, and even then it is likely to be more for failover use than for multipath network transport.</t>
-        <t>Data link operation is scheduled in advance through coordination between the end-user mission operations centers and LNSPs.  The time windows for operation and data rates are well-known in advance (typically days or more).  Successful link operation generally requires both directional pointing/tracking (with knowledge of vehicle locations and motion) of antenna systems, as well as pre-configuration of modem / signal processing and gateway systems that require prior coordination on many parameters.  Ad hoc or random access may be available at some later point, but is likely to be rare for at least proximity and direct-with-Earth links.</t>
-        <t>Near or on the surface, it is currently expected that the mobile spacecraft such as rovers or humans will be moving slowly compared to fast-moving vehicules on terrestrial networks where specific requirements are needed for handover.</t>
-        <t>While interoperability and cross support are frequently expected, there is no assumption in-general that different parties can simply connect at the link layer or trade packets at the network layer (either directly or through intermediaries).  Network routing and interconnection is likely to be closely coordinated and limited by policies established jointly between cooperating organizations.  It is not likely to be directly like the Internet, with BGP, DNS, etc. generally available to support interdomain operations.</t>
+        <t>
+          There are currently very few orbiters around Moon but there are plans
+          to establish multiple constellations of them to be used as
+          communication relays. As few as 5 cooperating orbiters at the right
+          orbits is sufficient to provide full coverage
+          <xref target="ioagmoon"/>, and smaller sets of orbiters can be
+          targeted to provide full coverage of specific limited regions such as
+          the far side or the polar regions <xref target="imconstellation"/>.
+          Until full coverage is accomplished, interruptions of communications
+          are expected. While Earth ground stations are able to directly cover
+          assets on the near side of Moon, use of relays may still be desirable
+          to improve power usage, data capacity, and spectrum efficiency.
+        </t>
+        <t>
+          Different types of networking nodes are expected on the lunar surface,
+          with a wide range of capabilities, from those that have very limited
+          functionality (similar to IoT devices on Earth), up to more
+          highly-capable infrastructure hub nodes that provide access for other
+          surface users (e.g. in a habitat or lander), and in-between cases such
+          as crewed or uncrewed rovers that may have combinations of
+          direct-to-Earth, with proximity orbiters, or via local wireless LAN or
+          cellular capabilities.
+        </t>
+        <t>
+          The LunaNet Interoperability Specification (LNIS)
+          <xref target="LNIS"/> is a framework including IP networking support
+          for lunar service providers and users to acheive interoperability.
+        </t>
+        <t>
+          NASA has described plans for a sustained lunar surface base, the Moon
+          Base program, near the lunar south pole, deployed in phases and
+          comprising commercial landers, crewed and uncrewed rovers, drones, and
+          later pressurized habitats and power infrastructure
+          <xref target="nasamoonbase"/>. The networking use cases described in
+          this document, including surface networks interconnecting habitats,
+          rovers, drones and other surface assets, surface-to-orbiter relaying,
+          and DWE links, are intended to cover such deployments.
+        </t>
+        <t>
+          For human / crewed operations, nearly continuous coverage and data
+          flows might be expected. However, for other types of network users
+          (such as science missions), only limited communication opportunities
+          may be available.
+        </t>
+        <t>
+          Some nodes (such as those supporting human missions) may have
+          multiple/redundant links available simultaneously, but this should not
+          be expected in general, and even then it is likely to be more for
+          failover use than for multipath network transport.
+        </t>
+        <t>
+          Data link operation is scheduled in advance through coordination
+          between the end-user mission operations centers and LNSPs. The time
+          windows for operation and data rates are well-known in advance
+          (typically days or more). Successful link operation generally requires
+          both directional pointing/tracking (with knowledge of vehicle
+          locations and motion) of antenna systems, as well as pre-configuration
+          of modem / signal processing and gateway systems that require prior
+          coordination on many parameters. Ad hoc or random access may be
+          available at some later point, but is likely to be rare for at least
+          proximity and direct-with-Earth links.
+        </t>
+        <t>
+          Near or on the surface, it is currently expected that the mobile
+          spacecraft such as rovers or humans will be moving slowly compared to
+          fast-moving vehicules on terrestrial networks where specific
+          requirements are needed for handover.
+        </t>
+        <t>
+          While interoperability and cross support are frequently expected,
+          there is no assumption in-general that different parties can simply
+          connect at the link layer or trade packets at the network layer
+          (either directly or through intermediaries). Network routing and
+          interconnection is likely to be closely coordinated and limited by
+          policies established jointly between cooperating organizations. It is
+          not likely to be directly like the Internet, with BGP, DNS,
+          etc. generally available to support interdomain operations.
+        </t>
         <t>One-way delay from Earth to Moon is around 1.3 seconds.</t>
-        <t>Capacity is expected to eventually be in the range of hundreds of Mbps over radio links and Gbps via optical links between Earth and Moon assets <xref target="ioagmoon"/>.</t>
+        <t>
+          Capacity is expected to eventually be in the range of hundreds of Mbps
+          over radio links and Gbps via optical links between Earth and Moon
+          assets <xref target="ioagmoon"/>.
+        </t>
       </section>
       <section>
         <name>Mars</name>
-        <t>There are currently some orbiters around Mars, of which 4 are actively in use as relays, and 2 active rovers. Multiple missions are planned<xref target="ioagmars"/> in the coming years. Communications are from ground stations on Earth, such as the DSN, to Mars orbiters acting as layer0-1 relays to surface assets such as rovers, and reverse. The relays do not have notion of frames, and only forward bits at different frequencies for each segment, a mechanism named "bag of bits"<xref target="ioagmars"/>. These orbiters can operate as "bent-pipe" when the two segments are active, or by storing the bits as "store-and-forward" until the next segment becomes available. Since the current set of orbiters do not provide full coverage of Mars, the communication windows are calculated and planned between Earth and each orbiter, and between each orbiter and each surface asset. Currently, only one rover can use a relay link at any given time. The MaROS project<xref target="maros"/> sponsored by the Jet Propulsion Laboratory acts as a broker to enable missions to enter data about the communications capabilities such as frequencies, bandwidth, window of communication time, ... so that rover missions can schedule the available communications windows for transmitting and receiving. Most orbiters are used and scheduled in MaROS. One of the Mars orbiters is Mars Reconnaissance Orbiter(MRO)<xref target="mro"/>. It was launched in 2005 and has a single 40Mhz processor but over 100G of solid state memory. MaROS experience over years shows that the current bottleneck is not the temporary storage of the relays but the bandwidth from Mars surface assets to Mars orbiter relays. As demonstrated by a study<xref target="marscommstudy"/> on Mars communication windows, the communication windows seem to happen at a constant frequency, but the reality shows that the timing is pretty variable, which means a very large range of resulting round-trip time (RTT) for communications from Earth to Mars and back. For example, within 3 months in 2024, the calculated RTT of the various combinations of orbiters and rovers varied from 30 minutes to 170 hours.</t>
-        <t>Surface assets are commanded directly from Earth but at a very low rate. The traffic from the assets to Earth generally goes through relays.</t>
-        <t>It is expected that future constellations of Mars orbiters acting as relays will also have optical inter-satellite links<xref target="ioagmars"/>. The current orbiters were put in various orbits for the purpose of science, and usually have a small number of short relay opportunities per day. However, dedicated relay orbiters could be put at much higher altitudes to provide much better coverage.</t>
-        <t>About every 26 months, a solar conjunction happens for a period of around two weeks, where the Sun is between Earth and Mars, therefore causing the interruption of communications between Earth and Mars, as described in <xref target="scenario-sc"/>.</t>
-        <t>One-way delay from Earth to Mars is from 4 to 24 minutes, depending on the actual relative distance between them.</t>
-        <t>It is envisioned that optical links between Earth and Mars may deliver hundreds of Mbps<xref target="ioagmars"/>.</t>
+        <t>
+          There are currently some orbiters around Mars, of which 4 are actively
+          in use as relays, and 2 active rovers. Multiple missions are
+          planned<xref target="ioagmars"/> in the coming years. Communications
+          are from ground stations on Earth, such as the DSN, to Mars orbiters
+          acting as layer0-1 relays to surface assets such as rovers, and
+          reverse. The relays do not have notion of frames, and only forward
+          bits at different frequencies for each segment, a mechanism named "bag
+          of bits"<xref target="ioagmars"/>. These orbiters can operate as
+          "bent-pipe" when the two segments are active, or by storing the bits
+          as "store-and-forward" until the next segment becomes available. Since
+          the current set of orbiters do not provide full coverage of Mars, the
+          communication windows are calculated and planned between Earth and
+          each orbiter, and between each orbiter and each surface asset.
+          Currently, only one rover can use a relay link at any given time. The
+          MaROS project<xref target="maros"/> sponsored by the Jet Propulsion
+          Laboratory acts as a broker to enable missions to enter data about the
+          communications capabilities such as frequencies, bandwidth, window of
+          communication time, ... so that rover missions can schedule the
+          available communications windows for transmitting and receiving. Most
+          orbiters are used and scheduled in MaROS. One of the Mars orbiters is
+          Mars Reconnaissance Orbiter(MRO)<xref target="mro"/>. It was launched
+          in 2005 and has a single 40Mhz processor but over 100G of solid state
+          memory. MaROS experience over years shows that the current bottleneck
+          is not the temporary storage of the relays but the bandwidth from Mars
+          surface assets to Mars orbiter relays. As demonstrated by a
+          study<xref target="marscommstudy"/> on Mars communication windows, the
+          communication windows seem to happen at a constant frequency, but the
+          reality shows that the timing is pretty variable, which means a very
+          large range of resulting round-trip time (RTT) for communications from
+          Earth to Mars and back. For example, within 3 months in 2024, the
+          calculated RTT of the various combinations of orbiters and rovers
+          varied from 30 minutes to 170 hours.
+        </t>
+        <t>
+          Surface assets are commanded directly from Earth but at a very low
+          rate. The traffic from the assets to Earth generally goes through
+          relays.
+        </t>
+        <t>
+          It is expected that future constellations of Mars orbiters acting as
+          relays will also have optical inter-satellite
+          links<xref target="ioagmars"/>. The current orbiters were put in
+          various orbits for the purpose of science, and usually have a small
+          number of short relay opportunities per day. However, dedicated relay
+          orbiters could be put at much higher altitudes to provide much better
+          coverage.
+        </t>
+        <t>
+          About every 26 months, a solar conjunction happens for a period of
+          around two weeks, where the Sun is between Earth and Mars, therefore
+          causing the interruption of communications between Earth and Mars, as
+          described in <xref target="scenario-sc"/>.
+        </t>
+        <t>
+          One-way delay from Earth to Mars is from 4 to 24 minutes, depending on
+          the actual relative distance between them.
+        </t>
+        <t>
+          It is envisioned that optical links between Earth and Mars may deliver
+          hundreds of Mbps<xref target="ioagmars"/>.
+        </t>
       </section>
       <section>
         <name>Lagrange Points</name>
-        <t>Sun-Earth and Earth-Moon Lagrange points, such as Earth-Moon (EML)-1,2,4,5 and Earth-Sun (ESL)-1,2, are popular for science mission objectives and also being considered for communication relays and therefore potential network forwarders.</t>
-        <t>Sets of cooperating spacecraft may also be used to increase data return and streamline operations for science missions co-located at Lagrange points, by networking locally and sharing a common DWE "trunk link".</t>
+        <t>
+          Sun-Earth and Earth-Moon Lagrange points, such as Earth-Moon
+          (EML)-1,2,4,5 and Earth-Sun (ESL)-1,2, are popular for science mission
+          objectives and also being considered for communication relays and
+          therefore potential network forwarders.
+        </t>
+        <t>
+          Sets of cooperating spacecraft may also be used to increase data
+          return and streamline operations for science missions co-located at
+          Lagrange points, by networking locally and sharing a common DWE "trunk
+          link".
+        </t>
       </section>
       <section>
         <name>Cruising Spacecraft</name>
-        <t>Spacecraft that are cruising towards a deep space destination are assumed to generally be reached via direct point-to-point links from Earth using CCSDS link-layers.</t>
+        <t>
+          Spacecraft that are cruising towards a deep space destination are
+          assumed to generally be reached via direct point-to-point links from
+          Earth using CCSDS link-layers.
+        </t>
       </section>
       <section>
         <name>Spacecraft Onboard</name>
-        <t>Modern spacecraft generally contain multiple computers typically linked with wired realtime buses or links such as CAN, SpaceWire, RS-422, and others, but also increasingly using Ethernet or Time-Triggered Ethernet <xref target="tte"/> (TTE), with IP as the networking layer.  Especially in complex human-crewed vehicles, WiFi is becoming important, and has been used extensively in the International Space Station and planned for the Lunar Gateway.</t>
-        <t>IP networking onboard a spacecraft (or within a habitat) can support applications within the local network, without experiencing most of the typical space communications challenges described prior.  Considerations need to be made, however, in order to make sure these applications do not rely on typical wider infrastructure (e.g. DNS, NTP, etc.) that may not be externally available in space.  Additionally, some nodes on the network may be mobile/dynamic, such as astronaut suits and personal electronics, rovers, etc.</t>
+        <t>
+          Modern spacecraft generally contain multiple computers typically
+          linked with wired realtime buses or links such as CAN, SpaceWire,
+          RS-422, and others, but also increasingly using Ethernet or
+          Time-Triggered Ethernet <xref target="tte"/> (TTE), with IP as the
+          networking layer. Especially in complex human-crewed vehicles, WiFi is
+          becoming important, and has been used extensively in the International
+          Space Station and planned for the Lunar Gateway.
+        </t>
+        <t>
+          IP networking onboard a spacecraft (or within a habitat) can support
+          applications within the local network, without experiencing most of
+          the typical space communications challenges described prior.
+          Considerations need to be made, however, in order to make sure these
+          applications do not rely on typical wider infrastructure (e.g. DNS,
+          NTP, etc.) that may not be externally available in space.
+          Additionally, some nodes on the network may be mobile/dynamic, such as
+          astronaut suits and personal electronics, rovers, etc.
+        </t>
       </section>
     </section>
     <section anchor="usecases">
       <name>Use Cases</name>
-      <t>Multiple countries are developing systems aimed for a sustained lunar presence combining crewed and robotic missions.  The technologies developed for lunar use are intended to be applied later for Mars as well, and might equally apply for missions to asteroids and other deep space bodies.  IP has been included in the stack for the International Deep Space Interoperability Standards <xref target="idsis"/>, and the LunaNet Interoperability Specification <xref target="LNIS"/>.  There is a general intention to extend and reuse systems developed for lunar use to later Mars use.</t>
-      <t>Separate space agencies and private companies are deploying lunar space stations, orbiters, landers, rovers, habitats, crewed mission elements, and other assets.  Due to pervasive use and support of IP in modern computing systems, it is used onboard many space systems already, and between co-located systems (e.g. onboard ISS), and planned to be needed for networking on the Lunar Gateway, in Lunar 3GPP surface networks, and in Lunar habitat LAN and WLAN networks.</t>
-      <t>As more-and-more IP-enabled assets become deployed in lunar vicinity, it will increasingly create opportunities to interconnect them.  In fact, internetworking of lunar (and future Mars) systems is becoming essential, as plans call explicitly for cooperation between mission elements and communications/navigation system assets operated by different space agencies and/or private companies acting as service providers.</t>
-      <t>There are expected to be several different interoperable LNSPs offering a variety of relay and/or DWE services, to provide wide coverage and cross-support opportunities.  As more significant numbers of missions target Mars and other bodies, the same concepts should apply.</t>
-      <t>It may be expected that planetary IP networks should over time become united into larger aggregates, and even into a single interoperable network (as intended within the LunaNet conception).</t>
-      <t>It is expected that surface assets (for Moon, Mars, asteroids, etc.) will communicate with other surface assets on the same body through typical Earth-based wireless technologies such as WiFi or 4G/5G/6G, or via a orbiting relays.</t>
+      <t>
+        Multiple countries are developing systems aimed for a sustained lunar
+        presence combining crewed and robotic missions. The technologies
+        developed for lunar use are intended to be applied later for Mars as
+        well, and might equally apply for missions to asteroids and other deep
+        space bodies. IP has been included in the stack for the International
+        Deep Space Interoperability Standards <xref target="idsis"/>, and the
+        LunaNet Interoperability Specification <xref target="LNIS"/>. There is a
+        general intention to extend and reuse systems developed for lunar use to
+        later Mars use.
+      </t>
+      <t>
+        Separate space agencies and private companies are deploying lunar space
+        stations, orbiters, landers, rovers, habitats, crewed mission elements,
+        and other assets. Due to pervasive use and support of IP in modern
+        computing systems, it is used onboard many space systems already, and
+        between co-located systems (e.g. onboard ISS), and planned to be needed
+        for networking on the Lunar Gateway, in Lunar 3GPP surface networks, and
+        in Lunar habitat LAN and WLAN networks.
+      </t>
+      <t>
+        As more-and-more IP-enabled assets become deployed in lunar vicinity, it
+        will increasingly create opportunities to interconnect them. In fact,
+        internetworking of lunar (and future Mars) systems is becoming
+        essential, as plans call explicitly for cooperation between mission
+        elements and communications/navigation system assets operated by
+        different space agencies and/or private companies acting as service
+        providers.
+      </t>
+      <t>
+        There are expected to be several different interoperable LNSPs offering
+        a variety of relay and/or DWE services, to provide wide coverage and
+        cross-support opportunities. As more significant numbers of missions
+        target Mars and other bodies, the same concepts should apply.
+      </t>
+      <t>
+        It may be expected that planetary IP networks should over time become
+        united into larger aggregates, and even into a single interoperable
+        network (as intended within the LunaNet conception).
+      </t>
+      <t>
+        It is expected that surface assets (for Moon, Mars, asteroids, etc.)
+        will communicate with other surface assets on the same body through
+        typical Earth-based wireless technologies such as WiFi or 4G/5G/6G, or
+        via a orbiting relays.
+      </t>
       <t>Regarding applications, the following is an incomplete list:</t>
       <ul>
-        <li>Telecommand: Commanding can take different forms, either individual commands or batching commands together.  Individual commands sent to a mission/spacecraft from Earth are typically small (may fit within a single packet in many cases), and should typically be received reliably and in-order to be processed. Commands with dependencies or other relations may be grouped together for transmission and to help assure coherent execution rather than sent individually.  This can resemble small file transfer, for instance.  Commands may be time-sensitive, or have an "expiration date" after which they are not useful to carry within the network.  Required data rates may typically be in kbps and bursty.</li>
-        <li>Telemetry: Spacecraft stream telemetry data (periodically measured onboard status, metrics, etc.) to Earth for monitoring and other purposes.  Timely delivery is useful, but storage in the network is fine, if needed.  Required data rates may be approaching the Mbps range, and often a constant/steady stream of data is produced.</li>
-        <li>On-demand/real-time media(audio, video, ...): when a active path from the asset to Earth, the asset sends a media feed. The delay is only the propagation delay.</li>
-        <li>Delayed media: the asset sends the media, but it is expected that there is no active path from the asset to Earth, so data may be temporarily buffered within the network.</li>
-        <li>Emergency and Search and Rescue (SAR) messaging: sent from an asset
-            to one or many other assets (e.g. via broadcast or multicast) that support emergency operations.  Since crew or mission safety may be at risk, this traffic should be prioritized over most other types of packets when encountering queuing or storage within the network.  Timely delivery is necessary, but it should also be delivered reliably. Unlike most traffic, emergency messages may have no useful expiration: they should not be dropped from network storage on lifetime grounds, and drop policies under storage exhaustion should preserve them ahead of all other traffic classes.</li>
-        <li>Science data: Typically science data may take the form of large bulk file transfers unicasted from a spacecraft to Earth.  In many cases, storage and large delays in delivery can be tolerated. File transfer applications such as CCSDS File Delivery Protocol (CFDP)<xref target="CCSDS_CFDP"/> are typically used, that might be configured to either operate unidirectionally or may provide reliability through retransmissions, and require at least small amount of feedback.  Some science applications may also use messaging patterns to collaborate between different types of instruments in order to draw attention to events (e.g. gamma ray bursts, etc.) and bring different types of instruments to bear.  These messages may need to be quickly delivered and/or multicasted.</li>
-        <li>Messaging: Many different types of machine-to-machine messaging need to be supported, including for uses such as (1) providing PNT data/measurements to feed positioning, orbit determination, and time transfer or clock calibration, (2) providing space weather alerts, (3) providing advisory or other network information (e.g. almanac data such as ephemeris data for relay and other network elements, scheduled future contacts, or other service management related messaging).  Messages are generally small (though may vary depending on type) and might be unicast, broadcast, or multicast. In cases where they are advisory, for instance, they may not need reliable transport, though often it will be important to provide timely transmission.</li>
-        <li>Network and Asset management: sending requests and getting answers from assets about their overall status, status of their components, energy levels, buffer capacities, etc.</li>
-        <li>Software Update: Flight software is becoming increasingly complex, and needs to be maintained over time, e.g. to fix bugs, mitigate security issues, or to add features as a mission's lifetime extends.  In some cases, flight software may not even be fully complete when a mission launches.  Pushing software updates to flight systems from Earth is necessary for modern missions, and may utilize file transfer protocols like CFDP.</li>
+        <li>
+          Telecommand: Commanding can take different forms, either individual
+          commands or batching commands together. Individual commands sent to a
+          mission/spacecraft from Earth are typically small (may fit within a
+          single packet in many cases), and should typically be received
+          reliably and in-order to be processed. Commands with dependencies or
+          other relations may be grouped together for transmission and to help
+          assure coherent execution rather than sent individually. This can
+          resemble small file transfer, for instance. Commands may be
+          time-sensitive, or have an "expiration date" after which they are not
+          useful to carry within the network. Required data rates may typically
+          be in kbps and bursty.
+        </li>
+        <li>
+          Telemetry: Spacecraft stream telemetry data (periodically measured
+          onboard status, metrics, etc.) to Earth for monitoring and other
+          purposes. Timely delivery is useful, but storage in the network is
+          fine, if needed. Required data rates may be approaching the Mbps
+          range, and often a constant/steady stream of data is produced.
+        </li>
+        <li>
+          On-demand/real-time media(audio, video, ...): when a active path from
+          the asset to Earth, the asset sends a media feed. The delay is only
+          the propagation delay.
+        </li>
+        <li>
+          Delayed media: the asset sends the media, but it is expected that
+          there is no active path from the asset to Earth, so data may be
+          temporarily buffered within the network.
+        </li>
+        <li>
+          Emergency and Search and Rescue (SAR) messaging: sent from an asset to
+          one or many other assets (e.g. via broadcast or multicast) that
+          support emergency operations. Since crew or mission safety may be at
+          risk, this traffic should be prioritized over most other types of
+          packets when encountering queuing or storage within the network.
+          Timely delivery is necessary, but it should also be delivered
+          reliably. Unlike most traffic, emergency messages may have no useful
+          expiration: they should not be dropped from network storage on
+          lifetime grounds, and drop policies under storage exhaustion should
+          preserve them ahead of all other traffic classes.
+        </li>
+        <li>
+          Science data: Typically science data may take the form of large bulk
+          file transfers unicasted from a spacecraft to Earth. In many cases,
+          storage and large delays in delivery can be tolerated. File transfer
+          applications such as CCSDS File Delivery Protocol
+          (CFDP)<xref target="CCSDS_CFDP"/> are typically used, that might be
+          configured to either operate unidirectionally or may provide
+          reliability through retransmissions, and require at least small amount
+          of feedback. Some science applications may also use messaging patterns
+          to collaborate between different types of instruments in order to draw
+          attention to events (e.g. gamma ray bursts, etc.) and bring different
+          types of instruments to bear. These messages may need to be quickly
+          delivered and/or multicasted.
+        </li>
+        <li>
+          Messaging: Many different types of machine-to-machine messaging need
+          to be supported, including for uses such as (1) providing PNT
+          data/measurements to feed positioning, orbit determination, and time
+          transfer or clock calibration, (2) providing space weather alerts, (3)
+          providing advisory or other network information (e.g. almanac data
+          such as ephemeris data for relay and other network elements, scheduled
+          future contacts, or other service management related messaging).
+          Messages are generally small (though may vary depending on type) and
+          might be unicast, broadcast, or multicast. In cases where they are
+          advisory, for instance, they may not need reliable transport, though
+          often it will be important to provide timely transmission.
+        </li>
+        <li>
+          Network and Asset management: sending requests and getting answers
+          from assets about their overall status, status of their components,
+          energy levels, buffer capacities, etc.
+        </li>
+        <li>
+          Software Update: Flight software is becoming increasingly complex, and
+          needs to be maintained over time, e.g. to fix bugs, mitigate security
+          issues, or to add features as a mission's lifetime extends. In some
+          cases, flight software may not even be fully complete when a mission
+          launches. Pushing software updates to flight systems from Earth is
+          necessary for modern missions, and may utilize file transfer protocols
+          like CFDP.
+        </li>
       </ul>
     </section>
     <section anchor="scenarios">
       <name>Connectivity Scenarios</name>
-      <t>This section describes example connectivity scenarios in deep space. Each scenario is labeled with a two-letter acronym so that other documents, such as protocol profiles, can refer to them. This list is not intended to be exhaustive.</t>
+      <t>
+        This section describes example connectivity scenarios in deep space.
+        Each scenario is labeled with a two-letter acronym so that other
+        documents, such as protocol profiles, can refer to them. This list is
+        not intended to be exhaustive.
+      </t>
       <section anchor="scenario-cs">
         <name>Earth to Cruising Spacecraft (CS)</name>
-        <t>In this scenario, a spacecraft cruising towards a deep space destination communicates directly with Earth. The one-way delay increases over time, but at orders of magnitude lower speed than the speed of light; therefore the round-trip time increases "slowly".</t>
+        <t>
+          In this scenario, a spacecraft cruising towards a deep space
+          destination communicates directly with Earth. The one-way delay
+          increases over time, but at orders of magnitude lower speed than the
+          speed of light; therefore the round-trip time increases "slowly".
+        </t>
       </section>
       <section anchor="scenario-lf">
         <name>Earth-Moon with Full Connectivity (LF)</name>
-        <t>In this scenario, lunar assets are mostly always reachable, as with the terrestrial Internet. This can be accomplished in various ways, such as a constellation of low Moon orbit satellites connected together with Optical Inter-Satellite Links (OISL). For example, many rovers, drones and habitats on the Moon surface are connected to a 3GPP 6G network provided by such a constellation. At any single point in time, one or many of these satellites are communicating with Earth, providing full connectivity on the Moon and between the Moon and Earth. The Earth to Moon one-way delay is around 1.3 seconds. This scenario is the end goal for both the Moon and Mars. Given announced constellation deployment plans, essentially full coverage of the relevant lunar sites may be achieved in the near future. In such deployments, intermittence becomes an exception to be handled (e.g., equipment failures, contingencies, or power-save periods) rather than the general rule. Documents profiling protocols for these environments should therefore provide recommendations for both the intermittent and the full-connectivity regimes.</t>
+        <t>
+          In this scenario, lunar assets are mostly always reachable, as with
+          the terrestrial Internet. This can be accomplished in various ways,
+          such as a constellation of low Moon orbit satellites connected
+          together with Optical Inter-Satellite Links (OISL). For example, many
+          rovers, drones and habitats on the Moon surface are connected to a
+          3GPP 6G network provided by such a constellation. At any single point
+          in time, one or many of these satellites are communicating with Earth,
+          providing full connectivity on the Moon and between the Moon and
+          Earth. The Earth to Moon one-way delay is around 1.3 seconds. This
+          scenario is the end goal for both the Moon and Mars. Given announced
+          constellation deployment plans, essentially full coverage of the
+          relevant lunar sites may be achieved in the near future. In such
+          deployments, intermittence becomes an exception to be handled (e.g.,
+          equipment failures, contingencies, or power-save periods) rather than
+          the general rule. Documents profiling protocols for these environments
+          should therefore provide recommendations for both the intermittent and
+          the full-connectivity regimes.
+        </t>
       </section>
       <section anchor="scenario-li">
         <name>Earth-Moon with Intermittent Connectivity (LI)</name>
-        <t>In this scenario, lunar assets are reachable by intermittence from Earth. This can happen when there is a limited number of satellites which do not provide full-time connectivity. The Earth to Moon one-way delay is around 1.3 seconds.</t>
+        <t>
+          In this scenario, lunar assets are reachable by intermittence from
+          Earth. This can happen when there is a limited number of satellites
+          which do not provide full-time connectivity. The Earth to Moon one-way
+          delay is around 1.3 seconds.
+        </t>
       </section>
       <section anchor="scenario-mf">
         <name>Earth-Mars with Full Connectivity (MF)</name>
-        <t>In this scenario, Mars assets are mostly always reachable, as with the terrestrial Internet. As for the Moon, this can be accomplished in various ways, such as a constellation of satellites around Mars connected together with Optical Inter-Satellite Links (OISL). The Earth to Mars one-way delay is between 4 and 24 minutes, depending on the relative position of each planet. That one-way delay changes "slowly" as the planets are orbiting around the Sun.</t>
+        <t>
+          In this scenario, Mars assets are mostly always reachable, as with the
+          terrestrial Internet. As for the Moon, this can be accomplished in
+          various ways, such as a constellation of satellites around Mars
+          connected together with Optical Inter-Satellite Links (OISL). The
+          Earth to Mars one-way delay is between 4 and 24 minutes, depending on
+          the relative position of each planet. That one-way delay changes
+          "slowly" as the planets are orbiting around the Sun.
+        </t>
       </section>
       <section anchor="scenario-mi">
         <name>Earth-Mars with Intermittent Connectivity (MI)</name>
-        <t>In this scenario, Mars assets are reachable by intermittence from Earth. For example, a rover on the Mars surface is connected to a Mars surface IP network which receives intermittent connectivity from a few orbiters, with an average of one contact every 6 hours. Some of those orbiters have circular orbits, others elliptical; the latter means that the overpasses are not at a fixed frequency. The orbiters are connected to Earth ground stations while they are in line of sight with Earth. The Earth to Mars one-way delay is between 4 and 24 minutes, depending on the relative position of each planet, and changes "slowly" as the planets are orbiting around the Sun.</t>
+        <t>
+          In this scenario, Mars assets are reachable by intermittence from
+          Earth. For example, a rover on the Mars surface is connected to a Mars
+          surface IP network which receives intermittent connectivity from a few
+          orbiters, with an average of one contact every 6 hours. Some of those
+          orbiters have circular orbits, others elliptical; the latter means
+          that the overpasses are not at a fixed frequency. The orbiters are
+          connected to Earth ground stations while they are in line of sight
+          with Earth. The Earth to Mars one-way delay is between 4 and 24
+          minutes, depending on the relative position of each planet, and
+          changes "slowly" as the planets are orbiting around the Sun.
+        </t>
       </section>
       <section anchor="scenario-sc">
         <name>Solar Conjunction (SC)</name>
-        <t>A solar conjunction happens when the Sun is between Earth and another celestial body, blocking or degrading direct communications between Earth and the assets at that body. For Mars, a solar conjunction occurs approximately every 26 months, which is the Earth-Mars synodic period. As the Sun-Earth-Mars angle becomes small, the charged particles of the solar corona increasingly corrupt the radio signals crossing near the Sun, degrading communications before interrupting them completely. Mission operators typically observe a communications moratorium of around two weeks, during which no commands are sent to Mars assets <xref target="marsconjunction"/>.</t>
-        <t>Solar conjunctions are precisely predictable years in advance. This scenario is therefore a scheduled, total interruption of the Earth-to-body communications that is much longer than the interruptions of the intermittent connectivity scenarios.</t>
-        <t>Other celestial bodies undergo the same phenomenon at a recurrence equal to their synodic period, such as approximately every 13 months for Jupiter and approximately every 12.4 months for Saturn; the duration of the interruption depends on the geometry and on how fast the body moves relative to the Sun as seen from Earth. Communications between Earth and the Moon are not subject to solar conjunctions, since the Moon orbits Earth. Communications local to the celestial body, such as between surface assets and orbiters, are not affected and continue to operate during a conjunction; only the long-haul links crossing near the Sun are interrupted. In the future, relay spacecraft located away from the direct Earth-to-body line, for example in heliocentric orbit or at Lagrange points, could provide an alternate path around a conjunction, at the cost of a longer path.</t>
-        <t>During a conjunction blackout, traffic sources that continue to generate data (e.g., steady telemetry or science flows) can fill the buffer capacity of relays and orbiters; buffer capacity planning and source throttling policies should take these multi-week interruptions into account (see <xref target="requirements"/>). Cruising spacecraft on long-distance trajectories may also experience solar conjunctions when the Sun crosses the Earth-spacecraft line. A study of communication delays, disruptions and blackouts for crewed Mars missions is available in <xref target="conjunctionstudy"/>.</t>
+        <t>
+          A solar conjunction happens when the Sun is between Earth and another
+          celestial body, blocking or degrading direct communications between
+          Earth and the assets at that body. For Mars, a solar conjunction
+          occurs approximately every 26 months, which is the Earth-Mars synodic
+          period. As the Sun-Earth-Mars angle becomes small, the charged
+          particles of the solar corona increasingly corrupt the radio signals
+          crossing near the Sun, degrading communications before interrupting
+          them completely. Mission operators typically observe a communications
+          moratorium of around two weeks, during which no commands are sent to
+          Mars assets <xref target="marsconjunction"/>.
+        </t>
+        <t>
+          Solar conjunctions are precisely predictable years in advance. This
+          scenario is therefore a scheduled, total interruption of the
+          Earth-to-body communications that is much longer than the
+          interruptions of the intermittent connectivity scenarios.
+        </t>
+        <t>
+          Other celestial bodies undergo the same phenomenon at a recurrence
+          equal to their synodic period, such as approximately every 13 months
+          for Jupiter and approximately every 12.4 months for Saturn; the
+          duration of the interruption depends on the geometry and on how fast
+          the body moves relative to the Sun as seen from Earth. Communications
+          between Earth and the Moon are not subject to solar conjunctions,
+          since the Moon orbits Earth. Communications local to the celestial
+          body, such as between surface assets and orbiters, are not affected
+          and continue to operate during a conjunction; only the long-haul links
+          crossing near the Sun are interrupted. In the future, relay spacecraft
+          located away from the direct Earth-to-body line, for example in
+          heliocentric orbit or at Lagrange points, could provide an alternate
+          path around a conjunction, at the cost of a longer path.
+        </t>
+        <t>
+          During a conjunction blackout, traffic sources that continue to
+          generate data (e.g., steady telemetry or science flows) can fill the
+          buffer capacity of relays and orbiters; buffer capacity planning and
+          source throttling policies should take these multi-week interruptions
+          into account (see <xref target="requirements"/>). Cruising spacecraft
+          on long-distance trajectories may also experience solar conjunctions
+          when the Sun crosses the Earth-spacecraft line. A study of
+          communication delays, disruptions and blackouts for crewed Mars
+          missions is available in <xref target="conjunctionstudy"/>.
+        </t>
       </section>
     </section>
     <section anchor="path_calculations">
       <name>Path Characteristics Calculations</name>
-      <t>Protocols and applications use the expected round-trip time (RTT) and the expected bandwidth of a path for various purposes, such as configuring timers for loss detection, retransmissions, keep-alives and idle timeouts, or sizing windows and buffers. Since space missions and their communications are planned in advance, these path characteristics can be calculated in advance of the mission. This section describes how to calculate the minimum and maximum RTT (minRTT, maxRTT) and the minimum and maximum bandwidth-delay product (minBDP, maxBDP) of a path, so that other documents, such as protocol profiles, can refer to these definitions. Examples are given using the connectivity scenarios described in <xref target="scenarios"/>.</t>
+      <t>
+        Protocols and applications use the expected round-trip time (RTT) and
+        the expected bandwidth of a path for various purposes, such as
+        configuring timers for loss detection, retransmissions, keep-alives and
+        idle timeouts, or sizing windows and buffers. Since space missions and
+        their communications are planned in advance, these path characteristics
+        can be calculated in advance of the mission. This section describes how
+        to calculate the minimum and maximum RTT (minRTT, maxRTT) and the
+        minimum and maximum bandwidth-delay product (minBDP, maxBDP) of a path,
+        so that other documents, such as protocol profiles, can refer to these
+        definitions. Examples are given using the connectivity scenarios
+        described in <xref target="scenarios"/>.
+      </t>
       <section anchor="calculate_rtt">
         <name>RTT Calculation</name>
-        <t>In deep space, the RTT between two nodes has two main components: the two-way propagation delay, which varies with the distance between the nodes, and the waiting time, when the path is subject to intermittent connectivity: a packet, or its response, may be buffered within the network (see <xref target="buffers"/>) until the next communication opportunity. Both components are known in advance, from the orbital dynamics and from the contact schedule respectively.</t>
-        <t>The minimum RTT of a path, named minRTT, is the minimum two-way propagation delay, with no waiting time, since the whole path is available at some point in time in all scenarios except during a solar conjunction.</t>
-        <t>The maximum RTT of a path, named maxRTT, is the sum of the maximum two-way propagation delay and the maximum waiting time before a communication opportunity, the latter derived from the contact schedule, such as the time between orbiter overpasses.</t>
-        <t>For example, in the Earth-Mars with intermittent connectivity (MI) scenario (<xref target="scenario-mi"/>), the minimum two-way propagation delay is 8 minutes, twice the 4-minute minimum one-way delay; therefore, minRTT is 8 minutes. The maximum two-way propagation delay is 48 minutes, twice the 24-minute maximum one-way delay, and the maximum waiting time with an overpass every 6 hours is 6 hours; therefore, maxRTT is 6 hours 48 minutes.</t>
-        <t>The waiting time of a deployed system may vary much more than its propagation delay. For example, over three months in 2024, the calculated RTT of the various combinations of Mars orbiters and rovers varied from 30 minutes to 170 hours <xref target="marscommstudy"/>. Therefore, maxRTT should be calculated using the actual contact schedule of the mission. <xref target="scenario-rtt"/> summarizes minRTT and maxRTT for the connectivity scenarios of <xref target="scenarios"/>.</t>
+        <t>
+          In deep space, the RTT between two nodes has two main components: the
+          two-way propagation delay, which varies with the distance between the
+          nodes, and the waiting time, when the path is subject to intermittent
+          connectivity: a packet, or its response, may be buffered within the
+          network (see <xref target="buffers"/>) until the next communication
+          opportunity. Both components are known in advance, from the orbital
+          dynamics and from the contact schedule respectively.
+        </t>
+        <t>
+          The minimum RTT of a path, named minRTT, is the minimum two-way
+          propagation delay, with no waiting time, since the whole path is
+          available at some point in time in all scenarios except during a solar
+          conjunction.
+        </t>
+        <t>
+          The maximum RTT of a path, named maxRTT, is the sum of the maximum
+          two-way propagation delay and the maximum waiting time before a
+          communication opportunity, the latter derived from the contact
+          schedule, such as the time between orbiter overpasses.
+        </t>
+        <t>
+          For example, in the Earth-Mars with intermittent connectivity (MI)
+          scenario (<xref target="scenario-mi"/>), the minimum two-way
+          propagation delay is 8 minutes, twice the 4-minute minimum one-way
+          delay; therefore, minRTT is 8 minutes. The maximum two-way propagation
+          delay is 48 minutes, twice the 24-minute maximum one-way delay, and
+          the maximum waiting time with an overpass every 6 hours is 6 hours;
+          therefore, maxRTT is 6 hours 48 minutes.
+        </t>
+        <t>
+          The waiting time of a deployed system may vary much more than its
+          propagation delay. For example, over three months in 2024, the
+          calculated RTT of the various combinations of Mars orbiters and rovers
+          varied from 30 minutes to 170 hours <xref target="marscommstudy"/>.
+          Therefore, maxRTT should be calculated using the actual contact
+          schedule of the mission. <xref target="scenario-rtt"/> summarizes
+          minRTT and maxRTT for the connectivity scenarios of
+          <xref target="scenarios"/>.
+        </t>
         <table anchor="scenario-rtt">
           <name>minRTT and maxRTT for the Connectivity Scenarios</name>
           <thead>
@@ -326,7 +1118,10 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
             <tr>
               <td>Earth to Cruising Spacecraft (CS)</td>
               <td>two-way propagation delay at the closest planned distance</td>
-              <td>two-way propagation delay at the farthest planned distance, increasing slowly over the mission</td>
+              <td>
+                two-way propagation delay at the farthest planned distance,
+                increasing slowly over the mission
+              </td>
             </tr>
             <tr>
               <td>Earth-Moon Full Connectivity (LF)</td>
@@ -346,28 +1141,96 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
             <tr>
               <td>Earth-Mars Intermittent Connectivity (MI)</td>
               <td>8 minutes</td>
-              <td>48 minutes plus the maximum contact gap; 6 hours 48 minutes with an overpass every 6 hours</td>
+              <td>
+                48 minutes plus the maximum contact gap; 6 hours 48 minutes with
+                an overpass every 6 hours
+              </td>
             </tr>
             <tr>
               <td>Solar Conjunction (SC)</td>
               <td>not applicable (no direct path)</td>
-              <td>the conjunction duration, around two weeks for Mars, plus the maximum two-way propagation delay, if the communications are kept active across the conjunction</td>
+              <td>
+                the conjunction duration, around two weeks for Mars, plus the
+                maximum two-way propagation delay, if the communications are
+                kept active across the conjunction
+              </td>
             </tr>
           </tbody>
         </table>
-        <t>There are other components of end-to-end delay, beyond simply the propagation delays and wait times for link availability, though these are usually dominated in magnitude by the propagation and wait times.  Examples include the serialization delay for packets on low-rate links, time for relatively slow onboard processors to make routing decisions, and other processing delays.  These could be accounted for when known, and when significant to the overall timing, though in most cases they are not likely to have much impact.  As an example, considering that serialization of a typical packet size over over very slow data links can be much longer than for traditional Internet access; on a 500 bps (0.5 kbps) link, it takes 24 seconds to serialize a 1500 byte packet.  Generally, such slow links are used either for emergencies where traffic is mainly very small packets, or very long distance links with consequently much higher propagation delay and wait times (e.g. hours).</t>
+        <t>
+          There are other components of end-to-end delay, beyond simply the
+          propagation delays and wait times for link availability, though these
+          are usually dominated in magnitude by the propagation and wait times.
+          Examples include the serialization delay for packets on low-rate
+          links, time for relatively slow onboard processors to make routing
+          decisions, and other processing delays. These could be accounted for
+          when known, and when significant to the overall timing, though in most
+          cases they are not likely to have much impact. As an example,
+          considering that serialization of a typical packet size over over very
+          slow data links can be much longer than for traditional Internet
+          access; on a 500 bps (0.5 kbps) link, it takes 24 seconds to serialize
+          a 1500 byte packet. Generally, such slow links are used either for
+          emergencies where traffic is mainly very small packets, or very long
+          distance links with consequently much higher propagation delay and
+          wait times (e.g. hours).
+        </t>
       </section>
       <section anchor="calculate_bdp">
         <name>Bandwidth-Delay Product (BDP) Calculation</name>
-        <t>The bandwidth-delay product (BDP) of a path is the product of its bandwidth and its RTT. It corresponds to the amount of data sent before receiving the first acknowledgement or response, and is therefore used, for example, to size transport windows and buffers so that the available bandwidth of the path can be fully used. For a path composed of several links, the path bandwidth is the bandwidth of its bottleneck link. Under intermittent connectivity, part of that data is not in transit but buffered within the network (see <xref target="buffers"/>); the BDP is then also an input to sizing the buffers of the intermediate nodes.</t>
-        <t>The minimum BDP of a path, named minBDP, is the product of minRTT and the minimum bandwidth used during those times. The maximum BDP of a path, named maxBDP, is the product of maxRTT and the maximum bandwidth.</t>
-        <t>For example, in the Earth-Moon with full connectivity (LF) scenario (<xref target="scenario-lf"/>) with a 100 Mbps radio link, the BDP is around 2.6 seconds times 100 Mbps, that is 260 megabits or around 33 megabytes; with a 1 Gbps optical link, the BDP is around 325 megabytes.</t>
-        <t>In the Earth-Mars with intermittent connectivity (MI) scenario (<xref target="scenario-mi"/>), assuming a 1 Mbps bottleneck link between the surface asset and the orbiter, minBDP is 8 minutes (480 seconds) times 1 Mbps, that is 480 megabits or 60 megabytes, and maxBDP is 6 hours 48 minutes (24480 seconds) times 1 Mbps, that is around 24.5 gigabits or around 3 gigabytes, most of which is buffered within the network while waiting for the next contact rather than in transit.</t>
+        <t>
+          The bandwidth-delay product (BDP) of a path is the product of its
+          bandwidth and its RTT. It corresponds to the amount of data sent
+          before receiving the first acknowledgement or response, and is
+          therefore used, for example, to size transport windows and buffers so
+          that the available bandwidth of the path can be fully used. For a path
+          composed of several links, the path bandwidth is the bandwidth of its
+          bottleneck link. Under intermittent connectivity, part of that data is
+          not in transit but buffered within the network (see
+          <xref target="buffers"/>); the BDP is then also an input to sizing the
+          buffers of the intermediate nodes.
+        </t>
+        <t>
+          The minimum BDP of a path, named minBDP, is the product of minRTT and
+          the minimum bandwidth used during those times. The maximum BDP of a
+          path, named maxBDP, is the product of maxRTT and the maximum
+          bandwidth.
+        </t>
+        <t>
+          For example, in the Earth-Moon with full connectivity (LF) scenario
+          (<xref target="scenario-lf"/>) with a 100 Mbps radio link, the BDP is
+          around 2.6 seconds times 100 Mbps, that is 260 megabits or around 33
+          megabytes; with a 1 Gbps optical link, the BDP is around 325
+          megabytes.
+        </t>
+        <t>
+          In the Earth-Mars with intermittent connectivity (MI) scenario
+          (<xref target="scenario-mi"/>), assuming a 1 Mbps bottleneck link
+          between the surface asset and the orbiter, minBDP is 8 minutes (480
+          seconds) times 1 Mbps, that is 480 megabits or 60 megabytes, and
+          maxBDP is 6 hours 48 minutes (24480 seconds) times 1 Mbps, that is
+          around 24.5 gigabits or around 3 gigabytes, most of which is buffered
+          within the network while waiting for the next contact rather than in
+          transit.
+        </t>
       </section>
     </section>
     <section anchor="requirements">
       <name>Requirements</name>
-      <t>The characteristics described in this document (latency, bandwidth, unidirectionality, intermittence, topology) vary greatly between connectivity scenarios; no single set of constraints applies to all deployments. When evaluating protocol or security solutions against these requirements, the applicable connectivity scenario (see <xref target="scenarios"/>) should be identified first, since the constraints pull designs in different directions: very low bandwidth links make handshake-heavy mechanisms impractical, while unidirectional links preclude interactive exchanges entirely. Requirements in this section should be read as scenario-dependent and prioritized per deployment rather than simultaneously binding. <xref target="scenario-constraints"/> summarizes the main constraints of each scenario.</t>
+      <t>
+        The characteristics described in this document (latency, bandwidth,
+        unidirectionality, intermittence, topology) vary greatly between
+        connectivity scenarios; no single set of constraints applies to all
+        deployments. When evaluating protocol or security solutions against
+        these requirements, the applicable connectivity scenario (see
+        <xref target="scenarios"/>) should be identified first, since the
+        constraints pull designs in different directions: very low bandwidth
+        links make handshake-heavy mechanisms impractical, while unidirectional
+        links preclude interactive exchanges entirely. Requirements in this
+        section should be read as scenario-dependent and prioritized per
+        deployment rather than simultaneously binding.
+        <xref target="scenario-constraints"/> summarizes the main constraints of
+        each scenario.
+      </t>
       <table anchor="scenario-constraints">
         <name>Connectivity Scenarios and their Main Constraints</name>
         <thead>
@@ -381,12 +1244,17 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
           <tr>
             <td>Earth to Cruising Spacecraft (CS)</td>
             <td>increases slowly over the mission</td>
-            <td>rare; solar conjunctions possible on long-distance trajectories</td>
+            <td>
+              rare; solar conjunctions possible on long-distance trajectories
+            </td>
           </tr>
           <tr>
             <td>Earth-Moon Full Connectivity (LF)</td>
             <td>around 1.3 seconds</td>
-            <td>exceptional (equipment failures, contingencies, power-save periods)</td>
+            <td>
+              exceptional (equipment failures, contingencies, power-save
+              periods)
+            </td>
           </tr>
           <tr>
             <td>Earth-Moon Intermittent Connectivity (LI)</td>
@@ -396,7 +1264,10 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
           <tr>
             <td>Earth-Mars Full Connectivity (MF)</td>
             <td>4 to 24 minutes</td>
-            <td>exceptional (equipment failures, contingencies, power-save periods)</td>
+            <td>
+              exceptional (equipment failures, contingencies, power-save
+              periods)
+            </td>
           </tr>
           <tr>
             <td>Earth-Mars Intermittent Connectivity (MI)</td>
@@ -406,150 +1277,394 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
           <tr>
             <td>Solar Conjunction (SC)</td>
             <td>not applicable (no direct path)</td>
-            <td>total, scheduled interruption; around two weeks in the case of Mars</td>
+            <td>
+              total, scheduled interruption; around two weeks in the case of
+              Mars
+            </td>
           </tr>
         </tbody>
       </table>
       <section anchor="buffers">
         <name>Buffers and Store-and-Forward Capabilities</name>
         <t>
-	Since full coverage by constellations is expensive to
-        acheive for each celestial body, any orbiters, surface nodes, or other
-        assets that are facing intermittent communications may provide a
-        buffering capability rather than discarding packets when an outgoing
-        route or link is not immediately available. Buffering packets for a
-        planned later transmission rather than dropping packets is a type of
-        "store and forward" behavior. This document uses the term "buffering"
-        in order to avoid confusion with other uses of the "store and
-        forward" terminology, and for consistency with how queue
-        management in layer-2 and layer-3 is generally discussed.
-        Implementations might provide buffering at different layers:
-	</t>
+          Since full coverage by constellations is expensive to acheive for each
+          celestial body, any orbiters, surface nodes, or other assets that are
+          facing intermittent communications may provide a buffering capability
+          rather than discarding packets when an outgoing route or link is not
+          immediately available. Buffering packets for a planned later
+          transmission rather than dropping packets is a type of "store and
+          forward" behavior. This document uses the term "buffering" in order to
+          avoid confusion with other uses of the "store and forward"
+          terminology, and for consistency with how queue management in layer-2
+          and layer-3 is generally discussed. Implementations might provide
+          buffering at different layers:
+        </t>
         <ul>
           <li>
-                Layer-1 buffering data to be transmitted without distinction to
-                frame boundaries ("bag of bits") has been supported in the past,
-                e.g. by some Mars obiters. In this case, the buffered data can
-                only follow pre-planned segments, and the processing of upper
-                layers need to be coordinated beyond the relay platform. The
-                benefit is that relays can be simplified in not processing or
-                being fully compatible at higher layers.
-        </li>
+            Layer-1 buffering data to be transmitted without distinction to
+            frame boundaries ("bag of bits") has been supported in the past,
+            e.g. by some Mars obiters. In this case, the buffered data can only
+            follow pre-planned segments, and the processing of upper layers need
+            to be coordinated beyond the relay platform. The benefit is that
+            relays can be simplified in not processing or being fully compatible
+            at higher layers.
+          </li>
           <li>
-                Layer-2 buffering outgoing frames is similar to layer-1 in
-                lacking flexibility for routing, but permitting simplicity and
-                limiting compatibility needs to the link layer only.
-        </li>
+            Layer-2 buffering outgoing frames is similar to layer-1 in lacking
+            flexibility for routing, but permitting simplicity and limiting
+            compatibility needs to the link layer only.
+          </li>
           <li>
-                Layer-3 buffering IP packets enables more versatile, agile, and
-                policy-based routing. By permitting the IP forwading decision
-                to be (re)evaluated at the time of tranmission, any changes can
-                be considered that might have occured since the packet was first
-                buffered.
-	</li>
+            Layer-3 buffering IP packets enables more versatile, agile, and
+            policy-based routing. By permitting the IP forwading decision to be
+            (re)evaluated at the time of tranmission, any changes can be
+            considered that might have occured since the packet was first
+            buffered.
+          </li>
           <li>
-		Higher layer (e.g. application layer) store-and-forward methods
-		make use of lower-layer connectivity when it is available, and
-		do not rely on lower layer buffering.  It may be possible to use
-		more detailed knowledge of data timeliness and relative value at
-		the higher layers in order to manage buffers and priorities.
-		Specific knowledge of other relays and connectivity windows may
-		need to be provided to the higher layer.
-	</li>
+            Higher layer (e.g. application layer) store-and-forward methods make
+            use of lower-layer connectivity when it is available, and do not
+            rely on lower layer buffering. It may be possible to use more
+            detailed knowledge of data timeliness and relative value at the
+            higher layers in order to manage buffers and priorities. Specific
+            knowledge of other relays and connectivity windows may need to be
+            provided to the higher layer.
+          </li>
         </ul>
         <t>
-                In all cases, the buffering capacity is a key consideration in
-                the node and network design. Mechanisms should
-                be provided to protect buffer resources, similar to the
-                protection that Active Queue Management (AQM) and signalling
-                such as Explicit Congestion Notification (ECN) typically
-                provides in the terrestrial Internet. Packet addresses, traffic
-                class, flow IDs, or other fields may be used in determining
-                treatment. This may be needed to support differentiation of
-                traffic such as Emergency and Search and Rescue.
-                Proper guards should be designed to avoid denial-of-service
-                attacks that fill buffers within the network This may include
-                authentication and authorization of the traffic
-                sources allowed to consume buffer space, and accounting of
-                storage usage per source or traffic class.
+          In all cases, the buffering capacity is a key consideration in the
+          node and network design. Mechanisms should be provided to protect
+          buffer resources, similar to the protection that Active Queue
+          Management (AQM) and signalling such as Explicit Congestion
+          Notification (ECN) typically provides in the terrestrial Internet.
+          Packet addresses, traffic class, flow IDs, or other fields may be used
+          in determining treatment. This may be needed to support
+          differentiation of traffic such as Emergency and Search and Rescue.
+          Proper guards should be designed to avoid denial-of-service attacks
+          that fill buffers within the network This may include authentication
+          and authorization of the traffic sources allowed to consume buffer
+          space, and accounting of storage usage per source or traffic class.
         </t>
         <t>
-        Even though nominal transmission schedules can be calculated based on
-        known orbits, there is potential for unplanned events
-        resulting in missed communication windows. For example, a rover
-        may be in a low battery charge state lacking enough energy to
-        communicate. Different types of events can randomly disturb plans, such
-        as unpredicted space weather events, or rescheduling of assets.
-        Even though nominal communications windows can be calculated, any
-        system should be able to cope with random long interruption events.
-</t>
-        <t>
-
-</t>
+          Even though nominal transmission schedules can be calculated based on
+          known orbits, there is potential for unplanned events resulting in
+          missed communication windows. For example, a rover may be in a low
+          battery charge state lacking enough energy to communicate. Different
+          types of events can randomly disturb plans, such as unpredicted space
+          weather events, or rescheduling of assets. Even though nominal
+          communications windows can be calculated, any system should be able to
+          cope with random long interruption events.
+        </t>
+        <t/>
       </section>
       <section anchor="time">
         <name>Time</name>
-        <t>Timers are used in transport protocols, application protocols and applications themselves for various purposes, such as detecting/presuming packet loss or data lifetime. Timers should be therefore adjusted and configured based on the expected travel time and RTT from the source to destination (see <xref target="calculate_rtt"/>). Given variations and possible dynamic changes in the network that can cause much longer latency, appropriate safeguards should be put for timer values.</t>
-        <t>There are two main challenges that deep space networks pose for use of timers in loss detection.  First, for cases like Mars, the time needed to infer a loss and request retransmission is much longer than what protocols are designed for in the Internet, and can be so long as to preclude retransmission within the same contact window.  Second, for cases where the timing can vary widely, finding appropriate timeout values and adjusting them automatically may be a challenge.  Mitigating the long propagation delays could be approached through various techniques such as higher-level erasure coding (e.g. in application or transport protocols), more aggressive retransmission policies, or other methods.  Mitigating varying delays can be approached through the use of planning/orchestration systems to provide guidance on proper values over time, or other methods.</t>
-        <t>Lifetime is also attached to some data, such as content, security keys, certificates, tokens, session keys and naming records. Similarly, the lifetime should be adjusted and configured based on the characteristics of the applications and expected travel time and RTT.</t>
-        <t>While RTT is appropriate for configuring timers and data lifetimes, it is not sufficient for synchronizing clocks: clock offset estimation over a two-way exchange is biased by any asymmetry between the forward and return one-way delays. Such asymmetry does not always occur, but when it does, for example because the endpoints move during the exchange or because the forward and return paths differ, it can be significant and can change during the exchange. In these cases, clock synchronization requires explicit correction for each directional delay, rather than assuming each direction is half of the RTT.</t>
-        <t>When a node loses access to its time reference, for example during a disruption, the uncertainty of its clock grows over time, depending on its initial error, residual frequency offset, drift, environmental conditions and noise. The period during which a node can operate without its time reference (holdover) should therefore be expressed as the time until its clock uncertainty exceeds what the applications and protocols can tolerate, rather than as a fixed duration, and lifetimes should take this clock uncertainty into account.</t>
-        <t>Current Internet protocols and applications typically use UTC as their time reference. There are currently efforts to define Lunar Standard Time, also called Coordinated Lunar Time and Mars Standard Time <xref target="lunartime"/>. Depending on the application and use case, it may be necessary to adapt the protocol or the application to use another time reference. This issue already exists today at the boundaries between systems: for example, CCSDS time codes <xref target="CCSDS_TimeCodes"/> recommend an epoch of 1 January 1958 TAI while agencies may define other epochs, and on-board time is correlated with ground time using estimates of light travel time and calibrated delays. Moreover, a pair of transmit and receive timestamps cannot by itself separate the one-way delay from the clock offset. Therefore, where a protocol or application adapts to or translates between time references, naming the time scale alone is insufficient: the epoch, time scale, leap-second handling, the point where timestamps are taken, and the uncertainty of the correlation between the time references should also be specified.</t>
+        <t>
+          Timers are used in transport protocols, application protocols and
+          applications themselves for various purposes, such as
+          detecting/presuming packet loss or data lifetime. Timers should be
+          therefore adjusted and configured based on the expected travel time
+          and RTT from the source to destination (see
+          <xref target="calculate_rtt"/>). Given variations and possible dynamic
+          changes in the network that can cause much longer latency, appropriate
+          safeguards should be put for timer values.
+        </t>
+        <t>
+          There are two main challenges that deep space networks pose for use of
+          timers in loss detection. First, for cases like Mars, the time needed
+          to infer a loss and request retransmission is much longer than what
+          protocols are designed for in the Internet, and can be so long as to
+          preclude retransmission within the same contact window. Second, for
+          cases where the timing can vary widely, finding appropriate timeout
+          values and adjusting them automatically may be a challenge. Mitigating
+          the long propagation delays could be approached through various
+          techniques such as higher-level erasure coding (e.g. in application or
+          transport protocols), more aggressive retransmission policies, or
+          other methods. Mitigating varying delays can be approached through the
+          use of planning/orchestration systems to provide guidance on proper
+          values over time, or other methods.
+        </t>
+        <t>
+          Lifetime is also attached to some data, such as content, security
+          keys, certificates, tokens, session keys and naming records.
+          Similarly, the lifetime should be adjusted and configured based on the
+          characteristics of the applications and expected travel time and RTT.
+        </t>
+        <t>
+          While RTT is appropriate for configuring timers and data lifetimes, it
+          is not sufficient for synchronizing clocks: clock offset estimation
+          over a two-way exchange is biased by any asymmetry between the forward
+          and return one-way delays. Such asymmetry does not always occur, but
+          when it does, for example because the endpoints move during the
+          exchange or because the forward and return paths differ, it can be
+          significant and can change during the exchange. In these cases, clock
+          synchronization requires explicit correction for each directional
+          delay, rather than assuming each direction is half of the RTT.
+        </t>
+        <t>
+          When a node loses access to its time reference, for example during a
+          disruption, the uncertainty of its clock grows over time, depending on
+          its initial error, residual frequency offset, drift, environmental
+          conditions and noise. The period during which a node can operate
+          without its time reference (holdover) should therefore be expressed as
+          the time until its clock uncertainty exceeds what the applications and
+          protocols can tolerate, rather than as a fixed duration, and lifetimes
+          should take this clock uncertainty into account.
+        </t>
+        <t>
+          Current Internet protocols and applications typically use UTC as their
+          time reference. There are currently efforts to define Lunar Standard
+          Time, also called Coordinated Lunar Time and Mars Standard Time
+          <xref target="lunartime"/>. Depending on the application and use case,
+          it may be necessary to adapt the protocol or the application to use
+          another time reference. This issue already exists today at the
+          boundaries between systems: for example, CCSDS time codes
+          <xref target="CCSDS_TimeCodes"/> recommend an epoch of 1 January 1958
+          TAI while agencies may define other epochs, and on-board time is
+          correlated with ground time using estimates of light travel time and
+          calibrated delays. Moreover, a pair of transmit and receive timestamps
+          cannot by itself separate the one-way delay from the clock offset.
+          Therefore, where a protocol or application adapts to or translates
+          between time references, naming the time scale alone is insufficient:
+          the epoch, time scale, leap-second handling, the point where
+          timestamps are taken, and the uncertainty of the correlation between
+          the time references should also be specified.
+        </t>
       </section>
       <section>
         <name>Location</name>
-        <t>Some IETF protocols such as <xref target="RFC5870"/><xref target="RFC8805"/> use a Earth coordinate system such as <xref target="WGS84"/> or address-based reference<xref target="RFC8805"/> for encoding location. Deep space uses various coordinate systems such as celestial body references<xref target="SANACelestialBodyReference"/> or orbit-relative references<xref target="SANAOrbitRelativeReference"/>. Therefore, IETF protocols carrying location information may need to be updated to also support space coordinate reference systems. An example of such space coordinate reference system addition for IETF protocols is in <xref target="RFC9179"/>.</t>
+        <t>
+          Some IETF protocols such as
+          <xref target="RFC5870"/><xref target="RFC8805"/> use a Earth
+          coordinate system such as <xref target="WGS84"/> or address-based
+          reference<xref target="RFC8805"/> for encoding location. Deep space
+          uses various coordinate systems such as celestial body
+          references<xref target="SANACelestialBodyReference"/> or
+          orbit-relative references<xref target="SANAOrbitRelativeReference"/>.
+          Therefore, IETF protocols carrying location information may need to be
+          updated to also support space coordinate reference systems. An example
+          of such space coordinate reference system addition for IETF protocols
+          is in <xref target="RFC9179"/>.
+        </t>
       </section>
       <section>
         <name>Signaling and Exchanges</name>
-        <t>Given the large latency of space communications, multiple steps of exchanges or handshakes may still work but are far from optimal and may never converge. Therefore, applications and protocols should be adapted to minimize the number of exchanges.</t>
-        <t>Similarly, applications, protocols or networking stack that depend on signaling back to the source or to somewhere in the path may arrive too late for any usefulness, because of the latency. Therefore, any signaling should be carefully designed based on the expected latency.</t>
+        <t>
+          Given the large latency of space communications, multiple steps of
+          exchanges or handshakes may still work but are far from optimal and
+          may never converge. Therefore, applications and protocols should be
+          adapted to minimize the number of exchanges.
+        </t>
+        <t>
+          Similarly, applications, protocols or networking stack that depend on
+          signaling back to the source or to somewhere in the path may arrive
+          too late for any usefulness, because of the latency. Therefore, any
+          signaling should be carefully designed based on the expected latency.
+        </t>
       </section>
       <section>
         <name>Bandwidth</name>
-        <t>Given that space communications will always have much lower bandwidth than what is possible in shorter distances such as on Earth, optimization of the bandwidth usage is important. This can be implemented at many levels in the networking stack, starting from layer-2 to IP header compression to transport and application data compression.</t>
+        <t>
+          Given that space communications will always have much lower bandwidth
+          than what is possible in shorter distances such as on Earth,
+          optimization of the bandwidth usage is important. This can be
+          implemented at many levels in the networking stack, starting from
+          layer-2 to IP header compression to transport and application data
+          compression.
+        </t>
       </section>
       <section>
         <name>Transport</name>
-        <t>Since IP (and UDP) do not provide reliable transport services, such as recovery from against packet loss, duplication, or reordering, a reliable transport should be used and configured properly for space delays and intermittence for applications and protocols requiring it.
+        <t>
+          Since IP (and UDP) do not provide reliable transport services, such as
+          recovery from against packet loss, duplication, or reordering, a
+          reliable transport should be used and configured properly for space
+          delays and intermittence for applications and protocols requiring it.
         </t>
-        <t>Congestion control algorithms may sense congestion based on heuristics like increasing delays or loss/retransmission timer firings. In response, sources reduce their congestion window or sending rates to decrease their usage of the network capacity. However, given that forwarders in space may experience intermittent connectivity and buffer significantly, typical round trip measurements may be misleading and loss timer firings may be spurious. Due to these complications, when connectivity is intermittent, traditional congestion control should be adapted or administratively controlled. At least early on, while the networks are small scale, coordinated resource planning and management may be performed to avoid creating congestion.
-       </t>
+        <t>
+          Congestion control algorithms may sense congestion based on heuristics
+          like increasing delays or loss/retransmission timer firings. In
+          response, sources reduce their congestion window or sending rates to
+          decrease their usage of the network capacity. However, given that
+          forwarders in space may experience intermittent connectivity and
+          buffer significantly, typical round trip measurements may be
+          misleading and loss timer firings may be spurious. Due to these
+          complications, when connectivity is intermittent, traditional
+          congestion control should be adapted or administratively controlled.
+          At least early on, while the networks are small scale, coordinated
+          resource planning and management may be performed to avoid creating
+          congestion.
+        </t>
       </section>
       <section>
         <name>Addressing and Routing</name>
-        <t>To minimize routing and forwarding tables, optimal address aggregation is preferred, and it starts with proper allocation of addresses.</t>
-        <t>The network in deep space, not including the surface networks on celestial bodies, will grow at a small pace, which does not warrant complex routing schemes. However, over time, the network will become sufficiently complex not only because of the number of forwarders but also because of the intrinsic intermittent and delay communication patterns, which may warrant more complex routing solutions and orchestration.</t>
+        <t>
+          To minimize routing and forwarding tables, optimal address aggregation
+          is preferred, and it starts with proper allocation of addresses.
+        </t>
+        <t>
+          The network in deep space, not including the surface networks on
+          celestial bodies, will grow at a small pace, which does not warrant
+          complex routing schemes. However, over time, the network will become
+          sufficiently complex not only because of the number of forwarders but
+          also because of the intrinsic intermittent and delay communication
+          patterns, which may warrant more complex routing solutions and
+          orchestration.
+        </t>
       </section>
       <section>
         <name>Recovery on Reboot</name>
-        <t>On a well-connected and low delay network such as Internet, an unexpected reboot of an intermediate node or an endpoint is recovered relatively fast: adjacency can be restored with neighbors for intermediate nodes, and endpoints can resume or restart their connections with their peers within short time. On the contrary, given the intermittence and long delays in deep space, this fast recovery is unlikely.</t>
-        <t>For intermediate nodes, storing in permanent memory the contact schedule or the expected next opportunities for neighbors may help faster recovery.</t>
-        <t>For endpoints, applications may keep a state context in permanent memory, either at the application layer or at the transport layer or both.</t>
+        <t>
+          On a well-connected and low delay network such as Internet, an
+          unexpected reboot of an intermediate node or an endpoint is recovered
+          relatively fast: adjacency can be restored with neighbors for
+          intermediate nodes, and endpoints can resume or restart their
+          connections with their peers within short time. On the contrary, given
+          the intermittence and long delays in deep space, this fast recovery is
+          unlikely.
+        </t>
+        <t>
+          For intermediate nodes, storing in permanent memory the contact
+          schedule or the expected next opportunities for neighbors may help
+          faster recovery.
+        </t>
+        <t>
+          For endpoints, applications may keep a state context in permanent
+          memory, either at the application layer or at the transport layer or
+          both.
+        </t>
       </section>
       <section>
         <name>Energy</name>
-        <t>Electrical power and energy are constrained in systems operating in deep space compared to the terrestrial Internet, although with increasing growth of the Internet of Things (IoT) on Earth, similar constraints are also present in many terrestrial systems.</t>
-        <t>Since there are a variety of different types and sizes of deep space exploration hardware systems, there are different options to generate power including solar panels or radioisotope thermoelectric generators (RTGs).  Operating off of batteries is common, since sufficient power is not always able to be generated.  In any case, the available power is limited and when transmitting, a substantial amount must go to operating amplifiers and other communications system hardware.  Transmissions may be limited to specific times in order to conserve power and budget it during times when more is not available to generate (e.g. when operating in lunar "night" on a part of the moon not exposed to sunlight).  Some links and physical layer protocols operate synchronously and transmit continuously when active (e.g. using idle frames), while others transmit only data frames and use "Barker codes" or other burst transmission synchronization methods.</t>
-        <t>The implications of this are that there are a variety of different modes that networking nodes may be in at any time, and some could manifest as temporary "disconnections", even if there is antenna visibility and connectivity would otherwise have been schedulable.</t>
-        <t>Since transmission dominates the power budget, protocols may need asymmetrical behavior to protect the energy resources of constrained nodes: for example, minimizing the number and size of transmissions required from the constrained side of an exchange, even at the cost of additional transmissions from the well-resourced side.</t>
+        <t>
+          Electrical power and energy are constrained in systems operating in
+          deep space compared to the terrestrial Internet, although with
+          increasing growth of the Internet of Things (IoT) on Earth, similar
+          constraints are also present in many terrestrial systems.
+        </t>
+        <t>
+          Since there are a variety of different types and sizes of deep space
+          exploration hardware systems, there are different options to generate
+          power including solar panels or radioisotope thermoelectric generators
+          (RTGs). Operating off of batteries is common, since sufficient power
+          is not always able to be generated. In any case, the available power
+          is limited and when transmitting, a substantial amount must go to
+          operating amplifiers and other communications system hardware.
+          Transmissions may be limited to specific times in order to conserve
+          power and budget it during times when more is not available to
+          generate (e.g. when operating in lunar "night" on a part of the moon
+          not exposed to sunlight). Some links and physical layer protocols
+          operate synchronously and transmit continuously when active
+          (e.g. using idle frames), while others transmit only data frames and
+          use "Barker codes" or other burst transmission synchronization
+          methods.
+        </t>
+        <t>
+          The implications of this are that there are a variety of different
+          modes that networking nodes may be in at any time, and some could
+          manifest as temporary "disconnections", even if there is antenna
+          visibility and connectivity would otherwise have been schedulable.
+        </t>
+        <t>
+          Since transmission dominates the power budget, protocols may need
+          asymmetrical behavior to protect the energy resources of constrained
+          nodes: for example, minimizing the number and size of transmissions
+          required from the constrained side of an exchange, even at the cost of
+          additional transmissions from the well-resourced side.
+        </t>
       </section>
       <section>
         <name>Asynchronous Operation and Power Save Modes</name>
-        <t>Spacecraft frequently use power save modes with asymmetric radio states: the transmitter may be turned off (transmission dominates power usage) while the receiver remains on, or the node may be entirely asleep. Combined with network-layer buffering, a destination may not be listening at the time packets are sent yet still receive them later. Protocols and applications should therefore not assume that a peer is continuously reachable or that a request implies a timely response; since buffered packets are delivered when the destination is listening again, the notion of the peers being simultaneously online does not apply. Key exchange and re-keying mechanisms should be usable asynchronously, tolerating exchanges that complete over an arbitrary delay.</t>
+        <t>
+          Spacecraft frequently use power save modes with asymmetric radio
+          states: the transmitter may be turned off (transmission dominates
+          power usage) while the receiver remains on, or the node may be
+          entirely asleep. Combined with network-layer buffering, a destination
+          may not be listening at the time packets are sent yet still receive
+          them later. Protocols and applications should therefore not assume
+          that a peer is continuously reachable or that a request implies a
+          timely response; since buffered packets are delivered when the
+          destination is listening again, the notion of the peers being
+          simultaneously online does not apply. Key exchange and re-keying
+          mechanisms should be usable asynchronously, tolerating exchanges that
+          complete over an arbitrary delay.
+        </t>
       </section>
     </section>
     <section>
       <name>Security Considerations</name>
-      <t>The CCSDS has created a reference document covering general security threats against space missions, as well as classes of mitigations <xref target="CCSDS-Threats"/>.  This is a useful high-level reference, though it does not go into depth on networking protocols.</t>
-      <t>Security protocols and mitigations are most often based on time, such as keys and certificate lifetimes, tokens lifetime, firewall opened ports time windows, etc. Keys and certificates have also a lifecycle where they should be renewed.</t>
-      <t>Given the delays to act, for example from Earth to a celestial body, notifications of security issues and mitigation actions will be delayed, which may increase the impact of security issues such as denial of service attacks. </t>
-      <t>Security validation, such as certificate validation, based on on-line immediate queries to validation databases, such as done with OCSP <xref target="RFC6960"/>, or with a certificate chain will likely take too long if the validation database is far from the validation querier. Techniques such as preemptive caching of validation chain and certs should be investigated.</t>
-      <t>Certificate lifecycle should be well planned to take into account delays and intermittence, so that for example certificate renewals are done sufficiently in advance: the lead time should exceed the worst-case one-way delay, including expected disruptions, plus the growth of the clock uncertainty of the involved nodes over the renewal interval (see <xref target="time"/>).</t>
-      <t>Forward secrecy and post-compromise security have different properties and requirements and should be considered separately. Because physical access to deep space assets is generally impossible, recovery from compromise depends on remote means: mechanisms to update trust anchors and credentials over the network, designed to operate under long delays and intermittence, should be part of the security architecture.</t>
-      <t>Some envisioned applications are inherently multi-party: astronaut suit radio networks, space weather alerts, and broadcast navigation or almanac signals (e.g., the LunaNet Augmented Forward Signal). Where such one-to-many traffic requires confidentiality or authentication, group key management adapted to long delays and intermittence would be needed; the specific protocol layers and mechanisms are out of scope of this document.</t>
-      <t>Key establishment and key update mechanisms should be usable asynchronously: given long RTTs and intermittence, mechanisms requiring interactive exchanges before new keys take effect create long windows during which a compromised key remains in use. Moreover, because packets may be buffered in intermediate nodes, a peer that is not reachable at the time of transmission may still receive and process a key update later; key management should therefore not depend on any notion of the peers being simultaneously online, but rather tolerate exchanges that complete over an arbitrary delay. Mechanisms that can establish keys in advance of their use, or complete key updates without an interactive exchange, should be preferred.</t>
-      <t>Devices operating in deep space often have limited computational and memory resources. Key agreement - especially key updates - should be efficient and scalable. Given the potential lifetime of space systems and risk of quantum computing to cryptography, this includes requirements for efficiency and scalability in use of post quantum cryptography.</t>
+      <t>
+        The CCSDS has created a reference document covering general security
+        threats against space missions, as well as classes of mitigations
+        <xref target="CCSDS-Threats"/>. This is a useful high-level reference,
+        though it does not go into depth on networking protocols.
+      </t>
+      <t>
+        Security protocols and mitigations are most often based on time, such as
+        keys and certificate lifetimes, tokens lifetime, firewall opened ports
+        time windows, etc. Keys and certificates have also a lifecycle where
+        they should be renewed.
+      </t>
+      <t>
+        Given the delays to act, for example from Earth to a celestial body,
+        notifications of security issues and mitigation actions will be delayed,
+        which may increase the impact of security issues such as denial of
+        service attacks.
+      </t>
+      <t>
+        Security validation, such as certificate validation, based on on-line
+        immediate queries to validation databases, such as done with OCSP
+        <xref target="RFC6960"/>, or with a certificate chain will likely take
+        too long if the validation database is far from the validation querier.
+        Techniques such as preemptive caching of validation chain and certs
+        should be investigated.
+      </t>
+      <t>
+        Certificate lifecycle should be well planned to take into account delays
+        and intermittence, so that for example certificate renewals are done
+        sufficiently in advance: the lead time should exceed the worst-case
+        one-way delay, including expected disruptions, plus the growth of the
+        clock uncertainty of the involved nodes over the renewal interval (see
+        <xref target="time"/>).
+      </t>
+      <t>
+        Forward secrecy and post-compromise security have different properties
+        and requirements and should be considered separately. Because physical
+        access to deep space assets is generally impossible, recovery from
+        compromise depends on remote means: mechanisms to update trust anchors
+        and credentials over the network, designed to operate under long delays
+        and intermittence, should be part of the security architecture.
+      </t>
+      <t>
+        Some envisioned applications are inherently multi-party: astronaut suit
+        radio networks, space weather alerts, and broadcast navigation or
+        almanac signals (e.g., the LunaNet Augmented Forward Signal). Where such
+        one-to-many traffic requires confidentiality or authentication, group
+        key management adapted to long delays and intermittence would be needed;
+        the specific protocol layers and mechanisms are out of scope of this
+        document.
+      </t>
+      <t>
+        Key establishment and key update mechanisms should be usable
+        asynchronously: given long RTTs and intermittence, mechanisms requiring
+        interactive exchanges before new keys take effect create long windows
+        during which a compromised key remains in use. Moreover, because packets
+        may be buffered in intermediate nodes, a peer that is not reachable at
+        the time of transmission may still receive and process a key update
+        later; key management should therefore not depend on any notion of the
+        peers being simultaneously online, but rather tolerate exchanges that
+        complete over an arbitrary delay. Mechanisms that can establish keys in
+        advance of their use, or complete key updates without an interactive
+        exchange, should be preferred.
+      </t>
+      <t>
+        Devices operating in deep space often have limited computational and
+        memory resources. Key agreement - especially key updates - should be
+        efficient and scalable. Given the potential lifetime of space systems
+        and risk of quantum computing to cryptography, this includes
+        requirements for efficiency and scalability in use of post quantum
+        cryptography.
+      </t>
     </section>
     <section>
       <name>IANA Considerations</name>
@@ -577,23 +1692,32 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
         </reference>
         <reference anchor="chips" target="https://doi.org/10.1117/12.512521">
           <front>
-            <title>CHIPSat spacecraft design: significant science on a low budget</title>
+            <title>
+              CHIPSat spacecraft design: significant science on a low budget
+            </title>
             <author fullname="Jeffrey Janicik"/>
             <author fullname="Jonathan Wolff"/>
             <date year="2003" month="December"/>
           </front>
-          <refcontent>Proc. SPIE 5164, UV/EUV and Visible Space Instrumentation for Astronomy II</refcontent>
+          <refcontent>
+            Proc. SPIE 5164, UV/EUV and Visible Space Instrumentation for
+            Astronomy II
+          </refcontent>
         </reference>
         <reference anchor="hogie2005">
           <front>
-            <title>Using standard Internet Protocols and applications in space</title>
+            <title>
+              Using standard Internet Protocols and applications in space
+            </title>
             <author fullname="Keith Hogie"/>
             <author fullname="Ed Criscuolo"/>
             <author fullname="Ron Parise"/>
             <date year="2005"/>
           </front>
           <seriesInfo name="DOI" value="doi:10.1016/j.comnet.2004.08.005"/>
-          <refcontent>Elsevier Computer Networks, volume 47, issue 5, pages 603-650</refcontent>
+          <refcontent>
+            Elsevier Computer Networks, volume 47, issue 5, pages 603-650
+          </refcontent>
         </reference>
         <reference anchor="OMNI" target="https://arc.aiaa.org/doi/10.2514/6.2000-5295">
           <front>
@@ -615,12 +1739,17 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
             <author fullname="David J. Zillig"/>
             <date year="2002" month="October"/>
           </front>
-          <refcontent>Proceedings of the AIAA SpaceOps 2002 Conference</refcontent>
+          <refcontent>
+            Proceedings of the AIAA SpaceOps 2002 Conference
+          </refcontent>
           <seriesInfo name="DOI" value="doi:10.2514/6.2002-T3-26"/>
         </reference>
         <reference anchor="cleo-paper">
           <front>
-            <title>Investigating operation of the Internet in orbit: Five years of collaboration around CLEO</title>
+            <title>
+              Investigating operation of the Internet in orbit: Five years of
+              collaboration around CLEO
+            </title>
             <author fullname="Lloyd Wood"/>
             <author fullname="William Ivancic"/>
             <author fullname="Wesley Eddy"/>
@@ -629,11 +1758,16 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
             <author fullname="Chris Jackson"/>
             <date year="2008" month="November"/>
           </front>
-          <refcontent>IEEE Communications Society Satellite and Space Communications Technical Committee newsletter, vol. 18, no. 2, pp. 10-11</refcontent>
+          <refcontent>
+            IEEE Communications Society Satellite and Space Communications
+            Technical Committee newsletter, vol. 18, no. 2, pp. 10-11
+          </refcontent>
         </reference>
         <reference anchor="bhasin-paper" target="https://arc.aiaa.org/doi/pdf/10.2514/6.2008-3587">
           <front>
-            <title>Integrated Newtork Architecture for NASA's Orion Mission</title>
+            <title>
+              Integrated Newtork Architecture for NASA's Orion Mission
+            </title>
             <author fullname="Kul B. Bhasin"/>
             <author fullname="Jeffrey L. Hayden"/>
             <author fullname="Thomas Sartwell"/>
@@ -646,7 +1780,10 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
         </reference>
         <reference anchor="protocol-radius" target="https://ieeexplore.ieee.org/document/4409409">
           <front>
-            <title>TCP's protocol radius: the distance where timers prevent communication</title>
+            <title>
+              TCP's protocol radius: the distance where timers prevent
+              communication
+            </title>
             <author fullname="Lloyd Wood"/>
             <author fullname="Cathryn Peoples"/>
             <author fullname="Gerard Parr"/>
@@ -654,14 +1791,19 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
             <author fullname="Adrian Moore"/>
             <date year="2007" month="September"/>
           </front>
-          <refcontent>2007 IEEE International Workshop on Satellite and Space Communications (IWSSC)</refcontent>
+          <refcontent>
+            2007 IEEE International Workshop on Satellite and Space
+            Communications (IWSSC)
+          </refcontent>
           <seriesInfo name="DOI" value="10.1109/IWSSC.2007.4409409"/>
         </reference>
         <reference anchor="IPoverCCSDSSpaceLinks" target="https://public.ccsds.org/Pubs/702x1b1c2.pdf">
           <front>
             <title>IP OVER CCSDS SPACE LINKS, Blue Book 702</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+              <organization>
+                Consultative Committee on Space Data Systems (CCSDS)
+              </organization>
             </author>
             <date year="2012" month="September"/>
           </front>
@@ -678,7 +1820,9 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
           <front>
             <title>AOS Space Data Link Protocol, Blue Book 732.0-B-4</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+              <organization>
+                Consultative Committee on Space Data Systems (CCSDS)
+              </organization>
             </author>
             <date year="2021" month="October"/>
           </front>
@@ -687,7 +1831,9 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
           <front>
             <title>Time Code Formats, Blue Book 301.0-B-4</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+              <organization>
+                Consultative Committee on Space Data Systems (CCSDS)
+              </organization>
             </author>
             <date year="2010" month="November"/>
           </front>
@@ -696,7 +1842,9 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
           <front>
             <title>TM Space Data Link Protocol, Blue Book 132.0-B-3</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+              <organization>
+                Consultative Committee on Space Data Systems (CCSDS)
+              </organization>
             </author>
             <date year="2021" month="October"/>
           </front>
@@ -705,16 +1853,23 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
           <front>
             <title>TC Space Data Link Protocol, Blue Book 232.0-B-4</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+              <organization>
+                Consultative Committee on Space Data Systems (CCSDS)
+              </organization>
             </author>
             <date year="2021" month="October"/>
           </front>
         </reference>
         <reference anchor="CCSDS_PROX1" target="https://public.ccsds.org/Pubs/211x0b6e1.pdf">
           <front>
-            <title>Proximity-1 Space Link Protocol—Data Link Layer, Blue Book 211.0-B-6</title>
+            <title>
+              Proximity-1 Space Link Protocol—Data Link Layer, Blue Book
+              211.0-B-6
+            </title>
             <author>
-              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+              <organization>
+                Consultative Committee on Space Data Systems (CCSDS)
+              </organization>
             </author>
             <date year="2020" month="July"/>
           </front>
@@ -723,43 +1878,60 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
           <front>
             <title>Unified Space Data Link Protocol, Blue Book 732.1-B-2</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+              <organization>
+                Consultative Committee on Space Data Systems (CCSDS)
+              </organization>
             </author>
             <date year="2021" month="October"/>
           </front>
         </reference>
         <reference anchor="CCSDS_SDLP">
           <front>
-            <title>Space Data Link Protocols -- Summary of Concept and Rationale, Green Book 130.2-G-3</title>
+            <title>
+              Space Data Link Protocols -- Summary of Concept and Rationale,
+              Green Book 130.2-G-3
+            </title>
             <author>
-              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+              <organization>
+                Consultative Committee on Space Data Systems (CCSDS)
+              </organization>
             </author>
             <date year="2015" month="September"/>
           </front>
         </reference>
         <reference anchor="CCSDS_130.1-G">
           <front>
-            <title>TM Synchronization and Channel Coding -- Summary of Concept and Rationale, Green Book 130.1-G-3</title>
+            <title>
+              TM Synchronization and Channel Coding -- Summary of Concept and
+              Rationale, Green Book 130.1-G-3
+            </title>
             <author>
-              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+              <organization>
+                Consultative Committee on Space Data Systems (CCSDS)
+              </organization>
             </author>
             <date year="2020" month="June"/>
           </front>
         </reference>
         <reference anchor="CCSDS_131.0-B">
           <front>
-            <title>TM Synchronization and Channel Coding, Blue Book 131.0-B-6</title>
+            <title>
+              TM Synchronization and Channel Coding, Blue Book 131.0-B-6
+            </title>
             <author>
-              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+              <organization>
+                Consultative Committee on Space Data Systems (CCSDS)
+              </organization>
             </author>
             <date year="2020" month="June"/>
           </front>
         </reference>
         <reference anchor="DSN_catalog" target="https://deepspace.jpl.nasa.gov/files/820-100-F1.pdf">
           <front>
-            <title>Deep Space Network Services Catalog, DSN No. 820-100, Rev F/</title>
-            <author>
-			</author>
+            <title>
+              Deep Space Network Services Catalog, DSN No. 820-100, Rev F/
+            </title>
+            <author/>
             <date year="2015" month="February"/>
           </front>
         </reference>
@@ -767,7 +1939,9 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
           <front>
             <title>File Delivery Protocol, Blue Book 727.0-B-5</title>
             <author>
-              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+              <organization>
+                Consultative Committee on Space Data Systems (CCSDS)
+              </organization>
             </author>
             <date year="2020" month="July"/>
           </front>
@@ -792,20 +1966,30 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
         </reference>
         <reference anchor="ioagmoon" target="https://www.ioag.org/Public%20Documents/Lunar%20communications%20architecture%20study%20report%20FINAL%20v1.3.pdf">
           <front>
-            <title>The Future Lunar Communications Architecture, Report of the Interagency Operations Advisory Group</title>
+            <title>
+              The Future Lunar Communications Architecture, Report of the
+              Interagency Operations Advisory Group
+            </title>
             <author>
-              <organization>Lunar Communications Architecture Working Group, Interagency Operations Advisory Group</organization>
+              <organization>
+                Lunar Communications Architecture Working Group, Interagency
+                Operations Advisory Group
+              </organization>
             </author>
             <date year="2022" month="January"/>
           </front>
         </reference>
         <reference anchor="ioagmars" target="https://www.ioag.org/Public%20Documents/MBC%20architecture%20report%20final%20version%20PDF.pdf">
           <front>
-            <title>The Future
-                Mars Communications Architecture, Report of the Interagency Operations Advisory Group
-                </title>
+            <title>
+              The Future Mars Communications Architecture, Report of the
+              Interagency Operations Advisory Group
+            </title>
             <author>
-              <organization>Mars and Beyond Communications Architecture Working Group, Interagency Operations Advisory Group</organization>
+              <organization>
+                Mars and Beyond Communications Architecture Working Group,
+                Interagency Operations Advisory Group
+              </organization>
             </author>
             <date year="2022" month="February"/>
           </front>
@@ -833,7 +2017,10 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
         </reference>
         <reference anchor="conjunctionstudy" target="https://ntrs.nasa.gov/citations/20220013418">
           <front>
-            <title>Communication Delays, Disruptions, and Blackouts for Crewed Mars Missions</title>
+            <title>
+              Communication Delays, Disruptions, and Blackouts for Crewed Mars
+              Missions
+            </title>
             <author initials="K.T." surname="McBrayer" fullname="Katherine T. McBrayer">
               <organization>NASA Langley Research Center</organization>
             </author>
@@ -849,7 +2036,9 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
         </reference>
         <reference anchor="marsconjunction" target="https://www.jpl.nasa.gov/news/whats-mars-solar-conjunction-and-why-does-it-matter/">
           <front>
-            <title>What's Mars Solar Conjunction, and Why Does It Matter?</title>
+            <title>
+              What's Mars Solar Conjunction, and Why Does It Matter?
+            </title>
             <author>
               <organization>NASA Jet Propulsion Laboratory</organization>
             </author>
@@ -858,8 +2047,10 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
         </reference>
         <reference anchor="idsis" target="https://internationaldeepspacestandards.com/wp-content/uploads/2024/02/communication_reva_final_9-2020.pdf">
           <front>
-            <title>International Communication System
-            Interoperability Standards (ICSIS)</title>
+            <title>
+              International Communication System Interoperability Standards
+              (ICSIS)
+            </title>
             <author/>
             <date month="September" year="2020"/>
           </front>
@@ -879,7 +2070,10 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
         </reference>
         <reference anchor="maros">
           <front>
-            <title>Mars Relay Operations Service (MaROS): A Present Service Preparing for the Future</title>
+            <title>
+              Mars Relay Operations Service (MaROS): A Present Service Preparing
+              for the Future
+            </title>
             <author initials="R." surname="Gladden" fullname="Roy E. Gladden">
               <organization>AIAA SpaceOps 2014 Conference</organization>
             </author>
@@ -896,7 +2090,9 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
         </reference>
         <reference anchor="lunartime" target="https://www.nasa.gov/general/nasa-to-develop-lunar-time-standard-for-exploration-initiatives/">
           <front>
-            <title>NASA to Develop Lunar Time Standard for Exploration Initiatives</title>
+            <title>
+              NASA to Develop Lunar Time Standard for Exploration Initiatives
+            </title>
             <author>
               <organization>NASA</organization>
             </author>
@@ -914,7 +2110,10 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
         </reference>
         <reference anchor="imconstellation" target="https://www.intuitivemachines.com/post/intuitive-machines-expands-data-transmission-services-for-lunar-and-deep-space-missions">
           <front>
-            <title>Intuitive Machines Expands Data Transmission Services for Lunar and Deep Space Mission</title>
+            <title>
+              Intuitive Machines Expands Data Transmission Services for Lunar
+              and Deep Space Mission
+            </title>
             <author>
               <organization>Intuitive Machines</organization>
             </author>
@@ -923,7 +2122,10 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
         </reference>
         <reference anchor="WGS84">
           <front>
-            <title>Department of Defense World Geodetic System 1984, Third Edition, NIMA TR8350.2</title>
+            <title>
+              Department of Defense World Geodetic System 1984, Third Edition,
+              NIMA TR8350.2
+            </title>
             <author>
               <organization>National Imagery and Mapping Agency</organization>
             </author>
@@ -932,16 +2134,23 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
         </reference>
         <reference anchor="CCSDS-Threats" target="https://ccsds.org/Pubs/350x1g3.pdf">
           <front>
-            <title>Security Threats Against Space Missions, Green Book 350.1-G-3</title>
+            <title>
+              Security Threats Against Space Missions, Green Book 350.1-G-3
+            </title>
             <author>
-              <organization>Consultative Committee on Space Data Systems (CCSDS)</organization>
+              <organization>
+                Consultative Committee on Space Data Systems (CCSDS)
+              </organization>
             </author>
             <date year="2022" month="February"/>
           </front>
         </reference>
         <reference anchor="Gateway" target="https://ntrs.nasa.gov/api/citations/20230014342/downloads/IEEE%20-%20Gateway%20Overview%20FINAL%20100223.pdf">
           <front>
-            <title>The Gateway Program as Part of NASA's Plans for Human Exploration Beyond Low Earth Orbit</title>
+            <title>
+              The Gateway Program as Part of NASA's Plans for Human Exploration
+              Beyond Low Earth Orbit
+            </title>
             <author fullname="Emma Lehnhardt"/>
             <author fullname="Dylan Connell"/>
             <date month="July" year="2023"/>
@@ -951,7 +2160,14 @@ The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xr
     </references>
     <section anchor="Acknowledgements" numbered="false">
       <name>Acknowledgements</name>
-      <t>This following people have provided valuable feedback and comments, in no specific order: Roy Gladden, Padma Pillay-Esnault, Tomek Mrugalski, Atsushi Tagami, Pascal Thubert, Carles Gomez Montenegro, Martin Duke, Xisen Tian, Dan York, Meiling Chen, Tony Li, Britta Hale, Eric Rescorla, Michael Richardson, John Mattsson, Hesham ElBakoury, Stephen Farrell and Lloyd Wood.</t>
+      <t>
+        This following people have provided valuable feedback and comments, in
+        no specific order: Roy Gladden, Padma Pillay-Esnault, Tomek Mrugalski,
+        Atsushi Tagami, Pascal Thubert, Carles Gomez Montenegro, Martin Duke,
+        Xisen Tian, Dan York, Meiling Chen, Tony Li, Britta Hale, Eric Rescorla,
+        Michael Richardson, John Mattsson, Hesham ElBakoury, Stephen Farrell and
+        Lloyd Wood.
+      </t>
     </section>
   </back>
 </rfc>

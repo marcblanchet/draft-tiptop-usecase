@@ -192,6 +192,8 @@
           networks. On hops between its overlay agents, DTN/BPv7 can make use of
           IP stack protocol tunings and configurations for deep space.
         </t>
+        <t>It should also be noted that IP was also carried over intermittent links
+        using UUCP or Mail as transport <xref target="wideproject"/>.</t>
       </section>
       <section>
         <name>Limitations of this document</name>
@@ -2154,6 +2156,15 @@
             <author fullname="Emma Lehnhardt"/>
             <author fullname="Dylan Connell"/>
             <date month="July" year="2023"/>
+          </front>
+        </reference>
+        <reference anchor="wideproject" target="https://paperzz.com/doc/6119729/トンネリング技術">
+          <front>
+            <title>
+                トンネリング技術
+            </title>
+            <author fullname="Wide Project"/>
+            <date year="1992"/>
           </front>
         </reference>
       </references>

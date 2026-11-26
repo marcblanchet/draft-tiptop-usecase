@@ -63,6 +63,105 @@
       <t>Initially the needs considered in this document are to support IP-based applications in or between private networks, without assumption of reachability to/from the global Internet. At least initially, interplanetary IP networks are likely to be protected from the Internet, and vice-versa the Internet is protected from them (since they may have unique routing, congestion control, and other behaviors).  However, over time it is possible that connectivity to the Internet may become available for some mission assets, and eventually interplanetary networks could become part of the Internet.</t>
       <t>This work is a followup of an assessment on the use of the IP protocol stack in deep space <xref target="I-D.many-deepspace-ip-assessment"/>.</t>
       <section>
+        <name>Context</name>
+        <t>
+
+                IP has been used by space missions for decades now, though
+                predominantly for near-space missions. Some historic examples
+                include:
+
+        </t>
+
+	<ul>
+          <li>
+
+                In 1996, the first commanding of an in-flight spacecraft via IP
+                was done by Eric Travis to the STRV-1b spacecraft in geostationary
+                transfer orbit <xref target="hooke"/>.
+
+          </li>
+          <li>
+			  
+                Starting in the late 1990s, NASA's Goddard Spaceflight Center
+                (GSFC) began the Operating Missions as Nodes on the Internet
+                (OMNI) project that defined and demonstrated IP-based
+                communications architecture for space missions. The system
+                architecture included onboard local area networking with IP, in-space IP
+                routing capability, and use of IP over space links with
+                Earth-based ground stations and control centers or other users.
+                Testing on-orbit began in 2000, with the UoSAT-12 commercial
+                satellite operated by Surrey Satellite Technology Ltd. (SSTL),
+                including use of NTP, FTP, and other protocols
+                <xref target="OMNI"/>.  UoSat-12 then hosted the first HTTP/web
+                server in space in 2001, and SSTL proceeded to use IP
+                for its Disaster Monitoring Constellation (DMC) series
+                of spacecraft including AlSAT-1, BILSAT, NigeriaSat-1,
+                and the UK-DMC <xref target="hogie2005"/>.
+
+	  </li>
+	  <li>
+
+                In 2003, the Cosmic Hot Interstellar Plasma Spectrometer Satellite
+                (CHIPSat) operated by UC Berkeley for NASA used IP for its
+                onboard applications <xref target="chips"/>.
+
+	  </li>
+          <li>
+
+                Also in 2003, NASA's Communications and Navigation Demonstration
+                on Shuttle (CANDOS) included a payload on the STS-107 Space Shuttle
+                mission, that involved use of IP, Mobile IP, UDP, NTP, FTP, SCP,
+                and SSH <xref target="candos"/>.
+
+          </li>
+          <li>
+		  
+                Again in 2003, the Cisco router in Low Earth Orbit (CLEO)
+                launched as a payload on the UK-DMC satellite and was used for
+                experiments with IPv6, IPsec, and other protocols over several
+                years <xref target="cleo-paper"/>.
+
+	  </li>
+	  <li>
+
+                IP is used on the International Space Station and its onboard
+                LANs, using standard devices and operating systems.
+
+          </li>
+	  <li>
+
+                In 2004 NASA's Constellation Program began work on the Orion
+                crew capsule as part of the architecture for lunar and Mars
+                exploration (Orion has continued to be a part of the present
+                Artemis Program for lunar missions). The Constellation architecture used IP end-to-end, and
+                included IP networking onboard the vehicles such as Orion
+                <xref target="bhasin-paper"/>.
+
+          </li>
+
+        </ul>
+
+	<t>
+
+                As an established protocol for near-space operations, it is
+                natural to envision use of IP extending to more
+                upcoming lunar missions, and IP is included within the LunaNet
+                Interoperability Specification (LNIS) <xref target="LNIS"/>
+		as well as the International Communication System Interoperability
+	       	Standards (ICSIS) <xref target="idsis"/> applicable for upcoming lunar missions.
+                Lunar missions are viewed by space agencies as establishing
+                hardware and methods to be extended to larger scale Mars
+                missions, so it is desirable for IP-based technology to continue to extend
+                from lunar to Mars use.
+
+	</t>
+        <t>
+
+The IETF has also created the Bundle Protocol version 7 (BPv7) specification <xref target="RFC9171"/> for Delay-Tolerant Networking (DTN).  The intended use cases for BPv7 also include deep space.  BPv7 operates as an overlay protocol, that is able to run over multiple types of underlying networks and connectivity, including IP-based networks.  On hops between its overlay agents, DTN/BPv7 can make use of IP stack protocol tunings and configurations for deep space.
+
+        </t>
+      </section>
+      <section>
         <name>Limitations of this document</name>
         <t>Communication in deep space is vastly different than on Earth. This document does not describe space communication technologies below IP, but only the information relevant from the IP protocol stack viewpoint for the purpose of its engineering. More information is available for the Moon <xref target="ioagmoon"/> and Mars <xref target="ioagmars"/>.</t>
         <t>Position, Navigation and Timing (PNT) is not directly discussed in this memo, but is a vital offering from space network service providers, in addition to data communications.  Networking can support some of the data exchanges that facilitate PNT services.</t>
@@ -101,6 +200,7 @@
       </ul>
       <t>Without any changes, a typical Internet application will not work in this environment, though some Internet stack protocols are more suitable than others.  Among the challenges in this list, the primary factors impacting Internet stack protocols are delays and disruptions, discussed in this memo.</t>
       <t>This section describes the following cases of mission operating environments: Moon (surface and orbiting), Mars (surface and orbiting), Lagrange points, cruising spacecraft, and onboard spacecraft, starting with some commonality between all cases.</t>
+      <t>The concept of a "protocol radius" is useful to consider with regard to different mission cases described in this section <xref target="protocol-radius"/>.  For a given protocol and configuration, there is a limited zone where it can be expected to perform well.  Due to differences in delays or significance of disconnections, different protocols or parameter tunings may be needed to address the full set of cases.</t>
       <section>
         <name>Common Aspects</name>
         <t>The Consultative Committee for Space Data Systems (CCSDS) is an organization comprised of many space agencies that has developed various link-layer protocols used on the links between Earth, orbiters and surface assets. Examples include Telecommand (TC) <xref target="CCSDS_TC"/>, Telemetry (TM) <xref target="CCSDS_TM"/>, Advanced Orbiting Systems (AOS) <xref target="CCSDS_AOS"/>, and Proximity1 (Prox1) <xref target="CCSDS_PROX1"/>]. A newer Unified Space Data Link Protocol (USLP) <xref target="CCSDS_USLP"/>, has been designed to replace these in the future. A generic encapsulation mechanism is defined by CCSDS to support networking and other uses over these link layer protocols, including IPv4, IPv6, and IP header compression options <xref target="IPoverCCSDSSpaceLinks"/><xref target="SANAIPEHeaderRegistry"/>. IP packets can be transported over any CCSDS link layers.</t>
@@ -201,7 +301,8 @@
             to one or many other assets (e.g. via broadcast or multicast) that support emergency operations.  Since crew or mission safety may be at risk, this traffic should be prioritized over most other types of packets when encountering queuing or storage within the network.  Timely delivery is necessary, but it should also be delivered reliably. Unlike most traffic, emergency messages may have no useful expiration: they should not be dropped from network storage on lifetime grounds, and drop policies under storage exhaustion should preserve them ahead of all other traffic classes.</li>
         <li>Science data: Typically science data may take the form of large bulk file transfers unicasted from a spacecraft to Earth.  In many cases, storage and large delays in delivery can be tolerated. File transfer applications such as CCSDS File Delivery Protocol (CFDP)<xref target="CCSDS_CFDP" /> are typically used, that might be configured to either operate unidirectionally or may provide reliability through retransmissions, and require at least small amount of feedback.  Some science applications may also use messaging patterns to collaborate between different types of instruments in order to draw attention to events (e.g. gamma ray bursts, etc.) and bring different types of instruments to bear.  These messages may need to be quickly delivered and/or multicasted.</li>
         <li>Messaging: Many different types of machine-to-machine messaging need to be supported, including for uses such as (1) providing PNT data/measurements to feed positioning, orbit determination, and time transfer or clock calibration, (2) providing space weather alerts, (3) providing advisory or other network information (e.g. almanac data such as ephemeris data for relay and other network elements, scheduled future contacts, or other service management related messaging).  Messages are generally small (though may vary depending on type) and might be unicast, broadcast, or multicast. In cases where they are advisory, for instance, they may not need reliable transport, though often it will be important to provide timely transmission.</li>
-        <li>Network and Asset management: sending requests and getting answers from assets about their overall status, status of their components, energy levels, buffer capacities, etc.</li>
+	<li>Network and Asset management: sending requests and getting answers from assets about their overall status, status of their components, energy levels, buffer capacities, etc.</li>
+	<li>Software Update: Flight software is becoming increasingly complex, and needs to be maintained over time, e.g. to fix bugs, mitigate security issues, or to add features as a mission's lifetime extends.  In some cases, flight software may not even be fully complete when a mission launches.  Pushing software updates to flight systems from Earth is necessary for modern missions, and may utilize file transfer protocols like CFDP.</li>
       </ul>
     </section>
     <section anchor="scenarios">
@@ -324,7 +425,16 @@
                 to be (re)evaluated at the time of tranmission, any changes can
                 be considered that might have occured since the packet was first
                 buffered.
-        </li>
+	</li>
+	<li>
+		Higher layer (e.g. application layer) store-and-forward methods
+		make use of lower-layer connectivity when it is available, and
+		do not rely on lower layer buffering.  It may be possible to use
+		more detailed knowledge of data timeliness and relative value at
+		the higher layers in order to manage buffers and priorities.
+		Specific knowledge of other relays and connectivity windows may
+		need to be provided to the higher layer.
+	</li>
 	</ul>
 	<t>
                 In all cases, the buffering capacity is a key consideration in
@@ -434,8 +544,108 @@
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5870.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6960.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8805.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9171.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9179.xml"/>
-        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.many-deepspace-ip-assessment.xml"/>
+	<xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.many-deepspace-ip-assessment.xml"/>
+
+	<reference anchor="hooke" target="https://www.isi.edu/websites/tcpsat/list/archive/1518.html">
+	  <front>
+	    <title>Re: Satellites running IP</title>
+	    <author fullname="Adrian J. Hooke"/>
+	    <date year="2002" month="June"/>
+          </front>
+	  <refcontent>Email to the tcpsat mailing list</refcontent>
+        </reference>
+
+	<reference anchor="chips" target="https://doi.org/10.1117/12.512521">
+	  <front>
+	    <title>CHIPSat spacecraft design: significant science on a low budget</title>
+	    <author fullname="Jeffrey Janicik"/>
+	    <author fullname="Jonathan Wolff"/>
+	    <date year="2003" month="December"/>
+	  </front>
+	  <refcontent>Proc. SPIE 5164, UV/EUV and Visible Space Instrumentation for Astronomy II</refcontent>
+	</reference>
+
+	<reference anchor="hogie2005">
+	  <front>
+	    <title>Using standard Internet Protocols and applications in space</title>
+	    <author fullname="Keith Hogie"/>
+	    <author fullname="Ed Criscuolo"/>
+	    <author fullname="Ron Parise"/>
+	    <date year="2005"/>
+	  </front>
+	  <seriesInfo name="DOI" value="doi:10.1016/j.comnet.2004.08.005"/>
+	  <refcontent>Elsevier Computer Networks, volume 47, issue 5, pages 603-650</refcontent>
+	</reference>
+
+	<reference anchor="OMNI" target="https://arc.aiaa.org/doi/10.2514/6.2000-5295">
+	  <front>
+	    <title>Internet technology on spacecraft</title>
+	    <author fullname="James Rash"/>
+	    <author fullname="Ron Parise"/>
+	    <author fullname="Keith Hogie"/>
+	    <author fullname="Ed Criscuolo"/>
+	    <author fullname="Jim Langston"/>
+	    <date year="2000" month="September"/>
+	  </front>
+	  <refcontent>AIAA Space 2000 Conference and Exposition</refcontent>
+	  <seriesInfo name="DOI" value="doi:10.2514/6.2000-5295"/>
+	</reference>
+
+	<reference anchor="candos">
+	  <front>
+	    <title>CANDOS Experiment Overview</title>
+	    <author fullname="David J. Israel"/>
+	    <author fullname="David J. Zillig"/>
+	    <date year="2002" month="October"/>
+	  </front>
+	  <refcontent>Proceedings of the AIAA SpaceOps 2002 Conference</refcontent>
+	  <seriesInfo name="DOI" value="doi:10.2514/6.2002-T3-26"/>
+	</reference>
+
+	<reference anchor="cleo-paper">
+	  <front>
+	    <title>Investigating operation of the Internet in orbit: Five years of collaboration around CLEO</title>
+	    <author fullname="Lloyd Wood"/>
+	    <author fullname="William Ivancic"/>
+	    <author fullname="Wesley Eddy"/>
+	    <author fullname="David Stewart"/>
+	    <author fullname="James Northam"/>
+	    <author fullname="Chris Jackson"/>
+	    <date year="2008" month="November"/>
+	  </front>
+	  <refcontent>IEEE Communications Society Satellite and Space Communications Technical Committee newsletter, vol. 18, no. 2, pp. 10-11</refcontent>
+	</reference>
+
+	<reference anchor="bhasin-paper" target="https://arc.aiaa.org/doi/pdf/10.2514/6.2008-3587">
+	  <front>
+	    <title>Integrated Newtork Architecture for NASA's Orion Mission</title>
+	    <author fullname="Kul B. Bhasin"/>
+	    <author fullname="Jeffrey L. Hayden"/>
+	    <author fullname="Thomas Sartwell"/>
+	    <author fullname="Ronald A. Miller"/>
+	    <author fullname="John J. Hudiburg"/>
+	    <date year="2008" month="May"/>
+	  </front>
+	  <refcontent>AIAA SpaceOps 2008 Conference</refcontent>
+	  <seriesInfo name="DOI" value="doi:10.2514/6.2008-3587"/>
+	</reference>
+
+	<reference anchor="protocol-radius" target="https://ieeexplore.ieee.org/document/4409409">
+	  <front>
+	    <title>TCP's protocol radius: the distance where timers prevent communication</title>
+	    <author fullname="Lloyd Wood"/>
+	    <author fullname="Cathryn Peoples"/>
+	    <author fullname="Gerard Parr"/>
+	    <author fullname="Bryan Scotney"/>
+	    <author fullname="Adrian Moore"/>
+	    <date year="2007" month="September"/>
+	  </front>
+	  <refcontent>2007 IEEE International Workshop on Satellite and Space Communications (IWSSC)</refcontent>
+	  <seriesInfo name="DOI" value="10.1109/IWSSC.2007.4409409"/>
+	</reference>
+
         <reference anchor="IPoverCCSDSSpaceLinks" target="https://public.ccsds.org/Pubs/702x1b1c2.pdf">
           <front>
             <title>IP OVER CCSDS SPACE LINKS, Blue Book 702</title>
